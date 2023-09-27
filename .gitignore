@@ -1,0 +1,11 @@
+build
+vcpkg
+.vscode
+*.a
+*.o
+*.so
+*.exe
+*.lib
+*.dll
+r-type_client*
+r-type_server*
