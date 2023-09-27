@@ -12,3 +12,5 @@ add_executable(${EXECUTABLE_NAME}
 target_link_libraries(${EXECUTABLE_NAME} PRIVATE Boost::boost Boost::system Boost::thread Boost::filesystem)
 
 target_include_directories(${EXECUTABLE_NAME} PRIVATE include)
+
+set_target_properties(${EXECUTABLE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})

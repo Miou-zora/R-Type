@@ -11,6 +11,10 @@ find_package(Boost 1.82.0 REQUIRED COMPONENTS system thread filesystem)
 find_package(GTest CONFIG REQUIRED)
 find_package(raylib CONFIG REQUIRED)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}")
+
+
 add_subdirectory(server)
 add_subdirectory(client)
 add_subdirectory(libs)

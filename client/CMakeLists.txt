@@ -16,3 +16,5 @@ if (WIN32)
 endif (WIN32)
 
 target_include_directories(${EXECUTABLE_NAME} PRIVATE include)
+
+set_target_properties(${EXECUTABLE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
