@@ -1,0 +1,113 @@
+name: CI
+
+on:
+  push:
+    branches-ignore:
+     - 'ga-ignore-**'
+
+env:
+  EXECUTABLES: "r-type_server,r-type_client"
+
+jobs:
+  check_program_compilation_unix:
+    name: Checks if the program compiles correctly, executables files got created and source is clean
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up CMake
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake
+
+      - name: Install project dependencies
+        run: |
+          sudo apt install -y libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config > /dev/null
+    
+      - uses: actions/cache@v3
+        name: Store VCPKG folder in cache
+        with:
+          path: ./vcpkg
+          key: ${{ runner.os }}-vcpkg-raylib_gtest_boost-core_boost-asio_boost-thread_boost-system_boost-filesystem
+          restore-keys: |
+            ${{ runner.os }}-vcpkg-
+
+      - name: Run the Linux build script
+        run: ./build.sh > /dev/null
+
+      - name: Verifies that files are present and executable
+        run: |
+          SEARCH_BINARIES="${{ env.EXECUTABLES }}"
+          IFS=$','
+          for BIN in $SEARCH_BINARIES; do
+              if [ ! -f "${BIN}" ]; then
+                  echo "::error file=${BIN},title=Binary not found::${BIN}"
+                  exit 1
+              fi
+              if [ ! -x "${BIN}" ]; then
+                  echo "::error file=${BIN},title=Binary not executable::${BIN}"
+                  exit 1
+              fi
+          done
+
+      - name: Run the tests using ctest
+        run: |
+          ctest
+
+  check_program_compilation_windows:
+    name: Checks if the program compiles correctly on windows and executables files got created
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Download and install MSVC Build Tools
+        run: |
+          $url = "https://aka.ms/vs/16/release/vs_buildtools.exe"
+          $installPath = "$env:USERPROFILE\vs_buildtools.exe"
+          Invoke-WebRequest -Uri $url -OutFile $installPath
+          Start-Process -Wait -FilePath $installPath -ArgumentList "--quiet --wait --norestart --nocache --installPath C:\BuildTools"
+        shell: pwsh
+
+      - uses: lukka/get-cmake@latest
+        name: Set up CMake
+
+      - uses: actions/cache@v3
+        name: Store VCPKG folder in cache
+        with:
+          path: ./vcpkg
+          key: ${{ runner.os }}-vcpkg-raylib_gtest_boost-core_boost-asio_boost-thread_boost-system_boost-filesystem
+          restore-keys: |
+            ${{ runner.os }}-vcpkg-
+
+      - name: Install project dependencies and build
+        run: .\build.bat
+        shell: cmd
+
+      - name: Verifies that files are present and executable
+        run: |
+          $executables = $env:EXECUTABLES
+          $folder = (Get-Location).Path
+          $binaries = $executables -split ','
+          foreach ($binary in $binaries) {
+              $binary = $binary.Trim() + ".exe"
+              $path = Join-Path -Path $folder -ChildPath $binary
+              if ((Test-Path $path) -and (Test-Path $path -PathType Leaf) -and (-not (Get-ItemProperty -Path $path).IsReadOnly)) {
+                  Write-Host "$binary existe dans le répertoire courant."
+                  Write-Host "$binary est exécutable."
+              } else {
+                  Write-Host "$binary n'existe pas dans le répertoire courant ou n'est pas exécutable."
+                  echo "::error file=${binary},title=Binary not found::${binary}"
+                  exit 1
+              }
+          }
+
+      - name: Run the tests using ctest
+        run: |
+          ctest
+

@@ -12,8 +12,25 @@ set "VCPKG_URL=https://github.com/microsoft/vcpkg/archive/refs/tags/%VCPKG_TAG%.
 
 set "BUILD_DIR=.\build"
 
+rem Build function
+:build
+    setlocal
+        rem Use fetched vcpkg to install needed packages
+        echo "Installing packages"
+        %VCPKG_EXE% install --triplet %VCPKG_TRIPLET% --feature-flags=manifests raylib boost-core boost-asio boost-thread boost-system boost-filesystem gtest
+
+        rem Build the project using cmake
+        cmake -S . -B %BUILD_DIR% -DCMAKE_TOOLCHAIN_FILE=%VCPKG_TOOLCHAIN% -DVCPKG_TARGET_TRIPLET=%VCPKG_TRIPLET% -DCMAKE_BUILD_TYPE=Release
+
+        rem Build the project using builded cmake cache
+        cmake --build %BUILD_DIR% --config Release
+        echo Build finished
+    endlocal
+exit /b 0
+
 if exist %VCPKG_PATH% (
     echo VCPKG found, building
+    call :build
 ) else (
     echo VCPKG not found, installing
 
@@ -40,17 +57,9 @@ if exist %VCPKG_PATH% (
     rem if path exist and exe exist
     if exist %VCPKG_EXE% (
         echo VCPKG installation successful
+        call :build
     ) else (
         echo VCPKG installation failed, exiting
         exit /b 1
     )
 )
-
-rem Use fetched vcpkg to install needed packages
-%VCPKG_EXE% install --triplet %VCPKG_TRIPLET% --feature-flags=manifests raylib boost-core boost-asio boost-thread boost-system boost-filesystem gtest
-
-rem Build the project using cmake
-cmake -S . -B %BUILD_DIR% -DCMAKE_TOOLCHAIN_FILE=%VCPKG_TOOLCHAIN% -DVCPKG_TARGET_TRIPLET=%VCPKG_TRIPLET% -DCMAKE_BUILD_TYPE=Release
-
-rem Build the project using builded cmake cache
-cmake --build %BUILD_DIR% --config Release
