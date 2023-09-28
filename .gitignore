@@ -1,3 +1,5 @@
+# CMake
+
 build
 vcpkg
 .vscode
@@ -9,3 +11,11 @@ vcpkg
 *.dll
 r-type_client*
 r-type_server*
+
+# Unit tests
+
+unit_tests
+
+# Dev Env
+
+.vscode
