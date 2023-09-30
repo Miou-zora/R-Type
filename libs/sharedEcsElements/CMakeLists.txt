@@ -4,15 +4,15 @@ set(LIBRARY_NAME "sharedEcsElements")
 project(${LIBRARY_NAME})
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Werror -Wextra -Wshadow -Wuninitialized")
+if(CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Werror -Wextra -Wshadow -Wuninitialized")
+endif(CMAKE_COMPILER_IS_GNUCXX)
 
 set(SRC)
-
 set(INCLUDE)
 
 add_subdirectory("utils")
 add_subdirectory("components")
-
 
 add_library(${LIBRARY_NAME} STATIC ${SRC} ${INCLUDE})
 target_link_libraries(${LIBRARY_NAME} PRIVATE raylib)
