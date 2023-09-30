@@ -13,6 +13,8 @@ set(INCLUDE)
 add_subdirectory("utils")
 add_subdirectory("components")
 
+
 add_library(${LIBRARY_NAME} STATIC ${SRC} ${INCLUDE})
+target_link_libraries(${LIBRARY_NAME} PRIVATE raylib)
 set_target_properties(${LIBRARY_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 set_target_properties(${LIBRARY_NAME} PROPERTIES LINKER_LANGUAGE CXX)
