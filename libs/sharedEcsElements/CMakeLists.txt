@@ -10,8 +10,10 @@ set(SRC)
 
 set(INCLUDE)
 
-add_subdirectory("component")
 add_subdirectory("utils")
+add_subdirectory("components")
+
+message("INCLUDE: " ${INCLUDE})
 
 add_library(${LIBRARY_NAME} STATIC ${SRC} ${INCLUDE})
 set_target_properties(${LIBRARY_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
