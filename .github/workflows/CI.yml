@@ -109,5 +109,5 @@ jobs:
 
       - name: Run the tests using ctest
         run: |
-          ctest --test-dir ./build/tests --verbose
+          ctest --test-dir ./build/tests --verbose -C Release
 
