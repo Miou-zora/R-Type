@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 3.12)
 project(r-type)
 
@@ -20,4 +19,5 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}")
 add_subdirectory(server)
 add_subdirectory(client)
 add_subdirectory(libs)
+enable_testing()
 add_subdirectory(tests)
