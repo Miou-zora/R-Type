@@ -26,7 +26,7 @@ jobs:
       - name: Install project dependencies
         run: |
           sudo apt install -y libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config > /dev/null
-    
+
       - uses: actions/cache@v3
         name: Store VCPKG folder in cache
         with:
@@ -55,7 +55,7 @@ jobs:
 
       - name: Run the tests using ctest
         run: |
-          ctest
+          ctest --test-dir ./build/tests
 
   check_program_compilation_windows:
     name: Checks if the program compiles correctly on windows and executables files got created
@@ -109,5 +109,5 @@ jobs:
 
       - name: Run the tests using ctest
         run: |
-          ctest
+          ctest --test-dir ./build/tests
 
