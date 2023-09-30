@@ -4,5 +4,6 @@ set(INCLUDE
     ${INCLUDE}
     "${CMAKE_CURRENT_SOURCE_DIR}/Drawable.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Transformable.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Velocity.hpp"
     PARENT_SCOPE
 )
