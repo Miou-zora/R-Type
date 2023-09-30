@@ -108,6 +108,8 @@ namespace ecs
         */
         ReferenceType operator[](size_t idx)
         {
+            if (idx >= m_data.size())
+                throw ecs::OutOfRange("SparseArray::operator[]");
             return (m_data[idx]);
         }
 
@@ -119,6 +121,8 @@ namespace ecs
         */
         ConstReferenceType operator[](size_t idx) const
         {
+            if (idx >= m_data.size())
+                throw ecs::OutOfRange("SparseArray::operator[]");
             return (m_data[idx]);
         }
 

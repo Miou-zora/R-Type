@@ -61,7 +61,7 @@ TEST(Registry, componentManagement)
     try {
         ecs::SparseArray<ComponentB> &refSparseArrayB = registry.getComponents<ComponentB>();
         FAIL();
-    } catch (std::bad_any_cast const &e) {
+    } catch (ecs::BadAnyCast const &e) {
         SUCCEED();
     }
 
@@ -69,7 +69,7 @@ TEST(Registry, componentManagement)
     try {
         ecs::SparseArray<ComponentB> const &constRefSparseArrayB = registry.getComponents<ComponentB>();
         FAIL();
-    } catch (std::bad_any_cast const &e) {
+    } catch (ecs::BadAnyCast const &e) {
         SUCCEED();
     }
 }
@@ -110,7 +110,7 @@ TEST(Registry, componentAssignationAddComponentGetComponentHasComponent)
     try {
         registry.getComponents<ComponentA>()[entityB].value();
         FAIL();
-    } catch (std::bad_optional_access const &e) {
+    } catch (ecs::OutOfRange const &e) {
         SUCCEED();
     }
 
@@ -172,7 +172,7 @@ TEST(Registry, componentAssignationRemoveComponent)
     try {
         registry.removeComponent<ComponentA>(ecs::Entity(42));
         FAIL();
-    } catch (std::out_of_range const &e) {
+    } catch (ecs::OutOfRange const &e) {
         SUCCEED();
     }
 
