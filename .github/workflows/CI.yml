@@ -56,6 +56,8 @@ jobs:
       - name: Run the tests using ctest
         run: |
           ctest --test-dir ./build/tests --verbose -C Release
+          ls build
+          ls build/tests
 
   check_program_compilation_windows:
     name: Checks if the program compiles correctly on windows and executables files got created
