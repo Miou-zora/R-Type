@@ -5,7 +5,6 @@ set(SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/Control/Control.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/VelocityApplicator/VelocityApplicator.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Logging/Logging.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Draw/Draw.cpp"
     PARENT_SCOPE
 )
 
@@ -14,6 +13,5 @@ set(INCLUDE
     "${CMAKE_CURRENT_SOURCE_DIR}/Control/"
     "${CMAKE_CURRENT_SOURCE_DIR}/VelocityApplicator/"
     "${CMAKE_CURRENT_SOURCE_DIR}/Logging/"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Draw/"
     PARENT_SCOPE
 )

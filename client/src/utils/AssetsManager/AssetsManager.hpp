@@ -10,6 +10,13 @@
 #include <unordered_map>
 #include <iostream>
 #include "raylib.h"
+#include <cmrc/cmrc.hpp>
+#include <cstring>
+
+CMRC_DECLARE(assets);
+
+#define FONT_TTF_DEFAULT_NUMCHARS 95
+#define FONT_TTF_DEFAULT_SIZE 32
 
 namespace rtype::utils
 {
@@ -20,7 +27,7 @@ namespace rtype::utils
     {
         // Singleton part
     private:
-        AssetsManager() = default;
+        AssetsManager(): m_fs(cmrc::assets::get_filesystem()) {};
     public:
         /**
          * @brief Get the instance of the AssetsManager. If it doesn't exist, it will be created.
@@ -33,6 +40,7 @@ namespace rtype::utils
         }
     private:
         static AssetsManager *m_instance;
+        cmrc::embedded_filesystem m_fs;
 
     public:
         /**

@@ -9,7 +9,13 @@
 
 bool rtype::utils::AssetsManager::loadTexture(const std::string &name, const std::string &path)
 {
-    m_textures[name] = LoadTexture(path.c_str());
+    auto texture = m_fs.open(path);
+
+    std::string extension = strrchr(const_cast<char *>(path.c_str()), '.');
+    const unsigned char *data = reinterpret_cast<const unsigned char *>(texture.begin());
+
+    Image image = LoadImageFromMemory(extension.c_str(), data, texture.size());
+    m_textures[name] = LoadTextureFromImage(image);
     bool result = m_textures[name].id != 0;
     if (result)
         std::cout << "Loaded texture " << name << " from " << path << std::endl;
@@ -25,7 +31,12 @@ rtype::utils::AssetsManager::texture_t &rtype::utils::AssetsManager::getTexture(
 
 bool rtype::utils::AssetsManager::loadSound(const std::string &name, const std::string &path)
 {
-    m_sounds[name] = LoadSound(path.c_str());
+    auto sound = m_fs.open(path);
+
+    std::string extension = strrchr(const_cast<char *>(path.c_str()), '.');
+    const unsigned char *data = reinterpret_cast<const unsigned char *>(sound.begin());
+    Wave wave = LoadWaveFromMemory(extension.c_str(), data, sound.size());
+    m_sounds[name] = LoadSoundFromWave(wave);
     bool result = m_sounds[name].frameCount != 0;
     if (result)
         std::cout << "Loaded sound " << name << " from " << path << std::endl;
@@ -41,7 +52,12 @@ rtype::utils::AssetsManager::sound_t &rtype::utils::AssetsManager::getSound(cons
 
 bool rtype::utils::AssetsManager::loadFont(const std::string &name, const std::string &path)
 {
-    m_fonts[name] = LoadFont(path.c_str());
+    auto font = m_fs.open(path);
+
+    std::string extension = strrchr(const_cast<char *>(path.c_str()), '.');
+    const unsigned char *data = reinterpret_cast<const unsigned char *>(font.begin());
+
+    m_fonts[name] = LoadFontFromMemory(extension.c_str(), data, font.size(), FONT_TTF_DEFAULT_SIZE, NULL, FONT_TTF_DEFAULT_NUMCHARS);
     bool result = m_fonts[name].baseSize != 0;
     if (result)
         std::cout << "Loaded font " << name << " from " << path << std::endl;

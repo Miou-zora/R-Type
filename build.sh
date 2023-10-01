@@ -74,7 +74,7 @@ else
 fi
 
 # Use fetched vcpkg to install needed packages
-"${VCPKG_EXE}" install --triplet "${VCPKG_TRIPLET}" --feature-flags=manifests raylib boost-core boost-asio boost-thread boost-system boost-filesystem gtest
+"${VCPKG_EXE}" install --triplet "${VCPKG_TRIPLET}" --feature-flags=manifests raylib boost-core boost-asio boost-thread boost-system boost-filesystem gtest cmakerc
 
 # Build the project using cmake
 cmake -S . -B "${BUILD_DIR}" -DCMAKE_TOOLCHAIN_FILE="${VCPKG_TOOLCHAIN}" -DVCPKG_TARGET_TRIPLET="${VCPKG_TRIPLET}" -DCMAKE_BUILD_TYPE=Release
