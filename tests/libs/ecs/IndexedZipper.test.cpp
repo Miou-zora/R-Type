@@ -12,25 +12,25 @@
 
 TEST(IndexedZipper, init)
 {
-    ecs::SparseArray<int> sa;
+    rtype::ecs::SparseArray<int> sa;
     sa.insertAt(0, 1);
     sa.insertAt(1, 2);
     sa.insertAt(2, 3);
     sa.insertAt(3, 4);
     sa.insertAt(4, 5);
-    ecs::SparseArray<int> sa2;
+    rtype::ecs::SparseArray<int> sa2;
     sa2.insertAt(0, 6);
     sa2.insertAt(1, 7);
     sa2.insertAt(2, 8);
     sa2.insertAt(3, 9);
     sa2.insertAt(4, 10);
-    ecs::SparseArray<int> sa3;
+    rtype::ecs::SparseArray<int> sa3;
     sa3.insertAt(0, 11);
     sa3.insertAt(1, 12);
     sa3.insertAt(2, 13);
     sa3.insertAt(3, 14);
     sa3.insertAt(4, 15);
-    ecs::containers::IndexedZipper<ecs::SparseArray<int>, ecs::SparseArray<int>, ecs::SparseArray<int>> iz(sa, sa2, sa3);
+    rtype::ecs::containers::IndexedZipper<rtype::ecs::SparseArray<int>, rtype::ecs::SparseArray<int>, rtype::ecs::SparseArray<int>> iz(sa, sa2, sa3);
     EXPECT_EQ(std::get<0>(*(iz.begin())), 0);
     EXPECT_EQ(std::get<1>(*(iz.begin())).value(), 1);
     EXPECT_EQ(std::get<2>(*(iz.begin())).value(), 6);
@@ -44,26 +44,26 @@ TEST(IndexedZipper, init)
 
 TEST(IndexedZipper, forEach)
 {
-    ecs::SparseArray<int> sa;
+    rtype::ecs::SparseArray<int> sa;
     sa.insertAt(0, 1);
     sa.insertAt(1, 2);
     sa.insertAt(2, 3);
     sa.insertAt(3, 4);
     sa.insertAt(4, 5);
-    ecs::SparseArray<int> sa2;
+    rtype::ecs::SparseArray<int> sa2;
     sa2.insertAt(0, 6);
     sa2.insertAt(1, 7);
     sa2.insertAt(2, 8);
     sa2.insertAt(3, 9);
     sa2.insertAt(4, 10);
-    ecs::SparseArray<int> sa3;
+    rtype::ecs::SparseArray<int> sa3;
     sa3.insertAt(0, 11);
     sa3.insertAt(1, 12);
     sa3.insertAt(2, 13);
     sa3.insertAt(3, 14);
     sa3.insertAt(4, 15);
     int i = 0;
-    for (auto &&[it, value1, value2, value3]: ecs::containers::IndexedZipper(sa, sa2, sa3))
+    for (auto &&[it, value1, value2, value3]: rtype::ecs::containers::IndexedZipper(sa, sa2, sa3))
     {
         EXPECT_EQ(it, i);
         EXPECT_EQ(value1.value(), i + 1);
@@ -75,7 +75,7 @@ TEST(IndexedZipper, forEach)
 
 TEST(IndexedZipper, forEachWithEmptyValue)
 {
-    ecs::SparseArray<int> sa;
+    rtype::ecs::SparseArray<int> sa;
     sa.insertAt(0, 1);
     sa.insertAt(1, 2);
     sa.insertAt(2, 3);
@@ -83,14 +83,14 @@ TEST(IndexedZipper, forEachWithEmptyValue)
     sa.insertAt(4, 5);
     sa.insertAt(5, 4324);
     sa.erase(5);
-    ecs::SparseArray<int> sa2;
+    rtype::ecs::SparseArray<int> sa2;
     sa2.insertAt(0, 6);
     sa2.insertAt(1, 7);
     sa2.insertAt(3, 9);
     sa2.insertAt(4, 10);
     sa2.insertAt(5, 4324);
     sa2.erase(5);
-    ecs::SparseArray<int> sa3;
+    rtype::ecs::SparseArray<int> sa3;
     sa3.insertAt(0, 11);
     sa3.insertAt(1, 12);
     sa3.insertAt(2, 13);
@@ -99,7 +99,7 @@ TEST(IndexedZipper, forEachWithEmptyValue)
     sa3.insertAt(5, 4324);
     sa3.erase(5);
     int i = 0;
-    for (auto &&[it, value1, value2, value3]: ecs::containers::IndexedZipper(sa, sa2, sa3))
+    for (auto &&[it, value1, value2, value3]: rtype::ecs::containers::IndexedZipper(sa, sa2, sa3))
     {
         EXPECT_EQ(it, i);
         EXPECT_EQ(value1.value(), i + 1);

@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 add_subdirectory(utils)
 add_subdirectory(components)
+add_subdirectory(systems)
 
 link_directories(${CMAKE_SOURCE_DIR}/libs/sharedEcsElements)
 

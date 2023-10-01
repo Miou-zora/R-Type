@@ -11,7 +11,7 @@
 
 TEST(entity, init)
 {
-    ecs::Entity entity(42);
+    rtype::ecs::Entity entity(42);
 
     ASSERT_EQ(entity, 42);
 }

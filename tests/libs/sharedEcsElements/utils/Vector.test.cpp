@@ -11,7 +11,7 @@
 
 TEST(Vector, init)
 {
-    utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector(42, 21);
 
     ASSERT_EQ(vector.x, 42);
     ASSERT_EQ(vector.y, 21);
@@ -19,8 +19,8 @@ TEST(Vector, init)
 
 TEST(Vector, copy)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(vector);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(vector);
 
     ASSERT_EQ(vector2.x, 42);
     ASSERT_EQ(vector2.y, 21);
@@ -28,8 +28,8 @@ TEST(Vector, copy)
 
 TEST(Vector, assign)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(0, 0);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(0, 0);
 
     vector2 = vector;
     ASSERT_EQ(vector2.x, 42);
@@ -38,8 +38,8 @@ TEST(Vector, assign)
 
 TEST(Vector, add)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(0, 0);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(0, 0);
 
     vector2 = vector + vector;
     ASSERT_EQ(vector2.x, 84);
@@ -48,8 +48,8 @@ TEST(Vector, add)
 
 TEST(Vector, sub)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(1, 1);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(1, 1);
 
     vector2 = vector - vector2;
     ASSERT_EQ(vector2.x, 41);
@@ -58,8 +58,8 @@ TEST(Vector, sub)
 
 TEST(Vector, mul)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(2, 2);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(2, 2);
 
     vector2 = vector * vector2;
     ASSERT_EQ(vector2.x, 84);
@@ -68,8 +68,8 @@ TEST(Vector, mul)
 
 TEST(Vector, div)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(2, 2);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(2, 2);
 
     vector2 = vector / vector2;
     ASSERT_EQ(vector2.x, 21);
@@ -78,7 +78,7 @@ TEST(Vector, div)
 
 TEST(Vector, mul2)
 {
-    utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector(42, 21);
 
     vector = vector * 2;
     ASSERT_EQ(vector.x, 84);
@@ -87,7 +87,7 @@ TEST(Vector, mul2)
 
 TEST(Vector, div2)
 {
-    utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector(42, 21);
 
     vector = vector / 2;
     ASSERT_EQ(vector.x, 21);
@@ -96,8 +96,8 @@ TEST(Vector, div2)
 
 TEST(Vector, addAssign)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(0, 0);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(0, 0);
 
     vector2 += vector;
     ASSERT_EQ(vector2.x, 42);
@@ -106,8 +106,8 @@ TEST(Vector, addAssign)
 
 TEST(Vector, subAssign)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(1, 1);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(1, 1);
 
     vector2 -= vector;
     ASSERT_EQ(vector2.x, -41);
@@ -116,8 +116,8 @@ TEST(Vector, subAssign)
 
 TEST(Vector, mulAssign)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(2, 2);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(2, 2);
 
     vector2 *= vector;
     ASSERT_EQ(vector2.x, 84);
@@ -126,8 +126,8 @@ TEST(Vector, mulAssign)
 
 TEST(Vector, divAssign)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(2, 2);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(2, 2);
 
     vector /= vector2;
     ASSERT_EQ(vector.x, 21);
@@ -136,7 +136,7 @@ TEST(Vector, divAssign)
 
 TEST(Vector, mulAssign2)
 {
-    utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector(42, 21);
 
     vector *= 2;
     ASSERT_EQ(vector.x, 84);
@@ -146,7 +146,7 @@ TEST(Vector, mulAssign2)
 
 TEST(Vector, divAssign2)
 {
-    utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector(42, 21);
 
     vector /= 2;
     ASSERT_EQ(vector.x, 21);
@@ -155,33 +155,33 @@ TEST(Vector, divAssign2)
 
 TEST(Vector, equal)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(42, 21);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(42, 21);
 
     ASSERT_EQ(vector, vector2);
 }
 
 TEST(Vector, notEqual)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(0, 0);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(0, 0);
 
     ASSERT_NE(vector, vector2);
 }
 
 TEST(Vector, less)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(0, 0);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(0, 0);
 
     ASSERT_LT(vector2, vector);
 }
 
 TEST(Vector, lessEqual)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(0, 0);
-    utils::Vector<int> vector3(42, 21);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(0, 0);
+    rtype::utils::Vector<int> vector3(42, 21);
 
     ASSERT_LE(vector2, vector);
     ASSERT_LE(vector3, vector);
@@ -189,17 +189,17 @@ TEST(Vector, lessEqual)
 
 TEST(Vector, greater)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(0, 0);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(0, 0);
 
     ASSERT_GT(vector, vector2);
 }
 
 TEST(Vector, greaterEqual)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(0, 0);
-    utils::Vector<int> vector3(42, 21);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(0, 0);
+    rtype::utils::Vector<int> vector3(42, 21);
 
     ASSERT_GE(vector, vector2);
     ASSERT_GE(vector3, vector);
@@ -207,7 +207,7 @@ TEST(Vector, greaterEqual)
 
 TEST(Vector, ostream)
 {
-    utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector(42, 21);
     std::stringstream ss;
 
     ss << vector;
@@ -216,15 +216,15 @@ TEST(Vector, ostream)
 
 TEST(Vector, getLength)
 {
-    utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector(42, 21);
 
     ASSERT_EQ(vector.getLength(), static_cast<int>(std::sqrt(std::pow(42, 2) + std::pow(21, 2))));
 }
 
 TEST(Vector, normalized)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(0, 0);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(0, 0);
 
     vector2 = vector.normalized();
     ASSERT_EQ(vector2.x, 42 / vector.getLength());
@@ -233,8 +233,8 @@ TEST(Vector, normalized)
 
 TEST(Vector, distance)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(21, 100);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(21, 100);
 
     int distance = std::sqrt(std::pow(42 - 21, 2) + std::pow(21 - 100, 2));
 
@@ -243,19 +243,19 @@ TEST(Vector, distance)
 
 TEST(Vector, getVector)
 {
-    utils::Vector<int> vector(42, 21);
-    utils::Vector<int> vector2(21, 100);
-    utils::Vector<int> vector3(0, 0);
+    rtype::utils::Vector<int> vector(42, 21);
+    rtype::utils::Vector<int> vector2(21, 100);
+    rtype::utils::Vector<int> vector3(0, 0);
 
-    vector3 = utils::Vector<int>::getVector(vector, vector2);
+    vector3 = rtype::utils::Vector<int>::getVector(vector, vector2);
     ASSERT_EQ(vector3.x, 21 - 42);
     ASSERT_EQ(vector3.y, 100 - 21);
 }
 
 TEST(Vector, operatorDiv)
 {
-    utils::Vector<int> vector(10, 10);
-    utils::Vector<int> vector2(0, 0);
+    rtype::utils::Vector<int> vector(10, 10);
+    rtype::utils::Vector<int> vector2(0, 0);
 
     vector2 = 100 / vector;
     ASSERT_EQ(vector2.x, 100 / vector.getLength());
@@ -264,8 +264,8 @@ TEST(Vector, operatorDiv)
 
 TEST(Vector, operatorMul)
 {
-    utils::Vector<int> vector(10, 10);
-    utils::Vector<int> vector2(0, 0);
+    rtype::utils::Vector<int> vector(10, 10);
+    rtype::utils::Vector<int> vector2(0, 0);
 
     vector2 = 100 * vector;
     ASSERT_EQ(vector2.x, 100 * vector.getLength());
@@ -274,8 +274,8 @@ TEST(Vector, operatorMul)
 
 TEST(Vector, operatorPlus)
 {
-    utils::Vector<int> vector(10, 10);
-    utils::Vector<int> vector2(0, 0);
+    rtype::utils::Vector<int> vector(10, 10);
+    rtype::utils::Vector<int> vector2(0, 0);
 
     vector2 = 100 + vector;
     ASSERT_EQ(vector2.x, 100 + vector.getLength());
@@ -284,8 +284,8 @@ TEST(Vector, operatorPlus)
 
 TEST(Vector, operatorMinus)
 {
-    utils::Vector<int> vector(10, 10);
-    utils::Vector<int> vector2(0, 0);
+    rtype::utils::Vector<int> vector(10, 10);
+    rtype::utils::Vector<int> vector2(0, 0);
 
     vector2 = 100 - vector;
     ASSERT_EQ(vector2.x, 100 - vector.getLength());
@@ -294,8 +294,8 @@ TEST(Vector, operatorMinus)
 
 TEST(Vector, minusConversion)
 {
-    utils::Vector<int> vector(10, 10);
-    utils::Vector<int> vector2(0, 0);
+    rtype::utils::Vector<int> vector(10, 10);
+    rtype::utils::Vector<int> vector2(0, 0);
 
     vector2 = -vector;
     ASSERT_EQ(vector2.x, -vector.x);

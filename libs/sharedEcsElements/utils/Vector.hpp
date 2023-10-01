@@ -10,7 +10,7 @@
 #include <cmath>
 #include <iostream>
 
-namespace utils
+namespace rtype::utils
 {
     template <typename T>
     class Vector

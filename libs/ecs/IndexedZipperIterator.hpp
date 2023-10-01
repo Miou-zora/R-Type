@@ -11,7 +11,7 @@
 #include <tuple>
 #include <utility>
 
-namespace ecs
+namespace rtype::ecs
 {
     namespace containers
     {

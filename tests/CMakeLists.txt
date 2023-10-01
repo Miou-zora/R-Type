@@ -22,7 +22,10 @@ set(EXECUTABLE_NAME
     "unit_tests"
 )
 
+
+
 add_executable(${EXECUTABLE_NAME} ${TEST_MAIN} ${SRC} ${TEST_SRC})
+target_link_libraries(${EXECUTABLE_NAME} PUBLIC sharedEcsElements)
 target_link_libraries(${EXECUTABLE_NAME} PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
 add_test(NAME r-type_unit_tests COMMAND unit_tests)
 

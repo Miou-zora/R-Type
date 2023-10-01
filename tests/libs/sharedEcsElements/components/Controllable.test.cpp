@@ -11,7 +11,7 @@
 
 TEST(Controllable, initWithValues)
 {
-    component::Controllable controllable(
+    rtype::component::Controllable controllable(
         []() {return true;},
         []() {return false;},
         []() {return true;},
@@ -26,13 +26,13 @@ TEST(Controllable, initWithValues)
 
 TEST(Controllable, copy)
 {
-    component::Controllable controllable(
+    rtype::component::Controllable controllable(
         []() {return true;},
         []() {return false;},
         []() {return true;},
         []() {return false;}
     );
-    component::Controllable controllable2(controllable);
+    rtype::component::Controllable controllable2(controllable);
 
     ASSERT_EQ(controllable2.is_key_up_pressed(), true);
     ASSERT_EQ(controllable2.is_key_down_pressed(), false);
@@ -42,13 +42,13 @@ TEST(Controllable, copy)
 
 TEST(Controllable, assignation)
 {
-    component::Controllable controllable(
+    rtype::component::Controllable controllable(
         []() {return true;},
         []() {return false;},
         []() {return true;},
         []() {return false;}
     );
-    component::Controllable controllable2(
+    rtype::component::Controllable controllable2(
         []() {return false;},
         []() {return true;},
         []() {return false;},

@@ -11,13 +11,13 @@
 
 TEST(SparseArray, init)
 {
-    ecs::SparseArray<int> arr;
+    rtype::ecs::SparseArray<int> arr;
     EXPECT_EQ(arr.size(), 0);
 }
 
 TEST(SparseArray, insert_at)
 {
-    ecs::SparseArray<int> arr;
+    rtype::ecs::SparseArray<int> arr;
 
     // extends
     arr.insertAt(3, 42);
@@ -54,7 +54,7 @@ TEST(SparseArray, emplace_at)
         int b;
     };
 
-    ecs::SparseArray<A> arr;
+    rtype::ecs::SparseArray<A> arr;
 
     // extends
     arr.emplaceAt(3, std::in_place, 42, 21);
@@ -100,7 +100,7 @@ TEST(SparseArray, emplace_at)
 
 TEST(SparseArray, erase)
 {
-    ecs::SparseArray<int> arr;
+    rtype::ecs::SparseArray<int> arr;
 
     // extends
     arr.insertAt(3, 42);
@@ -137,7 +137,7 @@ TEST(SparseArray, erase)
 
 TEST(SparseArray, get_index)
 {
-    ecs::SparseArray<int> arr;
+    rtype::ecs::SparseArray<int> arr;
 
     // extends
     arr.insertAt(3, 42);

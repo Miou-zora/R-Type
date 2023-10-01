@@ -9,7 +9,7 @@
 
 #include <cstddef>
 
-namespace ecs
+namespace rtype::ecs
 {
     /**
      * @brief Entity is a simple wrapper around a size_t that represent an entity

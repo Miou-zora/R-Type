@@ -9,7 +9,7 @@
 
 #include <functional>
 
-namespace component
+namespace rtype::component
 {
     struct Controllable
     {

@@ -8,7 +8,7 @@ set(SRC
 
 set(INCLUDE
     ${INCLUDE}
-    "${CMAKE_CURRENT_SOURCE_DIR}/Vector.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/AssetsManager/AssetsManager.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/"
+    "${CMAKE_CURRENT_SOURCE_DIR}/AssetsManager/"
     PARENT_SCOPE
 )

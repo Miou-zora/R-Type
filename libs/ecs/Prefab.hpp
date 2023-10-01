@@ -13,7 +13,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace ecs
+namespace rtype::ecs
 {
     /**
      * @brief Prefab is a container that store a list of components and can instantiate an entity with those components.

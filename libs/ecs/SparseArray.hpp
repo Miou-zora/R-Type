@@ -14,7 +14,7 @@
 #include <vector>
 #include "Exceptions.hpp"
 
-namespace ecs
+namespace rtype::ecs
 {
     /**
      * @brief SparseArray is a container that store a list of optional components.

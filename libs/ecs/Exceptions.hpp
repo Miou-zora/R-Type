@@ -13,7 +13,7 @@
 #include <string>
 #include <any>
 
-namespace ecs
+namespace rtype::ecs
 {
     /**
      * @brief BadOptionalAccess is an exception that is thrown when we try to access an optional that doesn't contain a value

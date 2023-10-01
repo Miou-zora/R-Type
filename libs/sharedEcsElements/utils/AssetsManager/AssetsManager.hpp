@@ -11,7 +11,7 @@
 #include <iostream>
 #include "raylib.h"
 
-namespace utils
+namespace rtype::utils
 {
     /**
      * @brief A singleton class to manage assets (textures, sounds, fonts).
@@ -25,7 +25,7 @@ namespace utils
         /**
          * @brief Get the instance of the AssetsManager. If it doesn't exist, it will be created.
         */
-        static AssetsManager &get_instance()
+        static AssetsManager &getInstance()
         {
             if (!m_instance)
                 m_instance = new AssetsManager();
@@ -99,9 +99,9 @@ namespace utils
         font_t &getFont(const std::string &name);
 
     private:
-        std::unordered_map<std::string, texture_t> _textures;
-        std::unordered_map<std::string, sound_t> _sounds;
-        std::unordered_map<std::string, font_t> _fonts;
+        std::unordered_map<std::string, texture_t> m_textures;
+        std::unordered_map<std::string, sound_t> m_sounds;
+        std::unordered_map<std::string, font_t> m_fonts;
     };
 
     inline AssetsManager *AssetsManager::m_instance = nullptr;

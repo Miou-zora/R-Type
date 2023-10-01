@@ -16,7 +16,7 @@
 #include <typeindex>
 #include <unordered_map>
 
-namespace ecs
+namespace rtype::ecs
 {
     /**
      * @brief The registry is the main class of the ECS. It is used to create, kill and manage entities.
@@ -274,14 +274,32 @@ namespace ecs
         }
 
         /**
-         * @brief Run all the systems. The systems will be called in the order they were added.
+         * @brief Run all the systems. The systems will be called in the order they were added. It will also update the delta time.
          */
         void runSystems()
         {
+            updateDeltaTime();
             for (auto &system : m_systems)
             {
                 system(*this);
             }
+        }
+
+        /**
+         * @brief Get the delta time between the last update of the delta time.
+        */
+        float getDeltaTime() const
+        {
+            return (m_deltaTime);
+        }
+    private:
+        void updateDeltaTime()
+        {
+            static std::chrono::time_point<std::chrono::system_clock> last = std::chrono::system_clock::now();
+            std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
+            std::chrono::duration<float> elapsedSeconds = now - last;
+            m_deltaTime = elapsedSeconds.count();
+            last = now;
         }
 
     private:
@@ -289,6 +307,7 @@ namespace ecs
         std::vector<std::function<void(Registry &)>> m_systems;
         std::vector<Entity> m_deadEntities;
         size_t m_id;
+        float m_deltaTime;
     };
 
 }

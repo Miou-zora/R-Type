@@ -11,7 +11,7 @@
 
 TEST(Transformable, init)
 {
-    component::Transformable transformable;
+    rtype::component::Transformable transformable;
 
     ASSERT_EQ(transformable.position.x, 0);
     ASSERT_EQ(transformable.position.y, 0);
@@ -21,7 +21,7 @@ TEST(Transformable, init)
 
 TEST(Transformable, initWithValues)
 {
-    component::Transformable transformable(utils::Vector<float>(1, 2), 3, 4);
+    rtype::component::Transformable transformable(rtype::utils::Vector<float>(1, 2), 3, 4);
 
     ASSERT_EQ(transformable.position.x, 1);
     ASSERT_EQ(transformable.position.y, 2);
@@ -31,8 +31,8 @@ TEST(Transformable, initWithValues)
 
 TEST(Transformable, copy)
 {
-    component::Transformable transformable(utils::Vector<float>(1, 2), 3, 4);
-    component::Transformable transformable2(transformable);
+    rtype::component::Transformable transformable(rtype::utils::Vector<float>(1, 2), 3, 4);
+    rtype::component::Transformable transformable2(transformable);
 
     ASSERT_EQ(transformable2.position.x, 1);
     ASSERT_EQ(transformable2.position.y, 2);
@@ -42,8 +42,8 @@ TEST(Transformable, copy)
 
 TEST(Transformable, assignation)
 {
-    component::Transformable transformable(utils::Vector<float>(1, 2), 3, 4);
-    component::Transformable transformable2;
+    rtype::component::Transformable transformable(rtype::utils::Vector<float>(1, 2), 3, 4);
+    rtype::component::Transformable transformable2;
 
     transformable2 = transformable;
     ASSERT_EQ(transformable2.position.x, 1);

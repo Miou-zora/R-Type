@@ -10,17 +10,17 @@
 #include <string>
 #include "Vector.hpp"
 
-namespace component
+namespace rtype::component
 {
     struct Transformable {
 
-        Transformable(utils::Vector<float> position_ = utils::Vector<float>(0, 0), float scale_ = 1, float rotation_ = 0): position(position_), scale(scale_), rotation(rotation_) {};
+        Transformable(rtype::utils::Vector<float> position_ = rtype::utils::Vector<float>(0, 0), float scale_ = 1, float rotation_ = 0): position(position_), scale(scale_), rotation(rotation_) {};
         ~Transformable() = default;
 
         Transformable(const Transformable &other) = default;
         Transformable &operator=(const Transformable &other) = default;
 
-        utils::Vector<float> position;
+        rtype::utils::Vector<float> position;
         float scale;
         float rotation;
     };

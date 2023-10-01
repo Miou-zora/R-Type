@@ -9,7 +9,7 @@
 
 #include <string>
 
-namespace component
+namespace rtype::component
 {
     struct Drawable {
         const static std::string NO_TEXTURE;

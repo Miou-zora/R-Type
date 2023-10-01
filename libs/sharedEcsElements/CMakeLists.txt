@@ -9,10 +9,21 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 set(SRC)
-set(INCLUDE)
+
+link_directories(${CMAKE_SOURCE_DIR}/libs/ecs)
+set(INCLUDE
+    "${CMAKE_SOURCE_DIR}/libs/ecs/"
+    "${CMAKE_CURRENT_SOURCE_DIR}/"
+)
 
 add_subdirectory("utils")
 add_subdirectory("components")
+add_subdirectory("systems")
+
+message(STATUS "SRC: ${SRC}")
+message(STATUS "INCLUDE: ${INCLUDE}")
+
+include_directories(${INCLUDE})
 
 add_library(${LIBRARY_NAME} STATIC ${SRC} ${INCLUDE})
 target_link_libraries(${LIBRARY_NAME} PRIVATE raylib)

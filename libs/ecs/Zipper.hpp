@@ -10,7 +10,7 @@
 #include "ZipperIterator.hpp"
 #include <algorithm>
 
-namespace ecs
+namespace rtype::ecs
 {
     namespace containers
     {

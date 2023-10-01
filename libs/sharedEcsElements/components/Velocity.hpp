@@ -9,7 +9,7 @@
 
 #include "Vector.hpp"
 
-namespace component
+namespace rtype::component
 {
     struct Velocity {
 
@@ -21,6 +21,6 @@ namespace component
         Velocity(const Velocity &pos) = default;
         Velocity &operator=(const Velocity &pos) = default;
 
-        utils::Vector<float> vector;
+        rtype::utils::Vector<float> vector;
     };
 };

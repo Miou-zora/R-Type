@@ -11,8 +11,8 @@
 
 TEST(Prefab, init)
 {
-    ecs::Prefab prefab;
-    ecs::Registry registry;
+    rtype::ecs::Prefab prefab;
+    rtype::ecs::Registry registry;
 
     ASSERT_EQ(prefab.instantiate(registry), 0);
 }
@@ -28,24 +28,24 @@ TEST(prefab, casualCase)
         ComponentB(float _value): value(_value) { }
         float value;
     };
-    ecs::Registry reg;
+    rtype::ecs::Registry reg;
 
     reg.registerComponent<ComponentA>();
     reg.registerComponent<ComponentB>();
 
     {
-        ecs::Prefab prefab;
+        rtype::ecs::Prefab prefab;
         prefab.addComponent<ComponentA>(42);
-        ecs::Entity entity = prefab.instantiate(reg);
+        rtype::ecs::Entity entity = prefab.instantiate(reg);
         EXPECT_EQ(reg.getComponents<ComponentA>()[entity].value().value, 42);
         EXPECT_FALSE(reg.hasComponent<ComponentB>(entity));
     }
 
     {
-        ecs::Prefab prefab;
+        rtype::ecs::Prefab prefab;
         prefab.addComponent<ComponentA>(42);
         prefab.addComponent<ComponentB>(42.42f);
-        ecs::Entity entity = prefab.instantiate(reg);
+        rtype::ecs::Entity entity = prefab.instantiate(reg);
         EXPECT_TRUE(reg.hasComponent<ComponentA>(entity));
         EXPECT_EQ(reg.getComponents<ComponentA>()[entity].value().value, 42);
         EXPECT_TRUE(reg.hasComponent<ComponentB>(entity));
@@ -53,12 +53,12 @@ TEST(prefab, casualCase)
     }
 
     {
-        ecs::Prefab prefab;
+        rtype::ecs::Prefab prefab;
         prefab.addComponent<ComponentA>(42);
         prefab.addComponent<ComponentB>(42.42f);
         prefab.addComponent<ComponentA>(41);
         prefab.addComponent<ComponentB>(41.41f);
-        ecs::Entity entity = prefab.instantiate(reg);
+        rtype::ecs::Entity entity = prefab.instantiate(reg);
         EXPECT_TRUE(reg.hasComponent<ComponentA>(entity));
         EXPECT_EQ(reg.getComponents<ComponentA>()[entity].value().value, 41);
         EXPECT_TRUE(reg.hasComponent<ComponentB>(entity));
