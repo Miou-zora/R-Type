@@ -12,11 +12,27 @@ cmrc_add_resource_library(
 
     ALIAS assets::rc
     NAMESPACE assets
-
+    assets/textures/ship.png
 )
 
+set(SRC)
+
+set(INCLUDE
+    "${CMAKE_SOURCE_DIR}/libs/ecs/"
+    "${CMAKE_SOURCE_DIR}/libs/sharedEcsElements/components/"
+    "${CMAKE_SOURCE_DIR}/libs/sharedEcsElements/systems/"
+    "${CMAKE_SOURCE_DIR}/libs/sharedEcsElements/utils/"
+)
+
+add_subdirectory("components")
+add_subdirectory("systems")
+add_subdirectory("utils")
+
+include_directories(${INCLUDE})
+
 add_executable(${EXECUTABLE_NAME}
-        src/main.cpp
+        main.cpp
+        ${SRC}
 )
 
 target_link_libraries(${EXECUTABLE_NAME} PRIVATE Boost::boost Boost::system Boost::thread Boost::filesystem)

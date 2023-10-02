@@ -18,5 +18,4 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}")
 
 add_subdirectory(server)
 add_subdirectory(client)
-add_subdirectory(libs)
 add_subdirectory(tests)

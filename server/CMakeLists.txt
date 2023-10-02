@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(EXECUTABLE_NAME "r-type_server")
 
 add_executable(${EXECUTABLE_NAME}
-        src/main.cpp
+        main.cpp
 )
 
 target_link_libraries(${EXECUTABLE_NAME} PRIVATE Boost::boost Boost::system Boost::thread Boost::filesystem)
