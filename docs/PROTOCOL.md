@@ -80,6 +80,7 @@ This section describes the messages sent by the client to the server.
 | 0x0002 | `network::message::client::ChooseRoom` | `u_int16_t room_id;` | Used to choose a room |
 | 0x0003 | `network::message::client::ChooseLevel` | `u_int16_t level_id;` | Used to choose a level |
 | 0x0004 | `network::message::client::StartGame` | ` ` | Used to start the game if not already started |
+| 0x0005 | `network::message::client::CreateRoom` | ` ` | Used to create a room |
 | 0x0010 | `network::message::client::PlayerMovement` | `int32_t x_velocity;` <br> `int32_t y_velocity;` <br> `bool keys_pressed[4]` | Used to move the player. The keys_pressed are : <br> `up (w, z, etc..) = 0` <br> `down (s, etc..) = 1` <br> `left (a, q, etc..) = 2` <br> `right (d) = 3` |
 | 0x0011 | `network::message::client::PlayerShoot` | ` ` | Used to shoot a bullet. |
 | 0x0012 | `network::message::client::PlayerReload` | ` ` | Used to reload a weapon. |
@@ -120,7 +121,7 @@ sequenceDiagram
     participant S as Server
     C->>S: Connect
     S->>C: ConnectAck <id>
-    C->>S: ChooseRoom <room_id>
+    C->>S: ChooseRoom <room_id> or CreateRoom
     S->>C: RoomInformation <room_id>
     C->>S: ChooseLevel <level_id>
     S->>C: LevelInformation <level_id>
