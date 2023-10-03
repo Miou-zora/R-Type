@@ -9,5 +9,10 @@
 
 namespace rtype::tag
 {
-    struct Ally {};
+    struct Ally {
+        Ally() = default;
+        ~Ally() = default;
+        Ally(const Ally &) = default;
+        Ally &operator=(const Ally &) = default;
+    };
 }
