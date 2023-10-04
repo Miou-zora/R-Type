@@ -9,6 +9,8 @@ if (WIN32)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 endif()
 
+set(Boost_NO_WARN_NEW_VERSIONS 1)
+
 find_package(Boost 1.82.0 REQUIRED COMPONENTS system thread filesystem)
 find_package(GTest CONFIG REQUIRED)
 find_package(raylib CONFIG REQUIRED)
