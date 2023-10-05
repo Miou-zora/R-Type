@@ -15,13 +15,23 @@ TEST(Control, init)
     rtype::system::Control control;
 }
 
+class TestDeltaTimeProvider: public rtype::ecs::IDeltaTimeProvider
+{
+public:
+    TestDeltaTimeProvider(float dt): m_deltaTime(dt) {};
+    ~TestDeltaTimeProvider() = default;
+
+    float getDeltaTime(void) override
+    {
+        return m_deltaTime;
+    }
+    float m_deltaTime = 0.1;
+};
+
 TEST(Control, operatorParenthesisStatic)
 {
-    rtype::ecs::Registry registry;
+    rtype::ecs::Registry registry(std::make_unique<TestDeltaTimeProvider>(1.2));
     rtype::system::Control control;
-    registry.runSystems();
-    std::this_thread::sleep_for(std::chrono::milliseconds(1200));
-    registry.runSystems();
     rtype::ecs::SparseArray<rtype::component::Controllable> controllables;
     rtype::ecs::SparseArray<rtype::component::Velocity> velocities;
 
@@ -32,6 +42,7 @@ TEST(Control, operatorParenthesisStatic)
         []() { return false; }
     ));
     velocities.insertAt(0, rtype::component::Velocity());
+    registry.runSystems();
 
     control(registry, controllables, velocities);
 
@@ -41,11 +52,8 @@ TEST(Control, operatorParenthesisStatic)
 
 TEST(Control, operatorParenthesisMovement)
 {
-    rtype::ecs::Registry registry;
+    rtype::ecs::Registry registry(std::make_unique<TestDeltaTimeProvider>(1.2));
     rtype::system::Control control;
-    registry.runSystems();
-    std::this_thread::sleep_for(std::chrono::milliseconds(1200));
-    registry.runSystems();
     rtype::ecs::SparseArray<rtype::component::Controllable> controllables;
     rtype::ecs::SparseArray<rtype::component::Velocity> velocities;
 
@@ -56,6 +64,7 @@ TEST(Control, operatorParenthesisMovement)
         []() { return false; }
     ));
     velocities.insertAt(0, rtype::component::Velocity());
+    registry.runSystems();
 
     control(registry, controllables, velocities);
 

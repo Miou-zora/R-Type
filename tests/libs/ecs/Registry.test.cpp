@@ -25,6 +25,7 @@ TEST(Registry, entity)
 
     // Test entity deletion
     registry.killEntity(entity);
+    registry.runSystems();
 
     // Test entity reusing
     ASSERT_EQ(registry.spawnEntity(), 2);

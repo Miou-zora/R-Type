@@ -15,6 +15,7 @@
 #include <functional>
 #include <typeindex>
 #include <unordered_map>
+#include "RealDeltaTimeProvider.hpp"
 
 namespace rtype::ecs
 {
@@ -66,8 +67,10 @@ namespace rtype::ecs
     public:
         /**
          * @brief Construct a new Registry object.
+         *
+         * @param deltaTimeProvider The delta time provider to use.
          */
-        Registry() : m_id(0) {}
+        Registry(std::shared_ptr<IDeltaTimeProvider> deltaTimeProvider = std::make_shared<RealDeltaTimeProvider>()) : m_id(0), m_deltaTime(0), m_deltaTimeProvider(deltaTimeProvider) {};
 
         /**
          * @brief Destroy the Registry object.
@@ -168,11 +171,7 @@ namespace rtype::ecs
          */
         void killEntity(Entity const &e)
         {
-            for (auto &component : m_components)
-            {
-                component.second.destructor(*this, e);
-            }
-            m_deadEntities.push_back(e);
+            m_entitiesToKill.push_back(e);
         }
 
         /**
@@ -253,7 +252,7 @@ namespace rtype::ecs
         void addSystem(Function &&f)
         {
             m_systems.push_back([f](Registry &reg)
-                               { f(reg, reg.getComponents<Components>()...); });
+                                { f(reg, reg.getComponents<Components>()...); });
         }
 
         /**
@@ -270,7 +269,7 @@ namespace rtype::ecs
         void addSystem(Function const &f)
         {
             m_systems.push_back([f](Registry &reg)
-                               { f(reg, reg.getComponents<Components>()...); });
+                                { f(reg, reg.getComponents<Components>()...); });
         }
 
         /**
@@ -278,36 +277,56 @@ namespace rtype::ecs
          */
         void runSystems()
         {
-            updateDeltaTime();
+            _updateDeltaTime();
             for (auto &system : m_systems)
             {
                 system(*this);
             }
+            _killEntityPostUpdate();
         }
 
         /**
          * @brief Get the delta time between the last update of the delta time.
-        */
+         */
         float getDeltaTime() const
         {
             return (m_deltaTime);
         }
-    private:
-        void updateDeltaTime()
+
+        /**
+         * @brief Set the delta time provider.
+        */
+        void setDeltaTimeProvider(std::shared_ptr<IDeltaTimeProvider> deltaTimeProvider)
         {
-            static std::chrono::time_point<std::chrono::system_clock> last = std::chrono::system_clock::now();
-            std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
-            std::chrono::duration<float> elapsedSeconds = now - last;
-            m_deltaTime = elapsedSeconds.count();
-            last = now;
+            m_deltaTimeProvider = deltaTimeProvider;
+        }
+
+    private:
+        void _updateDeltaTime()
+        {
+            m_deltaTime = m_deltaTimeProvider->getDeltaTime();
+        }
+
+        void _killEntityPostUpdate(void)
+        {
+            for (auto &entity : m_entitiesToKill)
+            {
+                for (auto &component : m_components)
+                {
+                    component.second.destructor(*this, entity);
+                }
+                m_deadEntities.push_back(entity);
+            }
         }
 
     private:
         std::unordered_map<std::type_index, component_t> m_components;
         std::vector<std::function<void(Registry &)>> m_systems;
         std::vector<Entity> m_deadEntities;
+        std::vector<Entity> m_entitiesToKill;
         size_t m_id;
         float m_deltaTime;
+        std::shared_ptr<IDeltaTimeProvider> m_deltaTimeProvider;
     };
 
 }
