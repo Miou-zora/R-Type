@@ -7,31 +7,28 @@
 
 #pragma once
 
-#include "ECS.hpp"
 #include "Controllable.hpp"
-#include "Velocity.hpp"
+#include "ECS.hpp"
 #include "Vector.hpp"
+#include "Velocity.hpp"
 
-namespace rtype::system
-{
-    class Control
+namespace rtype::system {
+class Control {
+public:
+    Control() = default;
+    ~Control() = default;
+
+    void operator()(ecs::Registry& registry,
+        ecs::SparseArray<rtype::component::Controllable> const& controllables,
+        ecs::SparseArray<rtype::component::Velocity>& velocities) const
     {
-    public:
-        Control() = default;
-        ~Control() = default;
-
-        void operator()(ecs::Registry &registry,
-            ecs::SparseArray<rtype::component::Controllable> const &controllables,
-            ecs::SparseArray<rtype::component::Velocity> &velocities) const
-        {
-            for (auto &&[controllable, velocity] : ecs::containers::Zipper(controllables, velocities))
-            {
-                rtype::utils::Vector<float> direction((controllable.value().is_key_right_pressed() - controllable.value().is_key_left_pressed()), (controllable.value().is_key_down_pressed() - controllable.value().is_key_up_pressed()));
-                if (direction.getLength() != 0)
-                    velocity.value().vector = direction.normalized() * registry.getDeltaTime();
-                else
-                    velocity.value().vector = rtype::utils::Vector<float>(0, 0);
-            }
+        for (auto&& [controllable, velocity] : ecs::containers::Zipper(controllables, velocities)) {
+            rtype::utils::Vector<float> direction((controllable.value().is_key_right_pressed() - controllable.value().is_key_left_pressed()), (controllable.value().is_key_down_pressed() - controllable.value().is_key_up_pressed()));
+            if (direction.getLength() != 0)
+                velocity.value().vector = direction.normalized() * registry.getDeltaTime();
+            else
+                velocity.value().vector = rtype::utils::Vector<float>(0, 0);
         }
-    };
+    }
+};
 }

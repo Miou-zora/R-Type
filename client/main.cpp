@@ -7,31 +7,30 @@
 
 #include <iostream>
 namespace raylib {
-    #include <raylib.h>
+#include <raylib.h>
 }
+#include "AssetsManager.hpp"
+#include "Control.hpp"
+#include "Controllable.hpp"
+#include "Draw.hpp"
+#include "Drawable.hpp"
+#include "ECS.hpp"
+#include "VelocityApplicator.hpp"
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
-#include <string>
 #include <ctime>
-#include "ECS.hpp"
-#include "Drawable.hpp"
-#include "Draw.hpp"
-#include "Controllable.hpp"
-#include "Control.hpp"
-#include "AssetsManager.hpp"
-#include "VelocityApplicator.hpp"
+#include <string>
 
-int main(int ac, char *av[])
+int main(int ac, char* av[])
 {
     raylib::InitWindow(800, 600, "Rtype");
     rtype::ecs::Registry reg;
     rtype::ecs::Entity player = reg.spawnEntity();
     rtype::component::Controllable shipControls(
-        std::function<bool()>([]() {return raylib::IsKeyDown(raylib::KEY_Z);}),
-        std::function<bool()>([]() {return raylib::IsKeyDown(raylib::KEY_S);}),
-        std::function<bool()>([]() {return raylib::IsKeyDown(raylib::KEY_Q);}),
-        std::function<bool()>([]() {return raylib::IsKeyDown(raylib::KEY_D);})
-    );
+        std::function<bool()>([]() { return raylib::IsKeyDown(raylib::KEY_Z); }),
+        std::function<bool()>([]() { return raylib::IsKeyDown(raylib::KEY_S); }),
+        std::function<bool()>([]() { return raylib::IsKeyDown(raylib::KEY_Q); }),
+        std::function<bool()>([]() { return raylib::IsKeyDown(raylib::KEY_D); }));
     rtype::component::Drawable playerDrawable;
     reg.addSystem<rtype::component::Controllable, rtype::component::Velocity>(rtype::system::Control());
     reg.addSystem<rtype::component::Transform, rtype::component::Velocity>(rtype::system::VelocityApplicator());
@@ -40,7 +39,7 @@ int main(int ac, char *av[])
     reg.registerComponent<rtype::component::Transform>();
     reg.registerComponent<rtype::component::Velocity>();
     reg.registerComponent<rtype::component::Drawable>();
-    rtype::utils::AssetsManager &assetsManager = rtype::utils::AssetsManager::getInstance();
+    rtype::utils::AssetsManager& assetsManager = rtype::utils::AssetsManager::getInstance();
     assetsManager.loadTexture("ship", "assets/textures/ship.png");
     playerDrawable = rtype::component::Drawable("ship");
     reg.addComponent<rtype::component::Controllable>(player, std::move(shipControls));

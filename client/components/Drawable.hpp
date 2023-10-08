@@ -9,19 +9,21 @@
 
 #include <string>
 
-namespace rtype::component
-{
-    struct Drawable {
-        const static std::string NO_TEXTURE;
-        Drawable(const std::string &textureName_ = NO_TEXTURE, float scale_ = 1)
-            : textureName(textureName_), scale(scale_) {}
-        ~Drawable() = default;
+namespace rtype::component {
+struct Drawable {
+    const static std::string NO_TEXTURE;
+    Drawable(const std::string& textureName_ = NO_TEXTURE, float scale_ = 1)
+        : textureName(textureName_)
+        , scale(scale_)
+    {
+    }
+    ~Drawable() = default;
 
-        Drawable(const Drawable &other) = default;
-        Drawable &operator=(const Drawable &other) = default;
+    Drawable(const Drawable& other) = default;
+    Drawable& operator=(const Drawable& other) = default;
 
-        std::string textureName;
-        float scale;
-    };
-    const std::string Drawable::NO_TEXTURE = "NO TEXTURE";
+    std::string textureName;
+    float scale;
+};
+const std::string Drawable::NO_TEXTURE = "NO TEXTURE";
 }
