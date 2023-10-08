@@ -20,7 +20,6 @@ namespace rtype::component
         {
             std::string entityName;
             float spawnDelay;
-            float timer = 0;
         };
 
     public:
