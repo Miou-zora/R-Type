@@ -45,40 +45,6 @@ namespace rtype::network {
         };
         #pragma pack(pop)
 
-        // comparator for priority queue _Compare
-        struct NetworkMessageHeaderCompare {
-            bool operator()(const NetworkMessageHeader &lhs, const NetworkMessageHeader &rhs) const
-            {
-                return (lhs.id > rhs.id);
-            }
-
-            bool operator()(const NetworkMessageHeader &lhs, const char *rhs) const
-            {
-                const NetworkMessageHeader *header = reinterpret_cast<const NetworkMessageHeader *>(rhs);
-                return (this->operator()(lhs, *header));
-            }
-
-            bool operator()(const char *lhs, const NetworkMessageHeader &rhs) const
-            {
-                const NetworkMessageHeader *header = reinterpret_cast<const NetworkMessageHeader *>(lhs);
-                return (this->operator()(*header, rhs));
-            }
-
-            bool operator()(const char *lhs, const char *rhs) const
-            {
-                const NetworkMessageHeader *header_lhs = reinterpret_cast<const NetworkMessageHeader *>(lhs);
-                const NetworkMessageHeader *header_rhs = reinterpret_cast<const NetworkMessageHeader *>(rhs);
-                return (this->operator()(*header_lhs, *header_rhs));
-            }
-
-            bool operator()(const boost::array<char, MAX_PACKET_SIZE> &lhs, const boost::array<char, MAX_PACKET_SIZE> &rhs) const
-            {
-                const NetworkMessageHeader *header_lhs = reinterpret_cast<const NetworkMessageHeader *>(lhs.data());
-                const NetworkMessageHeader *header_rhs = reinterpret_cast<const NetworkMessageHeader *>(rhs.data());
-                return (this->operator()(*header_lhs, *header_rhs));
-            }
-        };
-
         /**
          * @brief Create a new event object
          * @tparam T Type of the event to create
@@ -102,7 +68,7 @@ namespace rtype::network {
          * @param buffer The raw byte buffer
          * @return true The header magic is correct
         */
-        bool checkHeaderMagic(char *buffer)
+        inline bool checkHeaderMagic(const char *buffer)
         {
             return std::memcmp(buffer, HEADER_MAGIC, sizeof(HEADER_MAGIC)) == 0;
         }
@@ -112,7 +78,7 @@ namespace rtype::network {
          * @param buffer The raw byte buffer
          * @return true The footer magic is correct
         */
-        bool checkFooterMagic(char *buffer)
+        inline bool checkFooterMagic(const char *buffer)
         {
             return std::memcmp(buffer, FOOTER_MAGIC, sizeof(FOOTER_MAGIC)) == 0;
         }
@@ -167,6 +133,56 @@ namespace rtype::network {
         T unpack(boost::array<char, MAX_PACKET_SIZE> &buffer)
         {
             return (*reinterpret_cast<T *>(buffer.data()));
+        }
+
+        /**
+         * @brief Check whole message integrity
+         * @param array The boost array
+         * @param size The size of the message
+         * @return true The message is correct
+        */
+        inline bool checkMessageIntegrity(const char *data, std::size_t size, const std::size_t lookup[][2])
+        {
+            if (size < sizeof(NetworkMessageHeader) + sizeof(NetworkMessageFooter))
+                return false;
+            auto *header = reinterpret_cast<const NetworkMessageHeader *>(data);
+            auto *footer = reinterpret_cast<const NetworkMessageFooter *>(data + size - sizeof(NetworkMessageFooter));
+            if (checkHeaderMagic(header->magic) == false)
+                return false;
+            if (checkFooterMagic(footer->magic) == false)
+                return false;
+            for (std::size_t i = 0; lookup[i][0] != 0xFFFF; i++) {
+                if (lookup[i][0] == header->type && lookup[i][1] != size)
+                    return false;
+            }
+            return true;
+        }
+
+        /**
+         * @brief Check whole message integrity
+         * @param array The boost array
+         * @param size The size of the message
+         * @return true The message is correct
+        */
+        inline bool checkMessageIntegrity(const boost::array<char, MAX_PACKET_SIZE> &array, std::size_t size, const std::size_t lookup[][2])
+        {
+            return checkMessageIntegrity(array.data(), size, lookup);
+        }
+
+        inline size_t getMessageSize(const char *data, const std::size_t lookup[][2])
+        {
+            auto *header = reinterpret_cast<const NetworkMessageHeader *>(data);
+
+            for (std::size_t i = 0; lookup[i][0] != 0xFFFF; i++) {
+                if (static_cast<u_int16_t>(lookup[i][0]) == header->type)
+                    return lookup[i][1];
+            }
+            throw std::runtime_error("Unknown message type");
+        }
+
+        inline size_t getMessageSize(const boost::array<char, MAX_PACKET_SIZE> &array, const std::size_t lookup[][2])
+        {
+            return getMessageSize(array.data(), lookup);
         }
 
         namespace client {
@@ -278,6 +294,41 @@ namespace rtype::network {
                 NetworkMessageFooter footer;
             };
             #pragma pack(pop)
+
+            static constexpr std::size_t g_sizeLookup[][2] = {
+                {Connect::type, sizeof(Connect)},
+                {Disconnect::type, sizeof(Disconnect)},
+                {ChooseRoom::type, sizeof(ChooseRoom)},
+                {ChooseLevel::type, sizeof(ChooseLevel)},
+                {StartGame::type, sizeof(StartGame)},
+                {CreateRoom::type, sizeof(CreateRoom)},
+                {PlayerMovement::type, sizeof(PlayerMovement)},
+                {PlayerShoot::type, sizeof(PlayerShoot)},
+                {PlayerReload::type, sizeof(PlayerReload)},
+                {PlayerSwitchWeapon::type, sizeof(PlayerSwitchWeapon)},
+                {Ack::type, sizeof(Ack)},
+                {0xFFFF, 0}
+            };
+
+            inline bool checkMessageIntegrity(const char *data, std::size_t size)
+            {
+                return rtype::network::message::checkMessageIntegrity(data, size, g_sizeLookup);
+            }
+
+            inline bool checkMessageIntegrity(const boost::array<char, MAX_PACKET_SIZE> &array, std::size_t size)
+            {
+                return rtype::network::message::checkMessageIntegrity(array, size, g_sizeLookup);
+            }
+
+            inline size_t getMessageSize(const char *data)
+            {
+                return rtype::network::message::getMessageSize(data, g_sizeLookup);
+            }
+
+            inline size_t getMessageSize(const boost::array<char, MAX_PACKET_SIZE> &array)
+            {
+                return rtype::network::message::getMessageSize(array, g_sizeLookup);
+            }
         }
 
         namespace server {
@@ -483,6 +534,46 @@ namespace rtype::network {
                 NetworkMessageFooter footer;
             };
             #pragma pack(pop)
+
+            static constexpr std::size_t g_sizeLookup[][2] = {
+                {ConnectAck::type, sizeof(ConnectAck)},
+                {RoomInformation::type, sizeof(RoomInformation)},
+                {LevelInformation::type, sizeof(LevelInformation)},
+                {GameStarted::type, sizeof(GameStarted)},
+                {GameEnded::type, sizeof(GameEnded)},
+                {PlayerSpawn::type, sizeof(PlayerSpawn)},
+                {PlayerDeath::type, sizeof(PlayerDeath)},
+                {PlayerMovement::type, sizeof(PlayerMovement)},
+                {PlayerWeaponSwitch::type, sizeof(PlayerWeaponSwitch)},
+                {EnemySpawn::type, sizeof(EnemySpawn)},
+                {EnemyDeath::type, sizeof(EnemyDeath)},
+                {EnemyMovement::type, sizeof(EnemyMovement)},
+                {BulletShoot::type, sizeof(BulletShoot)},
+                {BulletPosition::type, sizeof(BulletPosition)},
+                {BulletHit::type, sizeof(BulletHit)},
+                {BulletDespawn::type, sizeof(BulletDespawn)},
+                {0xFFFF, 0}
+            };
+
+            inline bool checkMessageIntegrity(const char *data, std::size_t size)
+            {
+                return rtype::network::message::checkMessageIntegrity(data, size, g_sizeLookup);
+            }
+
+            inline bool checkMessageIntegrity(const boost::array<char, MAX_PACKET_SIZE> &array, std::size_t size)
+            {
+                return rtype::network::message::checkMessageIntegrity(array, size, g_sizeLookup);
+            }
+
+            inline size_t getMessageSize(const char *data)
+            {
+                return rtype::network::message::getMessageSize(data, g_sizeLookup);
+            }
+
+            inline size_t getMessageSize(const boost::array<char, MAX_PACKET_SIZE> &array)
+            {
+                return rtype::network::message::getMessageSize(array, g_sizeLookup);
+            }
         }
     }
 }
