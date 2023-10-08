@@ -17,11 +17,11 @@ TEST(Logging, init)
 TEST(Logging, casual)
 {
     rtype::ecs::Registry registry;
-    rtype::ecs::SparseArray<rtype::component::Transformable> transformables;
+    rtype::ecs::SparseArray<rtype::component::Transform> transformables;
     rtype::system::Logging logging;
 
-    transformables.insertAt(0, rtype::component::Transformable(rtype::utils::Vector<float>(1, 2), 3, 4));
-    transformables.insertAt(1, rtype::component::Transformable(rtype::utils::Vector<float>(5, 6), 7, 8));
+    transformables.insertAt(0, rtype::component::Transform(rtype::utils::Vector<float>(1, 2), 3, 4));
+    transformables.insertAt(1, rtype::component::Transform(rtype::utils::Vector<float>(5, 6), 7, 8));
 
     testing::internal::CaptureStdout();
 

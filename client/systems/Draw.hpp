@@ -10,7 +10,7 @@
 #include "ECS.hpp"
 #include "Drawable.hpp"
 #include "AssetsManager.hpp"
-#include "Transformable.hpp"
+#include "Transform.hpp"
 
 namespace raylib {
     #include <raylib.h>
@@ -25,7 +25,7 @@ namespace rtype::system
         ~Draw() = default;
 
         void operator()(ecs::Registry &registry,
-                        ecs::SparseArray<rtype::component::Transformable> &transformables,
+                        ecs::SparseArray<rtype::component::Transform> &transformables,
                         ecs::SparseArray<rtype::component::Drawable> &drawables) const
         {
             (void)registry;

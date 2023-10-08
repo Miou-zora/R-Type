@@ -18,10 +18,10 @@ TEST(VelocityApplicator, apply)
 {
     rtype::system::VelocityApplicator velocityApplicator;
     rtype::ecs::Registry registry;
-    rtype::ecs::SparseArray<rtype::component::Transformable> transformables;
+    rtype::ecs::SparseArray<rtype::component::Transform> transformables;
     rtype::ecs::SparseArray<rtype::component::Velocity> velocities;
 
-    transformables.insertAt(0, rtype::component::Transformable());
+    transformables.insertAt(0, rtype::component::Transform());
     ASSERT_EQ(transformables[0].value().position.x, 0);
     ASSERT_EQ(transformables[0].value().position.y, 0);
     velocities.insertAt(0, rtype::component::Velocity(rtype::utils::Vector<float>(1, 1)));

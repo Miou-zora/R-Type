@@ -34,10 +34,10 @@ int main(int ac, char *av[])
     );
     rtype::component::Drawable playerDrawable;
     reg.addSystem<rtype::component::Controllable, rtype::component::Velocity>(rtype::system::Control());
-    reg.addSystem<rtype::component::Transformable, rtype::component::Velocity>(rtype::system::VelocityApplicator());
-    reg.addSystem<rtype::component::Transformable, rtype::component::Drawable>(rtype::system::Draw());
+    reg.addSystem<rtype::component::Transform, rtype::component::Velocity>(rtype::system::VelocityApplicator());
+    reg.addSystem<rtype::component::Transform, rtype::component::Drawable>(rtype::system::Draw());
     reg.registerComponent<rtype::component::Controllable>();
-    reg.registerComponent<rtype::component::Transformable>();
+    reg.registerComponent<rtype::component::Transform>();
     reg.registerComponent<rtype::component::Velocity>();
     reg.registerComponent<rtype::component::Drawable>();
     rtype::utils::AssetsManager &assetsManager = rtype::utils::AssetsManager::getInstance();
@@ -45,7 +45,7 @@ int main(int ac, char *av[])
     playerDrawable = rtype::component::Drawable("ship");
     reg.addComponent<rtype::component::Controllable>(player, std::move(shipControls));
     reg.addComponent<rtype::component::Drawable>(player, std::move(playerDrawable));
-    reg.emplaceComponent<rtype::component::Transformable>(player);
+    reg.emplaceComponent<rtype::component::Transform>(player);
     reg.emplaceComponent<rtype::component::Velocity>(player);
     while (!raylib::WindowShouldClose()) {
         reg.runSystems();

@@ -8,7 +8,7 @@
 #pragma once
 
 #include "ECS.hpp"
-#include "Transformable.hpp"
+#include "Transform.hpp"
 
 namespace rtype::system
 {
@@ -19,7 +19,7 @@ namespace rtype::system
         ~Logging() = default;
 
         void operator()(ecs::Registry &registry,
-            ecs::SparseArray<rtype::component::Transformable> &transformables)
+            ecs::SparseArray<rtype::component::Transform> &transformables)
         {
             (void)registry;
             for (auto &&[entityIndex, transformable] : rtype::ecs::containers::IndexedZipper(transformables))

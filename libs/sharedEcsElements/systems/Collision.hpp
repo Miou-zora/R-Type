@@ -9,7 +9,7 @@
 
 #include "ECS.hpp"
 #include "Collider.hpp"
-#include "Transformable.hpp"
+#include "Transform.hpp"
 #include "IndexedZipper.hpp"
 
 namespace rtype::system
@@ -28,16 +28,16 @@ namespace rtype::system
          */
         void operator()(ecs::Registry &registry,
                         ecs::SparseArray<rtype::component::Collider> &colliders,
-                        ecs::SparseArray<rtype::component::Transformable> &transformables) const
+                        ecs::SparseArray<rtype::component::Transform> &transformables) const
         {
-            for (auto &&[firstIndex, firstCollider, firstTransformable] : ecs::containers::IndexedZipper(colliders, transformables))
+            for (auto &&[firstIndex, firstCollider, firstTransform] : ecs::containers::IndexedZipper(colliders, transformables))
             {
                 firstCollider.value().collideWith.clear();
-                for (auto &&[secondIndex, secondCollider, secondTransformable] : ecs::containers::IndexedZipper(colliders, transformables))
+                for (auto &&[secondIndex, secondCollider, secondTransform] : ecs::containers::IndexedZipper(colliders, transformables))
                 {
                     if (firstIndex == secondIndex)
                         continue;
-                    if (collideWith(firstCollider.value().size, firstTransformable.value().position, secondCollider.value().size, secondTransformable.value().position))
+                    if (collideWith(firstCollider.value().size, firstTransform.value().position, secondCollider.value().size, secondTransform.value().position))
                     {
                         firstCollider.value().collideWith.push_back(registry.entityFromIndex(secondIndex));
                     }

@@ -8,7 +8,7 @@
 #pragma once
 
 #include "ECS.hpp"
-#include "Transformable.hpp"
+#include "Transform.hpp"
 #include "Velocity.hpp"
 
 namespace rtype::system
@@ -20,7 +20,7 @@ namespace rtype::system
         ~VelocityApplicator() = default;
 
         void operator()(ecs::Registry &registry,
-            ecs::SparseArray<rtype::component::Transformable> &transformables,
+            ecs::SparseArray<rtype::component::Transform> &transformables,
             ecs::SparseArray<rtype::component::Velocity> &velocities) const
         {
             (void)registry;

@@ -9,7 +9,7 @@
 
 #include "ECS.hpp"
 #include "components/Path.hpp"
-#include "Transformable.hpp"
+#include "Transform.hpp"
 #include "Velocity.hpp"
 
 namespace rtype::system
@@ -21,7 +21,7 @@ namespace rtype::system
         ~Path() = default;
 
         void operator()(ecs::Registry &registry,
-                        ecs::SparseArray<rtype::component::Transformable> &transformables,
+                        ecs::SparseArray<rtype::component::Transform> &transformables,
                         ecs::SparseArray<rtype::component::Velocity> &velocities,
                         ecs::SparseArray<rtype::component::Path> &paths) const
         {
@@ -39,7 +39,7 @@ namespace rtype::system
         }
 
     private:
-        void _updatePath(rtype::component::Transformable &transformable, rtype::component::Velocity &velocity, rtype::component::Path &path,
+        void _updatePath(rtype::component::Transform &transformable, rtype::component::Velocity &velocity, rtype::component::Path &path,
                          rtype::component::Path::Point &targetPoint, float lengthToTravel, ecs::Registry &registry, int index, rtype::utils::Vector<float> &vectorToNextPoint) const
         {
             while (lengthToTravel > 0 && !path.listOfPoints.empty())

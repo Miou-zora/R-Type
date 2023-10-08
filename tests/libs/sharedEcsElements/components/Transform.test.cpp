@@ -2,16 +2,16 @@
 ** EPITECH PROJECT, 2023
 ** B-CPP-500-NAN-5-1-rtype-lucas.hauszler [WSL : Ubuntu]
 ** File description:
-** Transformable.test
+** Transform.test
 */
 
-#include "Transformable.hpp"
+#include "Transform.hpp"
 
 #include <gtest/gtest.h>
 
-TEST(Transformable, init)
+TEST(Transform, init)
 {
-    rtype::component::Transformable transformable;
+    rtype::component::Transform transformable;
 
     ASSERT_EQ(transformable.position.x, 0);
     ASSERT_EQ(transformable.position.y, 0);
@@ -19,9 +19,9 @@ TEST(Transformable, init)
     ASSERT_EQ(transformable.rotation, 0);
 }
 
-TEST(Transformable, initWithValues)
+TEST(Transform, initWithValues)
 {
-    rtype::component::Transformable transformable(rtype::utils::Vector<float>(1, 2), 3, 4);
+    rtype::component::Transform transformable(rtype::utils::Vector<float>(1, 2), 3, 4);
 
     ASSERT_EQ(transformable.position.x, 1);
     ASSERT_EQ(transformable.position.y, 2);
@@ -29,10 +29,10 @@ TEST(Transformable, initWithValues)
     ASSERT_EQ(transformable.rotation, 4);
 }
 
-TEST(Transformable, copy)
+TEST(Transform, copy)
 {
-    rtype::component::Transformable transformable(rtype::utils::Vector<float>(1, 2), 3, 4);
-    rtype::component::Transformable transformable2(transformable);
+    rtype::component::Transform transformable(rtype::utils::Vector<float>(1, 2), 3, 4);
+    rtype::component::Transform transformable2(transformable);
 
     ASSERT_EQ(transformable2.position.x, 1);
     ASSERT_EQ(transformable2.position.y, 2);
@@ -40,10 +40,10 @@ TEST(Transformable, copy)
     ASSERT_EQ(transformable2.rotation, 4);
 }
 
-TEST(Transformable, assignation)
+TEST(Transform, assignation)
 {
-    rtype::component::Transformable transformable(rtype::utils::Vector<float>(1, 2), 3, 4);
-    rtype::component::Transformable transformable2;
+    rtype::component::Transform transformable(rtype::utils::Vector<float>(1, 2), 3, 4);
+    rtype::component::Transform transformable2;
 
     transformable2 = transformable;
     ASSERT_EQ(transformable2.position.x, 1);
