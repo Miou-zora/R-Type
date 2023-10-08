@@ -58,30 +58,30 @@ TEST(Shoot, checkTransformOfInstance)
     rtype::ecs::Registry registry;
 
     registry.registerComponent<rtype::component::Shooter>();
-    registry.registerComponent<rtype::component::Transformable>();
+    registry.registerComponent<rtype::component::Transform>();
     registry.addSystem<rtype::component::Shooter>(rtype::system::Shoot());
 
     registry.setDeltaTimeProvider(std::make_shared<TestDeltaTimeProvider>(0.5));
     rtype::utils::PrefabManager::getInstance().createPrefab("projectile")
         .addComponent<rtype::component::Shooter>("", 1, 0)
-        .addComponent<rtype::component::Transformable>(rtype::component::Transformable(rtype::utils::Vector<float>(84, 42)));
+        .addComponent<rtype::component::Transform>(rtype::component::Transform(rtype::utils::Vector<float>(84, 42)));
 
     rtype::ecs::Entity entity = registry.spawnEntity();
     registry.emplaceComponent<rtype::component::Shooter>(entity, "projectile", 1, 0);
-    registry.emplaceComponent<rtype::component::Transformable>(entity, rtype::component::Transformable(rtype::utils::Vector<float>(42, 84)));
+    registry.emplaceComponent<rtype::component::Transform>(entity, rtype::component::Transform(rtype::utils::Vector<float>(42, 84)));
     ASSERT_EQ(registry.getComponents<rtype::component::Shooter>()[entity].value().timer, 0);
     ASSERT_EQ(registry.getComponents<rtype::component::Shooter>()[entity].value().cooldown, 1);
     ASSERT_EQ(registry.getComponents<rtype::component::Shooter>().size(), 1);
-    ASSERT_EQ(registry.getComponents<rtype::component::Transformable>().size(), 1);
+    ASSERT_EQ(registry.getComponents<rtype::component::Transform>().size(), 1);
     registry.runSystems();
     ASSERT_EQ(registry.getComponents<rtype::component::Shooter>()[entity].value().timer, 0.5);
     ASSERT_EQ(registry.getComponents<rtype::component::Shooter>()[entity].value().cooldown, 1);
     ASSERT_EQ(registry.getComponents<rtype::component::Shooter>().size(), 1);
-    ASSERT_EQ(registry.getComponents<rtype::component::Transformable>().size(), 1);
+    ASSERT_EQ(registry.getComponents<rtype::component::Transform>().size(), 1);
     registry.runSystems();
     ASSERT_EQ(registry.getComponents<rtype::component::Shooter>()[entity].value().timer, 0);
     ASSERT_EQ(registry.getComponents<rtype::component::Shooter>()[entity].value().cooldown, 1);
     ASSERT_EQ(registry.getComponents<rtype::component::Shooter>().size(), 2);
-    ASSERT_EQ(registry.getComponents<rtype::component::Transformable>().size(), 2);
-    ASSERT_EQ(registry.getComponents<rtype::component::Transformable>()[entity + 1].value().position, rtype::utils::Vector<float>(84 + 42, 42 + 84));
+    ASSERT_EQ(registry.getComponents<rtype::component::Transform>().size(), 2);
+    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[entity + 1].value().position, rtype::utils::Vector<float>(84 + 42, 42 + 84));
 }

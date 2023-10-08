@@ -10,7 +10,7 @@
 #include "ECS.hpp"
 #include "Shooter.hpp"
 #include "PrefabManager.hpp"
-#include "Transformable.hpp"
+#include "Transform.hpp"
 
 namespace rtype::system
 {
@@ -30,10 +30,10 @@ namespace rtype::system
                 {
                     shooter.value().timer -= shooter.value().cooldown;
                     rtype::ecs::Entity proj = rtype::utils::PrefabManager::getInstance().instantiate(shooter.value().projectileName, registry);
-                    if (registry.hasComponent<rtype::component::Transformable>(registry.entityFromIndex(index)) &&
-                        registry.hasComponent<rtype::component::Transformable>(proj))
+                    if (registry.hasComponent<rtype::component::Transform>(registry.entityFromIndex(index)) &&
+                        registry.hasComponent<rtype::component::Transform>(proj))
                     {
-                        registry.getComponents<rtype::component::Transformable>()[proj].value().position += registry.getComponents<component::Transformable>()[index].value().position;
+                        registry.getComponents<rtype::component::Transform>()[proj].value().position += registry.getComponents<component::Transform>()[index].value().position;
                     }
                 }
             }
