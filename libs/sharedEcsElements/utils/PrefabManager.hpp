@@ -63,7 +63,7 @@ namespace rtype::utils
         std::map<std::string, std::unique_ptr<ecs::Prefab>> m_prefabs;
     };
 
-    std::ostream &operator<<(std::ostream &os, const PrefabManager &manager)
+    inline std::ostream &operator<<(std::ostream &os, const PrefabManager &manager)
     {
         os << "(";
         for (auto &&[name, prefab] : manager.m_prefabs)

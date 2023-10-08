@@ -218,6 +218,8 @@ namespace rtype::ecs
         template <class Component>
         bool hasComponent(Entity const &e) const
         {
+            if (m_components.find(std::type_index(typeid(Component))) == m_components.end())
+                return (false);
             if (getComponents<Component>().size() > e)
                 if (getComponents<Component>()[e].has_value())
                     return (true);
