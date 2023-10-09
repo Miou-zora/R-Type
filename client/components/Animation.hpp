@@ -27,5 +27,6 @@ namespace rtype::component
         float time;
         bool loop;
         bool finished;
+        bool playing;
     };
 }
