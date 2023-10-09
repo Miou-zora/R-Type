@@ -24,6 +24,8 @@
     typedef int16_t int16_t;
     typedef int32_t int32_t;
     typedef int64_t int64_t;
+    typedef float float_t;
+    typedef double double_t;
 #endif
 
 namespace rtype::network {
@@ -252,8 +254,8 @@ namespace rtype::network {
 
                 static const u_int16_t type = 0x0010;
                 NetworkMessageHeader header;
-                u_int16_t x;
-                u_int16_t y;
+                float x;
+                float y;
                 bool keys_pressed[4];
                 NetworkMessageFooter footer;
             };
@@ -394,8 +396,8 @@ namespace rtype::network {
                 static const u_int16_t type = 0x0010;
                 NetworkMessageHeader header;
                 u_int16_t playerId;
-                u_int16_t x;
-                u_int16_t y;
+                float x;
+                float y;
                 NetworkMessageFooter footer;
             };
 
@@ -421,8 +423,8 @@ namespace rtype::network {
                 static const u_int16_t type = 0x0012;
                 NetworkMessageHeader header;
                 u_int16_t playerId;
-                u_int16_t x;
-                u_int16_t y;
+                float x;
+                float y;
                 NetworkMessageFooter footer;
             };
 
@@ -448,8 +450,8 @@ namespace rtype::network {
                 static const u_int16_t type = 0x0020;
                 NetworkMessageHeader header;
                 u_int16_t enemyId;
-                u_int16_t x;
-                u_int16_t y;
+                float x;
+                float y;
                 NetworkMessageFooter footer;
             };
 
@@ -474,8 +476,8 @@ namespace rtype::network {
                 static const u_int16_t type = 0x0022;
                 NetworkMessageHeader header;
                 u_int16_t enemyId;
-                u_int16_t x;
-                u_int16_t y;
+                float x;
+                float y;
                 NetworkMessageFooter footer;
             };
 
@@ -488,10 +490,10 @@ namespace rtype::network {
                 static const u_int16_t type = 0x0030;
                 NetworkMessageHeader header;
                 u_int16_t playerId;
-                int32_t x;
-                int32_t y;
-                int32_t xVelocity;
-                int32_t yVelocity;
+                float x;
+                float y;
+                float xVelocity;
+                float yVelocity;
                 NetworkMessageFooter footer;
             };
 
@@ -504,8 +506,8 @@ namespace rtype::network {
                 static const u_int16_t type = 0x0031;
                 NetworkMessageHeader header;
                 u_int16_t bulletId;
-                int32_t x;
-                int32_t y;
+                float x;
+                float y;
                 NetworkMessageFooter footer;
             };
 
