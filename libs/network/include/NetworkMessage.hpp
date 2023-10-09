@@ -15,18 +15,18 @@
 
 #include <boost/array.hpp>
 
-namespace rtype::network {
-    #ifdef _WIN32
-        typedef uint8_t u_int8_t;
-        typedef uint16_t u_int16_t;
-        typedef uint32_t u_int32_t;
-        typedef uint64_t u_int64_t;
-        typedef int8_t int8_t;
-        typedef int16_t int16_t;
-        typedef int32_t int32_t;
-        typedef int64_t int64_t;
-    #endif
+#ifdef _WIN32
+    typedef uint8_t u_int8_t;
+    typedef uint16_t u_int16_t;
+    typedef uint32_t u_int32_t;
+    typedef uint64_t u_int64_t;
+    typedef int8_t int8_t;
+    typedef int16_t int16_t;
+    typedef int32_t int32_t;
+    typedef int64_t int64_t;
+#endif
 
+namespace rtype::network {
     namespace message {
         static const u_int32_t MAX_PACKET_SIZE = 512;
         static const char HEADER_MAGIC[2] = {'R', 'T'};

@@ -5,8 +5,26 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(EXECUTABLE_NAME "r-type_server")
 
+set(SRC)
+
+set(INCLUDE
+    "${CMAKE_SOURCE_DIR}/libs/ecs/"
+    "${CMAKE_SOURCE_DIR}/libs/network/"
+    "${CMAKE_SOURCE_DIR}/libs/network/include"
+    "${CMAKE_SOURCE_DIR}/libs/sharedEcsElements/components/"
+    "${CMAKE_SOURCE_DIR}/libs/sharedEcsElements/systems/"
+    "${CMAKE_SOURCE_DIR}/libs/sharedEcsElements/utils/"
+)
+
+add_subdirectory("components")
+add_subdirectory("systems")
+
+
+include_directories(${INCLUDE})
+
 add_executable(${EXECUTABLE_NAME}
         main.cpp
+        ${SRC}
 )
 
 target_link_libraries(${EXECUTABLE_NAME} PRIVATE Boost::boost Boost::system Boost::thread Boost::filesystem)
