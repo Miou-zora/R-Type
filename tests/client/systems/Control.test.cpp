@@ -69,5 +69,31 @@ TEST(Control, operatorParenthesisMovement)
     control(registry, controllables, velocities);
 
     ASSERT_EQ(static_cast<int>(velocities[0].value().vector.x), 0);
-    ASSERT_EQ(static_cast<int>(velocities[0].value().vector.y), -1);
+    ASSERT_EQ(static_cast<int>(velocities[0].value().vector.y), -120);
 }
+
+TEST(Control, changeWithNewSpeed)
+{
+    rtype::ecs::Registry registry(std::make_unique<TestDeltaTimeProvider>(1));
+    rtype::ecs::Entity player = registry.spawnEntity();
+
+    rtype::component::Controllable shipControls(
+        std::function<bool()>([]() { return true; }),
+        std::function<bool()>([]() { return false; }),
+        std::function<bool()>([]() { return false; }),
+        std::function<bool()>([]() { return false; }));
+    registry.addSystem<rtype::component::Controllable, rtype::component::Velocity>(rtype::system::Control());
+    registry.registerComponent<rtype::component::Controllable>();
+    registry.registerComponent<rtype::component::Velocity>();
+    registry.registerComponent<rtype::component::Speed>();
+
+    registry.addComponent<rtype::component::Controllable>(player, std::move(shipControls));
+    registry.emplaceComponent<rtype::component::Velocity>(player);
+    registry.emplaceComponent<rtype::component::Speed>(player, 200);
+
+    registry.runSystems();
+
+    ASSERT_EQ(static_cast<int>(registry.getComponents<rtype::component::Velocity>()[player].value().vector.x), 0);
+    ASSERT_EQ(static_cast<int>(registry.getComponents<rtype::component::Velocity>()[player].value().vector.y), -200);
+}
+
