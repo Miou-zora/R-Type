@@ -31,10 +31,10 @@ public:
         raylib::ClearBackground(raylib::BLACK);
         for (auto&& [transformable, drawable] : rtype::ecs::containers::Zipper(transformables, drawables)) {
             const raylib::Texture2D& texture = rtype::utils::AssetsManager::getInstance().getTexture(drawable.value().textureName);
-            const raylib::Rectangle& sourceRec = raylib::Rectangle { 0, 0, (float)texture.width, (float)texture.height };
+            const raylib::Rectangle& sourceRec = drawable->sourceRectangle.rectangle;
             const raylib::Rectangle& destRec = raylib::Rectangle { transformable.value().position.x, transformable.value().position.y,
-                (float)texture.width * transformable.value().scale * drawable.value().scale,
-                (float)texture.height * transformable.value().scale * drawable.value().scale };
+                (float)drawable->sourceRectangle.rectangle.width * transformable.value().scale * drawable.value().scale,
+                (float)drawable->sourceRectangle.rectangle.height * transformable.value().scale * drawable.value().scale };
             raylib::DrawTexturePro(texture, sourceRec, destRec, raylib::Vector2 { 0, 0 }, transformable.value().rotation, raylib::WHITE);
         }
         raylib::EndDrawing();

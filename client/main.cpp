@@ -41,7 +41,8 @@ int main(int ac, char* av[])
     reg.registerComponent<rtype::component::Drawable>();
     rtype::utils::AssetsManager& assetsManager = rtype::utils::AssetsManager::getInstance();
     assetsManager.loadTexture("ship", "assets/textures/ship.png");
-    playerDrawable = rtype::component::Drawable("ship");
+    rtype::utils::Rectangle shipRectangle(0, 0, assetsManager.getTexture("ship").width, assetsManager.getTexture("ship").height);
+    playerDrawable = rtype::component::Drawable("ship", 1, shipRectangle);
     reg.addComponent<rtype::component::Controllable>(player, std::move(shipControls));
     reg.addComponent<rtype::component::Drawable>(player, std::move(playerDrawable));
     reg.emplaceComponent<rtype::component::Transform>(player);

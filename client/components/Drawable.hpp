@@ -8,13 +8,15 @@
 #pragma once
 
 #include <string>
+#include "Rectangle.hpp"
 
 namespace rtype::component {
 struct Drawable {
     const static std::string NO_TEXTURE;
-    Drawable(const std::string& textureName_ = NO_TEXTURE, float scale_ = 1)
+    Drawable(const std::string& textureName_ = NO_TEXTURE, float scale_ = 1, const rtype::utils::Rectangle& sourceRectangle_ = rtype::utils::Rectangle())
         : textureName(textureName_)
         , scale(scale_)
+        , sourceRectangle(sourceRectangle_)
     {
     }
     ~Drawable() = default;
@@ -24,6 +26,7 @@ struct Drawable {
 
     std::string textureName;
     float scale;
+    rtype::utils::Rectangle sourceRectangle;
 };
 const std::string Drawable::NO_TEXTURE = "NO TEXTURE";
 }
