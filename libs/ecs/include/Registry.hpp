@@ -319,6 +319,7 @@ namespace rtype::ecs
                 }
                 m_deadEntities.push_back(entity);
             }
+            m_entitiesToKill.clear();
         }
 
     private:

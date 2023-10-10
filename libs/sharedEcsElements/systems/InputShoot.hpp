@@ -31,7 +31,7 @@ namespace rtype::system
                 shooter.value().update(registry.getDeltaTime());
                 if (shooter.value().canShoot())
                 {
-                    shooter.value().timer -= shooter.value().cooldown;
+                    shooter.value().timer = 0;
                     rtype::ecs::Entity proj = rtype::utils::PrefabManager::getInstance().instantiate(shooter.value().projectileName, registry);
                     if (registry.hasComponent<rtype::component::Transform>(registry.entityFromIndex(index)) &&
                         registry.hasComponent<rtype::component::Transform>(proj))

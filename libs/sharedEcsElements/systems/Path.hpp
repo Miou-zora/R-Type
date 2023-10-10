@@ -45,7 +45,8 @@ namespace rtype::system
             while (lengthToTravel > 0 && !path.listOfPoints.empty())
             {
                 // if length to travel > the distance to the next point
-                if (targetPoint.first.distance(transformable.position) >= (vectorToNextPoint.normalized() * lengthToTravel).getLength())
+                if ((targetPoint.first.distance(transformable.position) >= (vectorToNextPoint.normalized() * lengthToTravel).getLength() && targetPoint.second == rtype::component::Path::Referential::World) ||
+                (targetPoint.first.getLength() >= (vectorToNextPoint.normalized() * lengthToTravel).getLength() && targetPoint.second == rtype::component::Path::Referential::Entity))
                 {
                     velocity.vector += vectorToNextPoint.normalized() * lengthToTravel;
                     lengthToTravel = 0;
@@ -72,9 +73,9 @@ namespace rtype::system
                             vectorToNextPoint = targetPoint.first;
                     }
                 }
-                if (rtype::component::Path::Referential::Entity == targetPoint.second && targetPoint.first.getLength() == 0)
+                if (rtype::component::Path::Referential::Entity == targetPoint.second && targetPoint.first.getLength() == 0 && path.listOfPoints.size())
                     path.listOfPoints.erase(path.listOfPoints.begin());
-                if (rtype::component::Path::Referential::World == targetPoint.second && std::abs((targetPoint.first).distance(transformable.position + velocity.vector)) == 0)
+                if (rtype::component::Path::Referential::World == targetPoint.second && std::abs((targetPoint.first).distance(transformable.position + velocity.vector)) == 0 && path.listOfPoints.size())
                     path.listOfPoints.erase(path.listOfPoints.begin());
             }
             if (path.listOfPoints.empty() && path.destroyAtEnd) {
