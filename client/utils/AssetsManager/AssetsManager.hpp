@@ -27,9 +27,15 @@ namespace rtype::utils
     */
     class AssetsManager
     {
+    public:
+        static constexpr const char *DEFAULT_FONT = "default";
+
         // Singleton part
     private:
-        AssetsManager(): m_fs(cmrc::assets::get_filesystem()) {};
+        AssetsManager(): m_fs(cmrc::assets::get_filesystem()) {
+            // Load default font
+            m_fonts[DEFAULT_FONT] = raylib::GetFontDefault();
+        };
     public:
         /**
          * @brief Get the instance of the AssetsManager. If it doesn't exist, it will be created.
