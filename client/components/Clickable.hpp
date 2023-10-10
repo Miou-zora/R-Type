@@ -16,7 +16,7 @@ namespace rtype::component
     */
     struct Clickable
     {
-        Clickable(void) = default;
+        Clickable(std::function<void(void)> onClick = [](){}) : onClick(onClick) {};
         ~Clickable(void) = default;
 
         Clickable(const Clickable &other) = default;
