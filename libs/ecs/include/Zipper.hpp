@@ -63,7 +63,7 @@ namespace rtype::ecs
             */
             Iterator end()
             {
-                return (Iterator(m_end, m_size));
+                return (Iterator(m_end, 0));
             }
 
         private:

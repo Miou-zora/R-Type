@@ -34,7 +34,7 @@ int main(int ac, char* av[])
     rtype::component::Drawable playerDrawable;
     reg.addSystem<rtype::component::Controllable, rtype::component::Velocity>(rtype::system::Control());
     reg.addSystem<rtype::component::Transform, rtype::component::Velocity>(rtype::system::VelocityApplicator());
-    reg.addSystem<rtype::component::Transform, rtype::component::Drawable>(rtype::system::Draw());
+    reg.addSystem<>(rtype::system::Draw());
     reg.registerComponent<rtype::component::Controllable>();
     reg.registerComponent<rtype::component::Transform>();
     reg.registerComponent<rtype::component::Velocity>();

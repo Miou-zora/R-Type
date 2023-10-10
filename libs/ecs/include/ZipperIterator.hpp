@@ -75,6 +75,10 @@ namespace rtype::ecs
             this->m_current = itTuple;
             this->m_max = max;
             this->m_idx = 0;
+            if (m_idx < m_max && !allSet(m_seq))
+            {
+                incrAll(m_seq);
+            }
         }
 
     public:
@@ -95,10 +99,7 @@ namespace rtype::ecs
          */
         ZipperIterator &operator++()
         {
-            if (m_idx < m_max)
-            {
-                incrAll(m_seq);
-            }
+            incrAll(m_seq);
             return (*this);
         }
 
@@ -121,10 +122,6 @@ namespace rtype::ecs
          */
         ValueType operator*()
         {
-            if (!allSet(m_seq))
-            {
-                incrAll(m_seq);
-            }
             return (toValue(m_seq));
         }
 
@@ -135,10 +132,6 @@ namespace rtype::ecs
          */
         ValueType operator->()
         {
-            if (!allSet(m_seq))
-            {
-                incrAll(m_seq);
-            }
             return (toValue(m_seq));
         }
 
