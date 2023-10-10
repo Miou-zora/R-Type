@@ -18,6 +18,7 @@ set(INCLUDE
 
 add_subdirectory("components")
 add_subdirectory("systems")
+add_subdirectory("network")
 
 
 include_directories(${INCLUDE})

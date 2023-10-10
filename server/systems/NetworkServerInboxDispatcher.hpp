@@ -16,27 +16,22 @@ namespace rtype::system {
         ~NetworkServerInboxDispatcher() = default;
 
         void operator()(ecs::Registry &registry,
-            ecs::SparseArray<rtype::component::NetworkServer> &networkServers,
             ecs::SparseArray<rtype::component::NetworkPlayer> &networkPlayers) const
         {
-            for (auto &&[networkServerOpt] : ecs::containers::Zipper(networkServers)) {
-                if (!networkServerOpt.has_value())
+            rtype::network::NetworkServer &networkServer = rtype::network::NetworkServer::getInstance();
+            auto &recvMsgBuffer = networkServer.getRecvMsgBuffer();
+            while (!networkServer.getRecvMsgBuffer().empty()) {
+                auto [endpoint, recvBuffer, size] = networkServer.getRecvMsgBuffer().back();
+                networkServer.getRecvMsgBuffer().pop_back();
+                if (rtype::network::message::client::checkMessageIntegrity(recvBuffer, size) == false) {
+                    std::cerr << "Network error (checkMessageIntegrity): malformed message for endpoint " << endpoint << std::endl;
                     continue;
-                rtype::component::NetworkServer &networkServer = networkServerOpt.value();
-                auto recvMsgBuffer = networkServer.recvMsgBuffer;
-                while (!recvMsgBuffer->empty()) {
-                    auto [endpoint, recvBuffer, size] = recvMsgBuffer->back();
-                    recvMsgBuffer->pop_back();
-                    if (rtype::network::message::client::checkMessageIntegrity(recvBuffer, size) == false) {
-                        std::cerr << "Network error (checkMessageIntegrity): malformed message for endpoint " << endpoint << std::endl;
-                        continue;
-                    }
-                    auto networkPlayerEntity = getNetworkPlayerEntity(registry, endpoint);
-                    auto &networkPlayer = registry.getComponents<rtype::component::NetworkPlayer>()[networkPlayerEntity].value();
-                    networkPlayer.inbox->push(recvBuffer);
                 }
+                auto networkPlayerEntity = getNetworkPlayerEntity(registry, endpoint);
+                auto &networkPlayer = registry.getComponents<rtype::component::NetworkPlayer>()[networkPlayerEntity].value();
+                networkPlayer.inbox->push(recvBuffer);
             }
-        }
+    }
 
     private:
         /**

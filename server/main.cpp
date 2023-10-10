@@ -6,7 +6,6 @@
 #include <ctime>
 
 #include "ECS.hpp"
-#include "NetworkServerTickSystem.hpp"
 #include "NetworkPlayerHandlerSystem.hpp"
 #include "NetworkServerInboxDispatcher.hpp"
 #include "NetworkServerOutboxDispatcher.hpp"
@@ -21,16 +20,17 @@ int main(int ac, char *av[])
 {
     rtype::ecs::Registry reg;
     rtype::ecs::Entity entity = reg.spawnEntity();
+    int port = 12345;
 
-    reg.registerComponent<rtype::component::NetworkServer>();
+    if (ac > 1)
+        port = std::stoi(av[1]);
+    rtype::network::NetworkServer::initInstance(port);
     reg.registerComponent<rtype::component::NetworkPlayer>();
     reg.registerComponent<rtype::component::GameRoom>();
     reg.registerComponent<rtype::component::GameLevel>();
-    reg.emplaceComponent<rtype::component::NetworkServer>(entity, 12345);
-    reg.addSystem<rtype::component::NetworkServer, rtype::component::NetworkPlayer>(rtype::system::NetworkServerInboxDispatcher());
-    reg.addSystem<rtype::component::NetworkServer, rtype::component::NetworkPlayer>(rtype::system::NetworkServerOutboxDispatcher());
+    reg.addSystem<rtype::component::NetworkPlayer>(rtype::system::NetworkServerInboxDispatcher());
     reg.addSystem<rtype::component::NetworkPlayer>(rtype::system::NetworkPlayerHandlerSystem());
-    reg.addSystem<rtype::component::NetworkServer>(rtype::system::NetworkServerTickSystem(64)); // should be put last
+    reg.addSystem<rtype::component::NetworkPlayer>(rtype::system::NetworkServerOutboxDispatcher());
 
     while (true) {
         reg.runSystems();
