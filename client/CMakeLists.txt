@@ -12,7 +12,6 @@ cmrc_add_resource_library(
 
     ALIAS assets::rc
     NAMESPACE assets
-    assets/textures/ship.png
 )
 
 set(SRC)
