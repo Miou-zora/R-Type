@@ -12,6 +12,10 @@ set(TEST_SRC
     ${TEST_FILES}
 )
 
+set(SRC
+    "${CMAKE_SOURCE_DIR}/client/utils/SceneManager/SceneManager.cpp"
+)
+
 set(TEST_INCLUDE)
 
 add_subdirectory("libs")
@@ -23,7 +27,8 @@ set(EXECUTABLE_NAME
     "unit_tests"
 )
 
-add_executable(${EXECUTABLE_NAME} ${TEST_MAIN} ${SRC} ${TEST_SRC})
+add_definitions(-DUNIT_TEST)
+add_executable(${EXECUTABLE_NAME} ${TEST_MAIN} ${SRC} ${TEST_SRC} )
 target_link_libraries(${EXECUTABLE_NAME} PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
 add_test(NAME r-type_unit_tests COMMAND unit_tests)
 

@@ -9,7 +9,7 @@
 
 #include <map>
 #include <string>
-#include "Prefab.hpp"
+#include "ECS.hpp"
 #include <memory>
 
 namespace rtype::utils
