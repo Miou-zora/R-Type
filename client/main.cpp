@@ -16,6 +16,7 @@ namespace raylib {
 #include "Draw.hpp"
 #include "Drawable.hpp"
 #include "ECS.hpp"
+#include "Scroll.hpp"
 #include "Selection.hpp"
 #include "VelocityApplicator.hpp"
 #include "systems/TextInput.hpp"
@@ -41,6 +42,7 @@ int main(int ac, char* av[])
     reg.addSystem<rtype::component::DebugColliderDisplay, rtype::component::Transform, rtype::component::Collider>(rtype::system::DebugColliderDisplayer());
     reg.addSystem<rtype::component::Selectable, rtype::component::Transform, rtype::component::Collider>(rtype::system::Selection());
     reg.addSystem<rtype::component::Selectable, rtype::component::TextInputable, rtype::component::Text>(rtype::system::TextInput());
+    reg.addSystem<rtype::component::Drawable, rtype::component::Scrollable>(rtype::system::Scroll());
     reg.registerComponent<rtype::component::Controllable>();
     reg.registerComponent<rtype::component::Transform>();
     reg.registerComponent<rtype::component::Velocity>();
@@ -50,6 +52,7 @@ int main(int ac, char* av[])
     reg.registerComponent<rtype::component::DebugColliderDisplay>();
     reg.registerComponent<rtype::component::Selectable>();
     reg.registerComponent<rtype::component::TextInputable>();
+    reg.registerComponent<rtype::component::Scrollable>();
     rtype::utils::AssetsManager& assetsManager = rtype::utils::AssetsManager::getInstance();
     assetsManager.loadTexture("ship", "assets/textures/ship.png");
     rtype::utils::Rectangle shipRectangle(0, 0, assetsManager.getTexture("ship").width, assetsManager.getTexture("ship").height);
@@ -61,6 +64,7 @@ int main(int ac, char* av[])
     reg.emplaceComponent<rtype::component::DebugColliderDisplay>(player, true);
     reg.emplaceComponent<rtype::component::Collider>(player, assetsManager.getTexture("ship").width, assetsManager.getTexture("ship").height);
     reg.emplaceComponent<rtype::component::Selectable>(player);
+    reg.emplaceComponent<rtype::component::Scrollable>(player, rtype::utils::Vector<float>(1, 0), 0.1);
 
     rtype::ecs::Entity inputText = reg.spawnEntity();
     reg.emplaceComponent<rtype::component::Text>(inputText, "Hello World");

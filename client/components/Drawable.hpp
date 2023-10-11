@@ -33,5 +33,5 @@ struct Drawable {
     rtype::utils::Rectangle sourceRectangle;
     int zIndex;
 };
-const std::string Drawable::NO_TEXTURE = "NO TEXTURE";
+inline const std::string Drawable::NO_TEXTURE = "NO TEXTURE";
 }

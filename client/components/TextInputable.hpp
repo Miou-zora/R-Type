@@ -8,19 +8,18 @@
 #pragma once
 #include <string>
 
-namespace rtype::component
-{
-    /**
-     * @brief TextInputable component used indicate that the entity is a text input
-     */
-    struct TextInputable
-    {
-        TextInputable(std::size_t maxLength_ = 80): maxLength(maxLength_) {};
-        ~TextInputable() = default;
+namespace rtype::component {
+/**
+ * @brief TextInputable component used indicate that the entity is a text input
+ */
+struct TextInputable {
+    TextInputable(std::size_t maxLength_ = 80)
+        : maxLength(maxLength_) {};
+    ~TextInputable() = default;
 
-        TextInputable(const TextInputable &other) = default;
-        TextInputable &operator=(const TextInputable &other) = default;
+    TextInputable(const TextInputable& other) = default;
+    TextInputable& operator=(const TextInputable& other) = default;
 
-        std::size_t maxLength;
-    };
+    std::size_t maxLength;
+};
 }

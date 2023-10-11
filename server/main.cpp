@@ -3,20 +3,19 @@
 #include <ctime>
 #include <iostream>
 #include <string>
-#include <ctime>
 
 #include "ECS.hpp"
+#include "GameLevel.hpp"
+#include "GameRoom.hpp"
+#include "NetworkPlayer.hpp"
 #include "NetworkPlayerHandlerSystem.hpp"
+#include "NetworkServer.hpp"
 #include "NetworkServerInboxDispatcher.hpp"
 #include "NetworkServerOutboxDispatcher.hpp"
-#include "NetworkServer.hpp"
-#include "NetworkPlayer.hpp"
-#include "GameRoom.hpp"
-#include "GameLevel.hpp"
 
 #include "NetworkMessageQueue.hpp"
 
-int main(int ac, char *av[])
+int main(int ac, char* av[])
 {
     rtype::ecs::Registry reg;
     rtype::ecs::Entity entity = reg.spawnEntity();
