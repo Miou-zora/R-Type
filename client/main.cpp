@@ -18,6 +18,7 @@ namespace raylib {
 #include "ECS.hpp"
 #include "Selection.hpp"
 #include "VelocityApplicator.hpp"
+#include "systems/TextInput.hpp"
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 #include <ctime>
@@ -39,6 +40,7 @@ int main(int ac, char* av[])
     reg.addSystem<>(rtype::system::Draw());
     reg.addSystem<rtype::component::DebugColliderDisplay, rtype::component::Transform, rtype::component::Collider>(rtype::system::DebugColliderDisplayer());
     reg.addSystem<rtype::component::Selectable, rtype::component::Transform, rtype::component::Collider>(rtype::system::Selection());
+    reg.addSystem<rtype::component::Selectable, rtype::component::TextInputable, rtype::component::Text>(rtype::system::TextInput());
     reg.registerComponent<rtype::component::Controllable>();
     reg.registerComponent<rtype::component::Transform>();
     reg.registerComponent<rtype::component::Velocity>();
@@ -47,6 +49,7 @@ int main(int ac, char* av[])
     reg.registerComponent<rtype::component::Text>();
     reg.registerComponent<rtype::component::DebugColliderDisplay>();
     reg.registerComponent<rtype::component::Selectable>();
+    reg.registerComponent<rtype::component::TextInputable>();
     rtype::utils::AssetsManager& assetsManager = rtype::utils::AssetsManager::getInstance();
     assetsManager.loadTexture("ship", "assets/textures/ship.png");
     rtype::utils::Rectangle shipRectangle(0, 0, assetsManager.getTexture("ship").width, assetsManager.getTexture("ship").height);
@@ -58,6 +61,14 @@ int main(int ac, char* av[])
     reg.emplaceComponent<rtype::component::DebugColliderDisplay>(player, true);
     reg.emplaceComponent<rtype::component::Collider>(player, assetsManager.getTexture("ship").width, assetsManager.getTexture("ship").height);
     reg.emplaceComponent<rtype::component::Selectable>(player);
+
+    rtype::ecs::Entity inputText = reg.spawnEntity();
+    reg.emplaceComponent<rtype::component::Text>(inputText, "Hello World");
+    reg.emplaceComponent<rtype::component::Transform>(inputText, rtype::utils::Vector<float>(100, 100));
+    reg.emplaceComponent<rtype::component::TextInputable>(inputText);
+    reg.emplaceComponent<rtype::component::Selectable>(inputText);
+    reg.emplaceComponent<rtype::component::Collider>(inputText, 100, 20);
+    reg.emplaceComponent<rtype::component::DebugColliderDisplay>(inputText, true);
     while (!raylib::WindowShouldClose()) {
         reg.runSystems();
     }
