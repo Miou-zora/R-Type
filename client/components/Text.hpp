@@ -8,24 +8,26 @@
 #pragma once
 #include <string>
 
-namespace rtype::component
-{
-    /**
-     * @brief Text component used to store the text of an entity
-     */
-    struct Text
-    {
-        const static std::string DEFAULT_FONT;
-        Text(const std::string &text_ = "", const std::string &font_ = DEFAULT_FONT, int size_= 10, float spacing_= 3) : text(text_), font(font_), size(size_), spacing(spacing_){};
-        ~Text() = default;
+namespace rtype::component {
+/**
+ * @brief Text component used to store the text of an entity
+ */
+struct Text {
+    const static std::string DEFAULT_FONT;
+    Text(const std::string& text_ = "", const std::string& font_ = DEFAULT_FONT, int size_ = 10, float spacing_ = 3)
+        : text(text_)
+        , font(font_)
+        , size(size_)
+        , spacing(spacing_) {};
+    ~Text() = default;
 
-        Text(const Text &other) = default;
-        Text &operator=(const Text &other) = default;
+    Text(const Text& other) = default;
+    Text& operator=(const Text& other) = default;
 
-        std::string text;
-        std::string font;
-        int size;
-        float spacing;
-    };
-    inline const std::string Text::DEFAULT_FONT = "default";
+    std::string text;
+    std::string font;
+    int size;
+    float spacing;
+};
+inline const std::string Text::DEFAULT_FONT = "default";
 }

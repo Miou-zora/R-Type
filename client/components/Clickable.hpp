@@ -9,21 +9,20 @@
 
 #include <functional>
 
-namespace rtype::component
-{
-    /**
-     * @brief Clickable component used to store the click state of an entity. It also stores a callback function to be called when the entity is clicked
-    */
-    struct Clickable
-    {
-        Clickable(std::function<void(void)> onClick = [](){}) : onClick(onClick) {};
-        ~Clickable(void) = default;
+namespace rtype::component {
+/**
+ * @brief Clickable component used to store the click state of an entity. It also stores a callback function to be called when the entity is clicked
+ */
+struct Clickable {
+    Clickable(std::function<void(void)> onClick = []() {})
+        : onClick(onClick) {};
+    ~Clickable(void) = default;
 
-        Clickable(const Clickable &other) = default;
-        Clickable &operator=(const Clickable &other) = default;
+    Clickable(const Clickable& other) = default;
+    Clickable& operator=(const Clickable& other) = default;
 
-        bool isHover = false;
-        bool isDown = false;
-        std::function<void(void)> onClick = [](){};
-    };
+    bool isHover = false;
+    bool isDown = false;
+    std::function<void(void)> onClick = []() {};
+};
 }

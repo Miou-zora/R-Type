@@ -37,6 +37,6 @@ namespace rtype::system {
                 }
             }
             networkServer.updateLastTick();
-        }  
+        }
     };
 }

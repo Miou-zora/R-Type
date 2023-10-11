@@ -12,9 +12,11 @@ namespace raylib {
 #include "AssetsManager.hpp"
 #include "Control.hpp"
 #include "Controllable.hpp"
+#include "DebugColliderDisplayer.hpp"
 #include "Draw.hpp"
 #include "Drawable.hpp"
 #include "ECS.hpp"
+#include "Selection.hpp"
 #include "VelocityApplicator.hpp"
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
@@ -35,10 +37,16 @@ int main(int ac, char* av[])
     reg.addSystem<rtype::component::Controllable, rtype::component::Velocity>(rtype::system::Control());
     reg.addSystem<rtype::component::Transform, rtype::component::Velocity>(rtype::system::VelocityApplicator());
     reg.addSystem<>(rtype::system::Draw());
+    reg.addSystem<rtype::component::DebugColliderDisplay, rtype::component::Transform, rtype::component::Collider>(rtype::system::DebugColliderDisplayer());
+    reg.addSystem<rtype::component::Selectable, rtype::component::Transform, rtype::component::Collider>(rtype::system::Selection());
     reg.registerComponent<rtype::component::Controllable>();
     reg.registerComponent<rtype::component::Transform>();
     reg.registerComponent<rtype::component::Velocity>();
     reg.registerComponent<rtype::component::Drawable>();
+    reg.registerComponent<rtype::component::Collider>();
+    reg.registerComponent<rtype::component::Text>();
+    reg.registerComponent<rtype::component::DebugColliderDisplay>();
+    reg.registerComponent<rtype::component::Selectable>();
     rtype::utils::AssetsManager& assetsManager = rtype::utils::AssetsManager::getInstance();
     assetsManager.loadTexture("ship", "assets/textures/ship.png");
     rtype::utils::Rectangle shipRectangle(0, 0, assetsManager.getTexture("ship").width, assetsManager.getTexture("ship").height);
@@ -47,6 +55,9 @@ int main(int ac, char* av[])
     reg.addComponent<rtype::component::Drawable>(player, std::move(playerDrawable));
     reg.emplaceComponent<rtype::component::Transform>(player);
     reg.emplaceComponent<rtype::component::Velocity>(player);
+    reg.emplaceComponent<rtype::component::DebugColliderDisplay>(player, true);
+    reg.emplaceComponent<rtype::component::Collider>(player, assetsManager.getTexture("ship").width, assetsManager.getTexture("ship").height);
+    reg.emplaceComponent<rtype::component::Selectable>(player);
     while (!raylib::WindowShouldClose()) {
         reg.runSystems();
     }

@@ -9,9 +9,9 @@
 
 #include "Controllable.hpp"
 #include "ECS.hpp"
+#include "Speed.hpp"
 #include "Vector.hpp"
 #include "Velocity.hpp"
-#include "Speed.hpp"
 
 namespace rtype::system {
 class Control {

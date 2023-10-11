@@ -7,26 +7,23 @@
 
 #pragma once
 
+#include "Vector.hpp"
 #include <string>
 #include <vector>
-#include "Vector.hpp"
-#include "Rectangle.hpp"
 
-namespace rtype::component
-{
-    struct Animation
-    {
-        Animation() = default;
-        ~Animation() = default;
-        Animation(const Animation &other) = default;
-        Animation &operator=(const Animation &other) = default;
+namespace rtype::component {
+struct Animation {
+    Animation() = default;
+    ~Animation() = default;
+    Animation(const Animation& other) = default;
+    Animation& operator=(const Animation& other) = default;
 
-        std::vector<rtype::utils::Vector<int>> framesPosition;
-        std::vector<float> frameTimes;
-        std::size_t currentFrame;
-        float time;
-        bool loop;
-        bool finished;
-        bool playing;
-    };
+    std::vector<rtype::utils::Vector<int>> framesPosition;
+    std::vector<float> frameTimes;
+    std::size_t currentFrame;
+    float time;
+    bool loop;
+    bool finished;
+    bool playing;
+};
 }

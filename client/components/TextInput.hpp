@@ -8,17 +8,15 @@
 #pragma once
 #include <string>
 
-namespace rtype::component
-{
-    /**
-     * @brief TextInput component used indicate that the entity is a text input
-     */
-    struct TextInput
-    {
-        TextInput() = default;
-        ~TextInput() = default;
+namespace rtype::component {
+/**
+ * @brief TextInput component used indicate that the entity is a text input
+ */
+struct TextInput {
+    TextInput() = default;
+    ~TextInput() = default;
 
-        TextInput(const TextInput &other) = default;
-        TextInput &operator=(const TextInput &other) = default;
-    };
+    TextInput(const TextInput& other) = default;
+    TextInput& operator=(const TextInput& other) = default;
+};
 }

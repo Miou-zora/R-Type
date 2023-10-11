@@ -8,7 +8,7 @@
 #pragma once
 
 #include <vector>
-#include "Entity.hpp"
+#include "ECS.hpp"
 #include "Vector.hpp"
 
 namespace rtype::component

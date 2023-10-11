@@ -9,19 +9,18 @@
 
 #include <functional>
 
-namespace rtype::component
-{
-    /**
-     * @brief Selectable component used to store the selected state of an entity
-    */
-    struct Selectable
-    {
-        Selectable(bool selected_ = false) : selected(selected_) {};
-        ~Selectable(void) = default;
+namespace rtype::component {
+/**
+ * @brief Selectable component used to store the selected state of an entity
+ */
+struct Selectable {
+    Selectable(bool selected_ = false)
+        : selected(selected_) {};
+    ~Selectable(void) = default;
 
-        Selectable(const Selectable &other) = default;
-        Selectable &operator=(const Selectable &other) = default;
+    Selectable(const Selectable& other) = default;
+    Selectable& operator=(const Selectable& other) = default;
 
-        bool selected;
-    };
+    bool selected;
+};
 }

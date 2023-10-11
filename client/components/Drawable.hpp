@@ -7,30 +7,31 @@
 
 #pragma once
 
-#include <string>
 #include "Rectangle.hpp"
+#include <string>
 
-namespace rtype::component
-{
-    /**
-     * @brief A component use to draw a texture.
-    */
-    struct Drawable
+namespace rtype::component {
+/**
+ * @brief A component use to draw a texture.
+ */
+struct Drawable {
+    const static std::string NO_TEXTURE;
+    Drawable(const std::string& textureName_ = NO_TEXTURE, float scale_ = 1, const rtype::utils::Rectangle& sourceRectangle_ = rtype::utils::Rectangle(), int zIndex_ = 0)
+        : textureName(textureName_)
+        , scale(scale_)
+        , sourceRectangle(sourceRectangle_)
+        , zIndex(zIndex_)
     {
-        const static std::string NO_TEXTURE;
-        Drawable(const std::string &textureName_ = NO_TEXTURE, float scale_ = 1, const rtype::utils::Rectangle &sourceRectangle_ = rtype::utils::Rectangle(), int zIndex_ = 0)
-            : textureName(textureName_), scale(scale_), sourceRectangle(sourceRectangle_), zIndex(zIndex_)
-        {
-        }
-        ~Drawable() = default;
+    }
+    ~Drawable() = default;
 
-        Drawable(const Drawable &other) = default;
-        Drawable &operator=(const Drawable &other) = default;
+    Drawable(const Drawable& other) = default;
+    Drawable& operator=(const Drawable& other) = default;
 
-        std::string textureName;
-        float scale;
-        rtype::utils::Rectangle sourceRectangle;
-        int zIndex;
-    };
-    const std::string Drawable::NO_TEXTURE = "NO TEXTURE";
+    std::string textureName;
+    float scale;
+    rtype::utils::Rectangle sourceRectangle;
+    int zIndex;
+};
+const std::string Drawable::NO_TEXTURE = "NO TEXTURE";
 }
