@@ -53,7 +53,7 @@ public:
             const std::string& textToDraw = text->text;
             const float& fontSize = (float)text->size * transformable->scale;
             const float& spacing = text->spacing * transformable->scale;
-            const raylib::Color& color = raylib::WHITE;
+            const raylib::Color& color = text->color;
             raylib::DrawTextEx(font, textToDraw.c_str(), position, fontSize, spacing, color);
         }
     }

@@ -7,6 +7,9 @@
 
 #pragma once
 #include <string>
+namespace raylib {
+#include <raylib.h>
+}
 
 namespace rtype::component {
 /**
@@ -14,11 +17,12 @@ namespace rtype::component {
  */
 struct Text {
     const static std::string DEFAULT_FONT;
-    Text(const std::string& text_ = "", const std::string& font_ = DEFAULT_FONT, int size_ = 10, float spacing_ = 3)
+    Text(const std::string& text_ = "", const std::string& font_ = DEFAULT_FONT, int size_ = 10, float spacing_ = 3, raylib::Color color_ = raylib::BLACK)
         : text(text_)
         , font(font_)
         , size(size_)
-        , spacing(spacing_) {};
+        , spacing(spacing_)
+        , color(color_) {};
     ~Text() = default;
 
     Text(const Text& other) = default;
@@ -28,6 +32,7 @@ struct Text {
     std::string font;
     int size;
     float spacing;
+    raylib::Color color;
 };
 inline const std::string Text::DEFAULT_FONT = "default";
 }
