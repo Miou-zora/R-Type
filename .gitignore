@@ -19,3 +19,7 @@ unit_tests
 # Dev Env
 
 .vscode
+
+
+#coding style
+coding-style.log

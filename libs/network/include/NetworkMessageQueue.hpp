@@ -165,7 +165,8 @@ namespace rtype::network {
             void clear()
             {
                 std::lock_guard<std::mutex> lock(m_mutex);
-                m_queue.clear();
+                while (!m_queue.empty())
+                    m_queue.pop();
             }
         private:
             std::priority_queue<Message, UniqueVector<Message, EqCompare>, LessCompare> m_queue;

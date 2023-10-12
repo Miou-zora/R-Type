@@ -61,6 +61,11 @@ jobs:
       - name: Check coding style
         run: |
           ./coding-style.sh
+          if [ $? -ne 0 ]; then
+              echo "::error file=coding-style.sh,title=Coding style error::Coding style error"
+              cat coding-style.log
+              exit 1
+          fi
 
   check_program_compilation_windows:
     name: Checks if the program compiles correctly on windows and executables files got created
