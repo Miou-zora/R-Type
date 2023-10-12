@@ -37,11 +37,12 @@ public:
     void operator()(ecs::SparseArray<rtype::component::Transform>& transformables,
         ecs::SparseArray<rtype::component::Drawable>& drawables) const
     {
-        std::map<int, std::pair<rtype::component::Transform, rtype::component::Drawable>> sorted;
+        std::map<int, std::vector<std::pair<rtype::component::Transform, rtype::component::Drawable>>> sorted;
         for (auto&& [transformable, drawable] : rtype::ecs::containers::Zipper(transformables, drawables))
-            sorted.insert({ drawable->zIndex, { transformable.value(), drawable.value() } });
+            sorted[drawable->zIndex].push_back({ transformable.value(), drawable.value() });
         for (auto&& [zIndex, transformableAndDrawable] : sorted)
-            drawTexture(transformableAndDrawable.first, transformableAndDrawable.second);
+            for (auto&& [transformable, drawable] : transformableAndDrawable)
+                drawTexture(transformable, drawable);
     }
 
     void operator()(ecs::SparseArray<rtype::component::Transform>& transformables,
