@@ -162,7 +162,6 @@ TEST(PathSystem, casualUseEntity)
     ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[entity].value().position.x, 1);
     ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[entity].value().position.y, 0);
     ASSERT_EQ(registry.getComponents<rtype::component::Path>()[entity].value().listOfPoints.size(), 2);
-
     registry.runSystems();
 
     ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[entity].value().position.x, 2);
@@ -306,4 +305,58 @@ TEST(PathSystem, useEntityDestroyEntityAtEnd)
     ASSERT_FALSE(registry.hasComponent<rtype::component::Transform>(entity));
     ASSERT_FALSE(registry.hasComponent<rtype::component::Velocity>(entity));
     ASSERT_FALSE(registry.hasComponent<rtype::component::Path>(entity));
+}
+
+TEST(PathSystem, typeOneShot)
+{
+    SETUP(3);
+
+    registry.addComponent<rtype::component::Transform>(entity, rtype::component::Transform());
+    registry.addComponent<rtype::component::Velocity>(entity, rtype::component::Velocity());
+    registry.addComponent<rtype::component::Path>(entity, std::move(rtype::component::Path(1)
+    .addPoint(2, 0)
+    .setType(rtype::component::Path::Type::OneShot)));
+
+    registry.runSystems();
+
+    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[entity].value().position.x, 2);
+    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[entity].value().position.y, 0);
+    ASSERT_EQ(registry.getComponents<rtype::component::Path>()[entity].value().listOfPoints.size(), 0);
+}
+
+TEST(PathSystem, typeLoopEntity)
+{
+    SETUP(9);
+
+    registry.addComponent<rtype::component::Transform>(entity, rtype::component::Transform());
+    registry.addComponent<rtype::component::Velocity>(entity, rtype::component::Velocity());
+    registry.addComponent<rtype::component::Path>(entity, std::move(rtype::component::Path(1)
+    .addPoint(2, 0, rtype::component::Path::Context::Global, rtype::component::Path::Referential::Entity)
+    .addPoint(0, 2, rtype::component::Path::Context::Global, rtype::component::Path::Referential::Entity)
+    .setType(rtype::component::Path::Type::Loop)));
+
+    registry.runSystems();
+
+
+    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[entity].value().position.x, 5);
+    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[entity].value().position.y, 4);
+    ASSERT_EQ(registry.getComponents<rtype::component::Path>()[entity].value().listOfPoints.size(), 2);
+}
+
+TEST(PathSystem, typeLoopWorld)
+{
+    SETUP(5);
+
+    registry.addComponent<rtype::component::Transform>(entity, rtype::component::Transform());
+    registry.addComponent<rtype::component::Velocity>(entity, rtype::component::Velocity());
+    registry.addComponent<rtype::component::Path>(entity, std::move(rtype::component::Path(1)
+    .addPoint(0, 2, rtype::component::Path::Context::Global, rtype::component::Path::Referential::World)
+    .addPoint(0, 0, rtype::component::Path::Context::Global, rtype::component::Path::Referential::World)
+    .setType(rtype::component::Path::Type::Loop)));
+
+    registry.runSystems();
+
+    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[entity].value().position.x, 0);
+    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[entity].value().position.y, 1);
+    ASSERT_EQ(registry.getComponents<rtype::component::Path>()[entity].value().listOfPoints.size(), 2);
 }

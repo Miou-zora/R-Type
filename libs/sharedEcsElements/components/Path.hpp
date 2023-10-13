@@ -41,8 +41,24 @@ namespace rtype::component
             Entity
         };
 
+        /**
+         * @brief Type of the path. OneShot means that the entity will stop at the end of the path.
+         * Loop means that the entity will restart at the beginning of the path.
+        */
+        enum class Type
+        {
+            OneShot,
+            Loop
+        };
+
         using PointType = float;
-        using Point = std::pair<rtype::utils::Vector<PointType>, Path::Referential>;
+        typedef struct Point {
+            Point(const rtype::utils::Vector<PointType> &point, Path::Referential referential) : vector(point), referential(referential), startVector(point) {};
+            rtype::utils::Vector<PointType> vector;
+            Path::Referential referential;
+            rtype::utils::Vector<PointType> startVector;
+        } Point;
+        // using Point = std::pair<rtype::utils::Vector<PointType>, Path::Referential>;
 
         /**
          * @brief Construct a new Path object using speed, a list of points and a boolean to know if the entity should be destroyed at the end of the path.
@@ -52,7 +68,7 @@ namespace rtype::component
          * @param path_ List of points to follow.
          * @param destroyAtEnd_ Boolean to know if the entity should be destroyed at the end of the path.
         */
-        Path(float speed_ = 100, const std::vector<Point> &path_ = std::vector<Point>(), bool destroyAtEnd_ = false) : listOfPoints(path_), speed(speed_), destroyAtEnd(destroyAtEnd_){};
+        Path(float speed_ = 100, const std::vector<Point> &path_ = std::vector<Point>(), bool destroyAtEnd_ = false, Type type_ = Type::OneShot) : listOfPoints(path_), speed(speed_), destroyAtEnd(destroyAtEnd_), type(type_){};
 
         /**
          * @brief Construct a new Path object using speed and a boolean to know if the entity should be destroyed at the end of the path.
@@ -83,7 +99,7 @@ namespace rtype::component
                 if (listOfPoints.empty())
                     listOfPoints.push_back(Point(point, referential));
                 else
-                    listOfPoints.push_back(Point(listOfPoints.back().first + point, referential));
+                    listOfPoints.push_back(Point(listOfPoints.back().vector + point, referential));
             }
             return (*this);
         }
@@ -128,6 +144,7 @@ namespace rtype::component
          * @brief Set if the entity should be destroyed at the end of the path.
          *
          * @param destroy Boolean to know if the entity should be destroyed at the end of the path.
+         * @return Path& Reference to the current path.
         */
         Path &setDestroyAtEnd(bool destroy)
         {
@@ -135,8 +152,33 @@ namespace rtype::component
             return (*this);
         }
 
+        /**
+         * @brief Set the speed of the entity along the path.
+         *
+         * @param speed_ Speed of the entity along the path.
+         * @return Path& Reference to the current path.
+        */
+        Path &setSpeed(float speed_)
+        {
+            speed = speed_;
+            return (*this);
+        }
+
+        /**
+         * @brief Set the type of the path.
+         *
+         * @param type_ Type of the path.
+         * @return Path& Reference to the current path.
+        */
+        Path &setType(Type type_)
+        {
+            type = type_;
+            return (*this);
+        }
+
         std::vector<Point> listOfPoints;
         float speed;
         bool destroyAtEnd;
+        Type type;
     };
 }

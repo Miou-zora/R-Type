@@ -158,7 +158,7 @@ public:
         enemy.addComponent<rtype::tag::Enemy>();
         enemy.addComponent<rtype::component::Shooter>("willCrash", getValue<float>("enemyShootCooldown"));
         std::vector<rtype::component::Path::Point> enemyPath;
-        enemyPath.push_back(rtype::component::Path::Point(std::make_pair<rtype::utils::Vector<float>, rtype::component::Path::Referential>(rtype::utils::Vector<float>(-50, 300), rtype::component::Path::Referential::World)));
+        enemyPath.push_back(rtype::component::Path::Point(rtype::utils::Vector<float>(-50, 300), rtype::component::Path::Referential::World));
         enemy.addComponent<rtype::component::Path>(getValue<float>("enemySpawnerMovementSpeed"), enemyPath);
 
         rtype::ecs::Prefab& bullet = manager.createPrefab("bullet");
@@ -179,8 +179,8 @@ public:
         std::vector<rtype::component::Path::Point> enemySpawnerPath;
         // TODO: use infinite entity path when it gets implemented
         for (std::size_t c = 0; c < 12; c++) {
-            enemySpawnerPath.push_back(rtype::component::Path::Point(std::make_pair<rtype::utils::Vector<float>, rtype::component::Path::Referential>(rtype::utils::Vector<float>(800, 150), rtype::component::Path::Referential::World)));
-            enemySpawnerPath.push_back(rtype::component::Path::Point(std::make_pair<rtype::utils::Vector<float>, rtype::component::Path::Referential>(rtype::utils::Vector<float>(800, 450), rtype::component::Path::Referential::World)));
+            enemySpawnerPath.push_back(rtype::component::Path::Point(rtype::utils::Vector<float>(800, 150), rtype::component::Path::Referential::World));
+            enemySpawnerPath.push_back(rtype::component::Path::Point(rtype::utils::Vector<float>(800, 450), rtype::component::Path::Referential::World));
         }
         enemySpawner.addComponent<rtype::component::Path>(getValue<float>("enemySpawnerMovementSpeed"), enemySpawnerPath);
     }

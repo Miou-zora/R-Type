@@ -30,7 +30,7 @@ TEST(Path, init)
         ASSERT_EQ(path.destroyAtEnd, true);
     }
     {
-        rtype::component::Path::Point point = std::make_pair(rtype::utils::Vector<float>(0, 0), rtype::component::Path::Referential::World);
+        rtype::component::Path::Point point = rtype::component::Path::Point(rtype::utils::Vector<float>(0, 0), rtype::component::Path::Referential::World);
         rtype::component::Path path(50, {point}, true);
         ASSERT_EQ(path.speed, 50);
         ASSERT_EQ(path.listOfPoints.size(), 1);
@@ -42,46 +42,46 @@ TEST(Path, addPoint)
 {
     {
         rtype::component::Path path;
-        rtype::component::Path::Point point = std::make_pair(rtype::utils::Vector<float>(0, 0), rtype::component::Path::Referential::World);
+        rtype::component::Path::Point point = rtype::component::Path::Point(rtype::utils::Vector<float>(0, 0), rtype::component::Path::Referential::World);
         path.addPoint(point);
         ASSERT_EQ(path.listOfPoints.size(), 1);
-        ASSERT_EQ(path.listOfPoints[0].first, point.first);
-        ASSERT_EQ(path.listOfPoints[0].second, point.second);
+        ASSERT_EQ(path.listOfPoints[0].vector, point.vector);
+        ASSERT_EQ(path.listOfPoints[0].referential, point.referential);
 
-        rtype::component::Path::Point point2 = std::make_pair(rtype::utils::Vector<float>(1, 1), rtype::component::Path::Referential::World);
+        rtype::component::Path::Point point2 = rtype::component::Path::Point(rtype::utils::Vector<float>(1, 1), rtype::component::Path::Referential::World);
         path.addPoint(point2);
         ASSERT_EQ(path.listOfPoints.size(), 2);
-        ASSERT_EQ(path.listOfPoints[1].first, point2.first);
-        ASSERT_EQ(path.listOfPoints[1].second, point2.second);
+        ASSERT_EQ(path.listOfPoints[1].vector, point2.vector);
+        ASSERT_EQ(path.listOfPoints[1].referential, point2.referential);
     }
     {
         rtype::component::Path path;
-        rtype::component::Path::Point point = std::make_pair(rtype::utils::Vector<float>(1, 1), rtype::component::Path::Referential::Entity);
+        rtype::component::Path::Point point = rtype::component::Path::Point(rtype::utils::Vector<float>(1, 1), rtype::component::Path::Referential::Entity);
         path.addPoint(point);
         ASSERT_EQ(path.listOfPoints.size(), 1);
-        ASSERT_EQ(path.listOfPoints[0].first, point.first);
-        ASSERT_EQ(path.listOfPoints[0].second, point.second);
+        ASSERT_EQ(path.listOfPoints[0].vector, point.vector);
+        ASSERT_EQ(path.listOfPoints[0].referential, point.referential);
 
         rtype::utils::Vector<float> point2(1, 1);
         path.addPoint(point2, rtype::component::Path::Context::Local, rtype::component::Path::Referential::Entity);
         ASSERT_EQ(path.listOfPoints.size(), 2);
-        ASSERT_EQ(path.listOfPoints[1].first, point2 + point.first);
-        ASSERT_EQ(path.listOfPoints[1].second, rtype::component::Path::Referential::Entity);
+        ASSERT_EQ(path.listOfPoints[1].vector, point2 + point.vector);
+        ASSERT_EQ(path.listOfPoints[1].referential, rtype::component::Path::Referential::Entity);
     }
     {
         rtype::component::Path path;
         path.addPoint(1, 1);
         ASSERT_EQ(path.listOfPoints.size(), 1);
-        ASSERT_EQ(path.listOfPoints[0].first, rtype::utils::Vector<float>(1, 1));
-        ASSERT_EQ(path.listOfPoints[0].second, rtype::component::Path::Referential::World);
+        ASSERT_EQ(path.listOfPoints[0].vector, rtype::utils::Vector<float>(1, 1));
+        ASSERT_EQ(path.listOfPoints[0].referential, rtype::component::Path::Referential::World);
     }
     {
         rtype::component::Path path;
         rtype::utils::Vector<float> point(1, 1);
         path.addPoint(point);
         ASSERT_EQ(path.listOfPoints.size(), 1);
-        ASSERT_EQ(path.listOfPoints[0].first, point);
-        ASSERT_EQ(path.listOfPoints[0].second, rtype::component::Path::Referential::World);
+        ASSERT_EQ(path.listOfPoints[0].vector, point);
+        ASSERT_EQ(path.listOfPoints[0].referential, rtype::component::Path::Referential::World);
     }
     {
         rtype::component::Path path1;
@@ -91,10 +91,10 @@ TEST(Path, addPoint)
         path2.addPoint(2, 2, rtype::component::Path::Context::Global, rtype::component::Path::Referential::Entity);
         path1.addPoint(path2);
         ASSERT_EQ(path1.listOfPoints.size(), 2);
-        ASSERT_EQ(path1.listOfPoints[0].first, rtype::utils::Vector<float>(1, 1));
-        ASSERT_EQ(path1.listOfPoints[0].second, rtype::component::Path::Referential::World);
-        ASSERT_EQ(path1.listOfPoints[1].first, rtype::utils::Vector<float>(2, 2));
-        ASSERT_EQ(path1.listOfPoints[1].second, rtype::component::Path::Referential::Entity);
+        ASSERT_EQ(path1.listOfPoints[0].vector, rtype::utils::Vector<float>(1, 1));
+        ASSERT_EQ(path1.listOfPoints[0].referential, rtype::component::Path::Referential::World);
+        ASSERT_EQ(path1.listOfPoints[1].vector, rtype::utils::Vector<float>(2, 2));
+        ASSERT_EQ(path1.listOfPoints[1].referential, rtype::component::Path::Referential::Entity);
     }
 }
 
