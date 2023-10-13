@@ -19,6 +19,9 @@ void Client::connect(std::string ip, int port)
         std::cerr << "Client already connected" << std::endl;
         return;
     }
+    if (m_socket->is_open()) {
+        disconnect();
+    }
     m_ip = ip;
     m_port = port;
     m_endpoint->port(port);
