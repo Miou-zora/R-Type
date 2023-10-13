@@ -23,6 +23,8 @@ namespace raylib {
 #include <string>
 #include "NetworkInboxHandler.hpp"
 #include "NetworkOutboxHandler.hpp"
+#include "NetworkInboxChecker.hpp"
+#include "Client.hpp"
 
 int main(int ac, char* av[])
 {
@@ -38,6 +40,7 @@ int main(int ac, char* av[])
     reg.addSystem<rtype::component::DebugColliderDisplay, rtype::component::Transform, rtype::component::Collider>(rtype::system::DebugColliderDisplayer());
     reg.addSystem<rtype::component::Clickable, rtype::component::Transform, rtype::component::Collider>(rtype::system::Click());
     reg.addSystem<rtype::component::Drawable, rtype::component::Scrollable>(rtype::system::Scroll());
+    reg.addSystem<>(rtype::system::NetworkInboxChecker());
     reg.addSystem<>(rtype::system::NetworkInboxHandler());
     reg.addSystem<>(rtype::system::NetworkOutboxHandler());
 

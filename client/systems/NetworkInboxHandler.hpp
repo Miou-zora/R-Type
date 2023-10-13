@@ -30,11 +30,9 @@ namespace rtype::system
             while (!network::Client::getInstance().getInbox()->empty())
             {
                 boost::array<char, rtype::network::message::MAX_PACKET_SIZE> message = network::Client::getInstance().getInbox()->top();
-                if (network::message::server::checkMessageIntegrity(message, message.size()))
+                network::message::NetworkMessageHeader header = reinterpret_cast<network::message::NetworkMessageHeader &>(message[0]);
+                switch (header.type)
                 {
-                    network::message::NetworkMessageHeader header = reinterpret_cast<network::message::NetworkMessageHeader &>(message[0]);
-                    switch (header.type)
-                    {
                     case network::message::server::ConnectAck::type:
                         network::Client::getInstance().setConnected(true);
                         sceneManager.loadScene(rtype::utils::Scene::MENU, registry);
@@ -75,11 +73,6 @@ namespace rtype::system
                         break;
                     default:
                         break;
-                    }
-                }
-                else
-                {
-                    std::cerr << "Network error (checkMessageIntegrity): malformed message." << std::endl;
                 }
                 network::Client::getInstance().getInbox()->pop();
             }

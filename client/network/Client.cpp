@@ -39,6 +39,8 @@ void Client::disconnect()
         m_thread->join();
         m_inbox->clear();
         m_outbox->clear();
+        m_recvBuffer.fill(0);
+        m_recvMsgBuffer->clear();
         m_connected = false;
         m_ip = "";
         m_port = 0;
@@ -50,7 +52,7 @@ void Client::handleReceive(const boost::system::error_code& error, std::size_t b
     if (error) {
         std::cerr << "Network error (handleReceive): " << error.message() << std::endl;
     } else {
-        m_inbox->push(m_recvBuffer);
+        m_recvMsgBuffer->push_back(std::make_tuple(m_recvBuffer, bytes_transferred));
     }
     m_socket->async_receive_from(boost::asio::buffer(m_recvBuffer), *m_endpoint,
         boost::bind(&Client::handleReceive, this, boost::asio::placeholders::error,
@@ -64,7 +66,10 @@ void Client::handleConnect(const boost::system::error_code& error)
         boost::array<char, rtype::network::message::MAX_PACKET_SIZE> packed = network::message::pack<network::message::client::Connect>(message);
         m_socket->async_send_to(boost::asio::buffer(packed, sizeof(network::message::client::Connect)), *m_endpoint,
             boost::bind(&Client::handleSend, this, boost::asio::placeholders::error,
-                boost::asio::placeholders::bytes_transferred));
+            boost::asio::placeholders::bytes_transferred));
+        m_socket->async_receive_from(boost::asio::buffer(m_recvBuffer), *m_endpoint,
+            boost::bind(&Client::handleReceive, this, boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
     } else {
         std::cerr << "Failed to connect to server" << std::endl;
     }
@@ -118,5 +123,10 @@ bool Client::isConnected() const
 void Client::setConnected(bool connected)
 {
     m_connected = connected;
+}
+
+std::shared_ptr<std::vector<std::tuple<boost::array<char, network::message::MAX_PACKET_SIZE>, std::size_t>>> Client::getRecvMsgBuffer() const
+{
+    return m_recvMsgBuffer;
 }
 }

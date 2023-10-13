@@ -7,7 +7,8 @@
 
 #pragma once
 #include <iostream>
-#include <queue>
+#include <vector>
+#include <tuple>
 
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
@@ -33,6 +34,7 @@ private:
         m_endpoint = std::make_shared<boost::asio::ip::udp::endpoint>();
         m_outbox = std::make_shared<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderCompare, network::message::NetworkMessageHeaderEquality>>();
         m_inbox = std::make_shared<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderCompare, network::message::NetworkMessageHeaderEquality>>();
+        m_recvMsgBuffer = std::make_shared<std::vector<std::tuple<boost::array<char, network::message::MAX_PACKET_SIZE>, size_t>>>();
     }
 
 public:
@@ -113,6 +115,11 @@ public:
      * @param connected True if the client is connected to a server, false otherwise.
      */
     void setConnected(bool connected);
+    /**
+     * @brief Get the buffer of the received messages.
+     * @return The buffer of the received messages.
+     */
+    std::shared_ptr<std::vector<std::tuple<boost::array<char, network::message::MAX_PACKET_SIZE>, size_t>>> getRecvMsgBuffer() const;
 
 private:
     std::string m_ip;
@@ -123,6 +130,7 @@ private:
     std::shared_ptr<boost::asio::ip::udp::endpoint> m_endpoint;
     std::shared_ptr<std::thread> m_thread;
     boost::array<char, network::message::MAX_PACKET_SIZE> m_recvBuffer;
+    std::shared_ptr<std::vector<std::tuple<boost::array<char, network::message::MAX_PACKET_SIZE>, size_t>>> m_recvMsgBuffer;
     std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderCompare, network::message::NetworkMessageHeaderEquality>> m_inbox;
     std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderCompare, network::message::NetworkMessageHeaderEquality>> m_outbox;
     bool m_connected;
