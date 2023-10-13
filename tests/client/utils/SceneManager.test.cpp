@@ -29,16 +29,16 @@ TEST(SceneManager, unloadCurrentScene)
     rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
     rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
 
-    prefabManager.createPrefab("exit_button")
+    prefabManager.createPrefab("port_zone")
     .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(400, 0));
 
-    prefabManager.createPrefab("login_play_button")
-    .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0, 0));
+    sceneManager.addPrefabToScene("port_zone", rtype::utils::Scene::LOGIN);
 
     sceneManager.loadScene(rtype::utils::Scene::LOGIN, reg);
 
     sceneManager.unloadCurrentScene(reg);
 
+    ASSERT_EQ(sceneManager.getScenes()[rtype::utils::Scene::LOGIN][0], "port_zone");
     ASSERT_EQ(sceneManager.getCurrentScene(), rtype::utils::Scene::NONE);
     ASSERT_EQ(sceneManager.getPreviousScene(), rtype::utils::Scene::LOGIN);
     ASSERT_EQ(sceneManager.getEntities().size(), 0);
@@ -52,17 +52,10 @@ TEST(SceneManager, loadScene)
     reg.registerComponent<rtype::component::Transform>();
 
     rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
-    rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
-
-    prefabManager.createPrefab("exit_button")
-    .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(400, 0));
-
-    prefabManager.createPrefab("login_play_button")
-    .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0, 0));
 
     sceneManager.loadScene(rtype::utils::Scene::LOGIN, reg);
 
     ASSERT_EQ(sceneManager.getCurrentScene(), rtype::utils::Scene::LOGIN);
     ASSERT_EQ(sceneManager.getPreviousScene(), rtype::utils::Scene::NONE);
-    ASSERT_EQ(sceneManager.getEntities().size(), 2);
+    ASSERT_EQ(sceneManager.getEntities().size(), 1);
 }

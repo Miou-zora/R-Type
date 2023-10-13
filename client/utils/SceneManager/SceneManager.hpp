@@ -52,11 +52,16 @@ public:
      */
     bool loadScene(Scene scene, ecs::Registry& registry);
 
+    void addPrefabToScene(std::string prefabName, Scene scene) {
+        m_scenes[scene].push_back(prefabName);
+    }
+
     Scene getCurrentScene() const { return m_currentScene; }
     Scene getPreviousScene() const { return m_previousScene; }
 
     #ifdef UNIT_TEST
         std::vector<ecs::Entity> &getEntities() { return m_entities; }
+        std::map<Scene, std::vector<std::string>> &getScenes() { return m_scenes; }
     #endif
 
 private:
@@ -64,12 +69,12 @@ private:
     Scene m_currentScene;
     Scene m_previousScene;
     std::map<Scene, std::vector<std::string>> m_scenes = {
-        {Scene::LOGIN, {"login_play_button", "exit_button"}},
-        {Scene::MENU, {"exit_button"}},
-        {Scene::LOBBY, {""}},
-        {Scene::OPTIONS, {""}},
-        {Scene::GAME, {""}},
-        {Scene::NONE, {""}}
+        {Scene::LOGIN, {}},
+        {Scene::MENU, {}},
+        {Scene::LOBBY, {}},
+        {Scene::OPTIONS, {}},
+        {Scene::GAME, {}},
+        {Scene::NONE, {}}
     };
     std::vector<ecs::Entity> m_entities;
 };

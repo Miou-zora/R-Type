@@ -12,6 +12,14 @@ cmrc_add_resource_library(
 
     ALIAS assets::rc
     NAMESPACE assets
+    assets/textures/ships.png
+    assets/textures/buttons/BackButton.png
+    assets/textures/buttons/ExitButton.png
+    assets/textures/buttons/IPZone.png
+    assets/textures/buttons/PortZone.png
+    assets/textures/buttons/StartButton.png
+    assets/textures/spacebg.png
+    assets/textures/R-Type_Logo.png
 )
 
 set(SRC)
@@ -28,6 +36,7 @@ set(INCLUDE
 add_subdirectory("components")
 add_subdirectory("systems")
 add_subdirectory("utils")
+add_subdirectory("loads")
 add_subdirectory("network")
 
 include_directories(${INCLUDE})
