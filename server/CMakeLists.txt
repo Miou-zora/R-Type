@@ -12,14 +12,16 @@ set(INCLUDE
     "${CMAKE_SOURCE_DIR}/libs/network/"
     "${CMAKE_SOURCE_DIR}/libs/network/include"
     "${CMAKE_SOURCE_DIR}/libs/sharedEcsElements/components/"
+    "${CMAKE_SOURCE_DIR}/libs/sharedEcsElements/"
     "${CMAKE_SOURCE_DIR}/libs/sharedEcsElements/systems/"
     "${CMAKE_SOURCE_DIR}/libs/sharedEcsElements/utils/"
+    "${CMAKE_SOURCE_DIR}/libs/sharedEcsElements/tags/"
 )
 
 add_subdirectory("components")
 add_subdirectory("systems")
 add_subdirectory("network")
-
+add_subdirectory("utils")
 
 include_directories(${INCLUDE})
 

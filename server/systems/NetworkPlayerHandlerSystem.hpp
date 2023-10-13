@@ -8,8 +8,8 @@
 
 #include "ECS.hpp"
 #include "GameLevel.hpp"
-#include "GameRoom.hpp"
 #include "NetworkPlayer.hpp"
+#include "NetworkPlayerControl.hpp"
 #include "NetworkServer.hpp"
 
 namespace rtype::system {
@@ -22,8 +22,6 @@ public:
         ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers) const
     {
         for (auto&& [i, networkPlayerOpt] : ecs::containers::IndexedZipper(networkPlayers)) {
-            if (!networkPlayerOpt.has_value())
-                continue;
             rtype::component::NetworkPlayer& networkPlayer = networkPlayerOpt.value();
             auto& inbox = networkPlayer.inbox;
             while (!inbox->empty()) {
@@ -60,8 +58,19 @@ private:
         case rtype::network::message::client::CreateRoom::type:
             handleCreateRoomCallback(registry, networkPlayers, networkPlayer, networkPlayerEntity, msg);
             break;
+        case rtype::network::message::client::ChooseRoom::type:
+            handleChooseRoomCallback(registry, networkPlayers, networkPlayer, networkPlayerEntity, msg);
+            break;
         case rtype::network::message::client::StartGame::type:
             handleStartGameCallback(registry, networkPlayers, networkPlayer, networkPlayerEntity, msg);
+            break;
+        case rtype::network::message::client::PlayerMovement::type:
+            handlePlayerMoveCallback(registry, networkPlayers, networkPlayer, networkPlayerEntity, msg);
+            break;
+        case rtype::network::message::client::PlayerShoot::type:
+            handlePlayerShootCallback(registry, networkPlayers, networkPlayer, networkPlayerEntity, msg);
+            break;
+        case rtype::network::message::client::Ack::type:
             break;
         default:
             std::cerr << "Unknown message type " << static_cast<int>(msgHeader->type) << std::endl;
@@ -102,7 +111,29 @@ private:
         const boost::array<char, 512UL>& msg) const
     {
         auto component = rtype::component::GameRoom();
-        registry.emplaceComponent<rtype::component::GameRoom>(rtype::ecs::Entity(networkPlayerEntity), std::move(component));
+        registry.emplaceComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity), std::move(component));
+        auto roomInformation = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(component.id);
+        networkPlayer.outbox->push(rtype::network::message::pack(roomInformation));
+    }
+
+    /**
+     * @brief Handle choose room callback
+     * @param registry ECS registry
+     * @param networkPlayers Network players
+     * @param networkPlayer Network player
+     * @param networkPlayerEntity Network player entity
+     * @param msg Message
+     */
+    void handleChooseRoomCallback(ecs::Registry& registry,
+        ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers,
+        rtype::component::NetworkPlayer& networkPlayer,
+        size_t networkPlayerEntity,
+        boost::array<char, 512UL> msg) const
+    {
+        // TODO: make something useful like send error message if room does not exist
+        auto chooseRoom = rtype::network::message::unpack<rtype::network::message::client::ChooseRoom>(msg);
+        auto component = rtype::component::GameRoom(chooseRoom.roomId);
+        registry.emplaceComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity), std::move(component));
         auto roomInformation = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(component.id);
         networkPlayer.outbox->push(rtype::network::message::pack(roomInformation));
     }
@@ -123,7 +154,8 @@ private:
     {
         auto chooseLevel = rtype::network::message::unpack<rtype::network::message::client::ChooseLevel>(msg);
         auto gameLevel = rtype::component::GameLevel(chooseLevel.levelId);
-        registry.emplaceComponent<rtype::component::GameLevel>(rtype::ecs::Entity(networkPlayerEntity), std::move(gameLevel));
+        // TODO : check if it exist or add in perfab
+        registry.emplaceComponent<rtype::component::GameLevel>(registry.entityFromIndex(networkPlayerEntity), std::move(gameLevel));
         auto levelInformation = rtype::network::message::createEvent<rtype::network::message::server::LevelInformation>(gameLevel.level);
         networkPlayer.outbox->push(rtype::network::message::pack(levelInformation));
     }
@@ -143,7 +175,55 @@ private:
         boost::array<char, 512UL> msg) const
     {
         auto startGameAck = rtype::network::message::createEvent<rtype::network::message::server::GameStarted>();
+        rtype::utils::GameLogicManager::getInstance().startGame(registry, networkPlayerEntity);
         networkPlayer.outbox->push(rtype::network::message::pack(startGameAck));
+    }
+
+    /**
+     * @brief Handle player move callback
+     * @param registry ECS registry
+     * @param networkPlayers Network players
+     * @param networkPlayer Network player
+     * @param networkPlayerEntity Network player entity
+     * @param msg Message
+     */
+    void handlePlayerMoveCallback(ecs::Registry& registry,
+        ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers,
+        rtype::component::NetworkPlayer& networkPlayer,
+        size_t networkPlayerEntity,
+        boost::array<char, 512UL> msg) const
+    {
+        if (!registry.hasComponent<rtype::component::NetworkPlayerControl>(registry.entityFromIndex(networkPlayerEntity))) {
+            return;
+        }
+        auto playerMove = rtype::network::message::unpack<rtype::network::message::client::PlayerMovement>(msg);
+        auto& playerControl = registry.getComponents<rtype::component::NetworkPlayerControl>()[networkPlayerEntity].value();
+        playerControl.up = playerMove.keys_pressed[0];
+        playerControl.down = playerMove.keys_pressed[1];
+        playerControl.left = playerMove.keys_pressed[2];
+        playerControl.right = playerMove.keys_pressed[3];
+    }
+
+    /**
+     * @brief Handle player shoot callback
+     * @param registry ECS registry
+     * @param networkPlayers Network players
+     * @param networkPlayer Network player
+     * @param networkPlayerEntity Network player entity
+     * @param msg Message
+     * @return void
+     */
+    void handlePlayerShootCallback(ecs::Registry& registry,
+        ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers,
+        rtype::component::NetworkPlayer& networkPlayer,
+        size_t networkPlayerEntity,
+        const boost::array<char, 512UL>& msg) const
+    {
+        if (!registry.hasComponent<rtype::component::NetworkPlayerControl>(registry.entityFromIndex(networkPlayerEntity))) {
+            return;
+        }
+        auto& playerControl = registry.getComponents<rtype::component::NetworkPlayerControl>()[networkPlayerEntity].value();
+        playerControl.shoot = true;
     }
 };
 }

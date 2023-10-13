@@ -18,6 +18,11 @@ SERVER_PORT: int = 12345
 
 
 class Test(ABC):
+    TESTS = []
+
+    def __init_subclass__(cls, **kwargs):
+        cls.TESTS.append(cls)
+
     def __init__(self):
         self._server_process: subprocess.Popen = None
         self._sock: socket.socket = None
@@ -73,7 +78,23 @@ class Test(ABC):
             self.stop_server()
             self.check_exit_code()
             self.check_outputs()
-        
+    
+    @classmethod
+    def run_all_tests(cls) -> Tuple[int, int]:
+        passes, fails = 0, 0
+        for test in cls.TESTS:
+            print(f'Running test {test.__name__}...')
+            try:
+                test().run()
+                passes += 1
+                print(f'Passed')
+            except Exception as e:
+                fails += 1
+                print(f'Failed: {e}')
+            if test is not cls.TESTS[-1]:
+                time.sleep(2)
+            
+        return passes, fails
 
 
 class TestConnect(Test):
@@ -130,28 +151,63 @@ class TestWholeStartSequence(Test):
         assert unpacked[1] == pack.Server.GameStarted
 
 
-TESTS: List[Test] = [
-    TestConnect,
-    TestCreateRoom,
-    TestChooseLevel,
-    TestWholeStartSequence,
-]
+class TestCrashCheck1(Test):
+    # Just send a movement packet with an initialized client to check that it doesn't crash
+    def run_tests(self):
+        self._sock.send(pack.Client.pack(pack.Client.PlayerMovement, 0, 0, 0, 0, 1, 0))
+
+
+class TestCrashCheck2(Test):
+    # Send one movement packet after the connect sequence
+    def run_tests(self):
+        self._sock.send(pack.Client.pack(pack.Client.Connect))
+        self._sock.send(pack.Client.pack(pack.Client.CreateRoom))
+        self._sock.send(pack.Client.pack(pack.Client.ChooseLevel, 0))
+        self._sock.send(pack.Client.pack(pack.Client.StartGame))
+        self._sock.send(pack.Client.pack(pack.Client.PlayerMovement, 0, 0, 0, 0, 1, 0))
+
+
+class TestCrashCheck3(Test):
+    # Send one movement packet after half finished start
+    def run_tests(self):
+        self._sock.send(pack.Client.pack(pack.Client.Connect))
+        self._sock.send(pack.Client.pack(pack.Client.PlayerMovement, 0, 0, 0, 0, 1, 0))
+
+
+class TestCrashCheck4(Test):
+    # Send one movement packet without starting game
+    def run_tests(self):
+        self._sock.send(pack.Client.pack(pack.Client.Connect))
+        self._sock.send(pack.Client.pack(pack.Client.CreateRoom))
+        self._sock.send(pack.Client.pack(pack.Client.ChooseLevel, 0))
+        self._sock.send(pack.Client.pack(pack.Client.PlayerMovement, 0, 0, 0, 0, 1, 0))
+
+
+class TestCrashCheck5(Test):
+    # Send one player shoot without real game
+    def run_tests(self):
+        self._sock.send(pack.Client.pack(pack.Client.Connect))
+        self._sock.send(pack.Client.pack(pack.Client.PlayerShoot))
+
+
+class TestRandomMessages1(Test):
+    # Send messages in some random orders
+    def run_tests(self):
+        self._sock.send(pack.Client.pack(pack.Client.Ack))
+        self._sock.send(pack.Client.pack(pack.Client.StartGame))
+
+
+class TestRandomMessages2(Test):
+    # Send messages in some random orders
+    def run_tests(self):
+        self._sock.send(pack.Client.pack(pack.Client.ChooseRoom))
+        self._sock.send(pack.Client.pack(pack.Client.ChooseRoom))
+        self._sock.send(pack.Client.pack(pack.Client.ChooseRoom))
+
 
 if __name__ == '__main__':
     print("Starting functionnal tests for the server")
     print()
-    passes, fails = 0, 0
-    time.sleep(0.5)
-    for test in TESTS:
-        print(f'Running test {test.__name__}...')
-        try:
-            test().run()
-            passes += 1
-            print(f'Passed')
-        except Exception as e:
-            fails += 1
-            print(f'Failed: {e}')
-        if test is not TESTS[-1]:
-            time.sleep(2)
+    passes, fails = Test.run_all_tests()
     print()
     print(f'Passed: {passes}, Failed: {fails}')

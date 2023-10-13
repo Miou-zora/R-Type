@@ -20,9 +20,7 @@ public:
     {
         auto& networkServer = rtype::network::NetworkServer::getInstance();
         auto& recvMsgBuffer = networkServer.getRecvMsgBuffer();
-        if (!networkServer.shouldTick())
-            return;
-        for (auto&& [networkPlayerOpt] : ecs::containers::Zipper(networkPlayers)) {
+        for (auto&& [i, networkPlayerOpt] : ecs::containers::IndexedZipper(networkPlayers)) {
             if (!networkPlayerOpt.has_value())
                 continue;
             rtype::component::NetworkPlayer& networkPlayer = networkPlayerOpt.value();
@@ -30,13 +28,13 @@ public:
             while (!outbox->empty()) {
                 auto& msg = outbox->top();
                 std::size_t size = rtype::network::message::server::getMessageSize(msg);
-                outbox->pop();
+                const auto& unpackedTest = reinterpret_cast<const rtype::network::message::NetworkMessageHeader*>(msg.data());
                 networkServer.getSocket().async_send_to(boost::asio::buffer(msg, size), networkPlayer.endpoint,
                     boost::bind(&rtype::network::NetworkServer::handleSend, &networkServer,
                         boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+                outbox->pop();
             }
         }
-        networkServer.updateLastTick();
     }
 };
 }

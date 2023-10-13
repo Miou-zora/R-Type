@@ -76,7 +76,7 @@ class Client(Packer):
         0x0003: _HEADER_FOOTER_FORMAT.format(data='H'),
         0x0004: _HEADER_FOOTER_FORMAT.format(data=''),
         0x0005: _HEADER_FOOTER_FORMAT.format(data=''),
-        0x0010: _HEADER_FOOTER_FORMAT.format(data='Hff????'),
+        0x0010: _HEADER_FOOTER_FORMAT.format(data='ff????'),
         0x0011: _HEADER_FOOTER_FORMAT.format(data=''),
         0x0012: _HEADER_FOOTER_FORMAT.format(data=''),
         0x0013: _HEADER_FOOTER_FORMAT.format(data='h'),

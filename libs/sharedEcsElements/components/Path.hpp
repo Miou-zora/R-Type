@@ -12,7 +12,7 @@
 #include <ctime>
 #include <cmath>
 #include "Vector.hpp"
-#include "Registry.hpp"
+#include "ECS.hpp"
 
 namespace rtype::component
 {

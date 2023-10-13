@@ -11,6 +11,7 @@ struct NetworkPlayer {
     NetworkPlayer(boost::asio::ip::udp::endpoint _endpoint)
     {
         endpoint = _endpoint;
+        lastMessage = std::chrono::high_resolution_clock::now();
         inbox = std::make_shared<rtype::network::message::NetworkMessageQueue<
             boost::array<char, rtype::network::message::MAX_PACKET_SIZE>,
             rtype::network::message::NetworkMessageHeaderEquality,
@@ -26,6 +27,7 @@ struct NetworkPlayer {
     NetworkPlayer& operator=(const NetworkPlayer& other) = default;
 
     boost::asio::ip::udp::endpoint endpoint;
+    std::chrono::time_point<std::chrono::high_resolution_clock> lastMessage;
     std::shared_ptr<rtype::network::message::NetworkMessageQueue<
         boost::array<char, rtype::network::message::MAX_PACKET_SIZE>,
         rtype::network::message::NetworkMessageHeaderEquality,

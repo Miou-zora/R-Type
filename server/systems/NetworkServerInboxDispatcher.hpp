@@ -8,6 +8,7 @@
 #include "ECS.hpp"
 #include "NetworkPlayer.hpp"
 #include "NetworkServer.hpp"
+#include "PrefabManager.hpp"
 
 namespace rtype::system {
 class NetworkServerInboxDispatcher {
@@ -30,6 +31,7 @@ public:
             auto networkPlayerEntity = getNetworkPlayerEntity(registry, endpoint);
             auto& networkPlayer = registry.getComponents<rtype::component::NetworkPlayer>()[networkPlayerEntity].value();
             networkPlayer.inbox->push(recvBuffer);
+            networkPlayer.lastMessage = std::chrono::high_resolution_clock::now();
         }
     }
 
@@ -46,10 +48,9 @@ private:
                 continue;
             rtype::component::NetworkPlayer& networkPlayer = networkPlayerOpt.value();
             if (networkPlayer.endpoint == endpoint)
-                return rtype::ecs::Entity(i);
+                return registry.entityFromIndex(i);
         }
-        rtype::ecs::Entity entity = registry.spawnEntity();
-        registry.emplaceComponent<rtype::component::NetworkPlayer>(entity, endpoint);
+        rtype::ecs::Entity entity = rtype::utils::GameLogicManager::getInstance().createNewPlayer(registry, endpoint);
         return entity;
     }
 };

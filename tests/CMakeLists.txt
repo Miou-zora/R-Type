@@ -20,6 +20,7 @@ set(TEST_INCLUDE)
 
 add_subdirectory("libs")
 add_subdirectory("client")
+add_subdirectory("server")
 
 include_directories(${TEST_INCLUDE})
 

@@ -10,7 +10,6 @@
 #include "ECS.hpp"
 #include "Collider.hpp"
 #include "Transform.hpp"
-#include "IndexedZipper.hpp"
 
 namespace rtype::system
 {
