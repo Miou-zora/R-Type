@@ -12,7 +12,8 @@ namespace rtype::utils
     enum class Scene {
         LOGIN,
         MENU,
-        LOBBY,
+        ROOM,
+        JOIN,
         OPTIONS,
         GAME,
         NONE

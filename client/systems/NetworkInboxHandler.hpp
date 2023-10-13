@@ -11,6 +11,7 @@
 #include "ECS.hpp"
 #include "ServerID.hpp"
 #include "PrefabManager.hpp"
+#include "SceneManager.hpp"
 
 namespace rtype::system
 {
@@ -23,8 +24,9 @@ namespace rtype::system
         NetworkInboxHandler() = default;
         ~NetworkInboxHandler() = default;
 
-        void operator()(ecs::Registry &registry)
+        void operator()(ecs::Registry &registry) const
         {
+            rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
             while (!network::Client::getInstance().getInbox()->empty())
             {
                 boost::array<char, rtype::network::message::MAX_PACKET_SIZE> message = network::Client::getInstance().getInbox()->top();
@@ -35,12 +37,17 @@ namespace rtype::system
                     {
                     case network::message::server::ConnectAck::type:
                         network::Client::getInstance().setConnected(true);
+                        sceneManager.loadScene(rtype::utils::Scene::MENU, registry);
                         break;
                     case network::message::server::RoomInformation::type:
+                        sceneManager.loadScene(rtype::utils::Scene::ROOM, registry);
+                        // TODO: save room info with roomInfo component
                         break;
                     case network::message::server::LevelInformation::type:
+                        // TODO: save level info in roomInfo component
                         break;
                     case network::message::server::GameStarted::type:
+                        sceneManager.loadScene(rtype::utils::Scene::GAME, registry);
                         break;
                     case network::message::server::GameEnded::type:
                         break;

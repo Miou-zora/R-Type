@@ -18,6 +18,9 @@ cmrc_add_resource_library(
     assets/textures/buttons/IPZone.png
     assets/textures/buttons/PortZone.png
     assets/textures/buttons/StartButton.png
+    assets/textures/buttons/SingleButton.png
+    assets/textures/buttons/JoinRoomButton.png
+    assets/textures/buttons/CreateRoomButton.png
     assets/textures/spacebg.png
     assets/textures/R-Type_Logo.png
 )

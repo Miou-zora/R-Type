@@ -19,7 +19,7 @@ public:
     NetworkOutboxHandler() = default;
     ~NetworkOutboxHandler() = default;
 
-    void operator()(ecs::Registry& registry)
+    void operator()(ecs::Registry& registry) const
     {
         while (!network::Client::getInstance().getOutbox()->empty()) {
             boost::array<char, rtype::network::message::MAX_PACKET_SIZE> message = network::Client::getInstance().getOutbox()->top();

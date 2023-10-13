@@ -71,7 +71,8 @@ private:
     std::map<Scene, std::vector<std::string>> m_scenes = {
         {Scene::LOGIN, {}},
         {Scene::MENU, {}},
-        {Scene::LOBBY, {}},
+        {Scene::ROOM, {}},
+        {Scene::JOIN, {}},
         {Scene::OPTIONS, {}},
         {Scene::GAME, {}},
         {Scene::NONE, {}}
