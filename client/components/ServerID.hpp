@@ -8,17 +8,17 @@
 #pragma once
 
 namespace rtype::component {
-    /**
-     * @brief ServerID component used to store the server id of an entity
-     */
-    struct ServerID {
-        ServerID(int id_ = -1)
-            : id(id_) {};
-        ~ServerID(void) = default;
+/**
+ * @brief ServerID component used to store the server id of an entity
+ */
+struct ServerID {
+    ServerID(int id_ = -1)
+        : id(id_) {};
+    ~ServerID(void) = default;
 
-        ServerID(const ServerID& other) = default;
-        ServerID& operator=(const ServerID& other) = default;
+    ServerID(const ServerID& other) = default;
+    ServerID& operator=(const ServerID& other) = default;
 
-        int id;
-    };
+    int id;
+};
 }

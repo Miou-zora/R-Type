@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "SceneManager.hpp"
 #include "ECS.hpp"
+#include "SceneManager.hpp"
 
 namespace rtype::system {
 /**
@@ -21,7 +21,7 @@ public:
 
     void operator()(ecs::Registry& registry) const
     {
-        rtype::utils::SceneManager &sceneManager = rtype::utils::SceneManager::getInstance();
+        rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
         if (sceneManager.getCurrentScene() != sceneManager.getNextScene()) {
             sceneManager.loadScene(sceneManager.getNextScene(), registry);
         }

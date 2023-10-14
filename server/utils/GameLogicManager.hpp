@@ -126,6 +126,13 @@ public:
     void startGame(rtype::ecs::Registry& registry, size_t playerIndex)
     {
         auto& playerGameRoom = registry.getComponents<rtype::component::GameRoom>()[playerIndex].value();
+        for (auto&& [index, networkPlayerOpt, gameRoomOpt] : ecs::containers::IndexedZipper(registry.getComponents<rtype::component::NetworkPlayer>(), registry.getComponents<rtype::component::GameRoom>())) {
+            auto& networkPlayer = networkPlayerOpt.value();
+            auto& gameRoom = gameRoomOpt.value();
+            if (gameRoom.id == playerGameRoom.id) {
+                registry.emplaceComponent<rtype::component::Transform>(registry.entityFromIndex(index));
+            }
+        }
         rtype::component::GameRoom gameRoom = playerGameRoom;
         rtype::ecs::Entity spawner = rtype::utils::PrefabManager::getInstance().instantiate("enemySpawner", registry);
         registry.getComponents<rtype::component::GameRoom>()[spawner].value() = gameRoom;
@@ -139,7 +146,6 @@ public:
     {
         rtype::utils::PrefabManager& manager = rtype::utils::PrefabManager::getInstance();
         rtype::ecs::Prefab& player = manager.createPrefab("player");
-        player.addComponent<rtype::component::Transform>();
         player.addComponent<rtype::component::Velocity>();
         player.addComponent<rtype::component::GameRoom>();
         player.addComponent<rtype::component::Health>(getValue<int>("playerHealth"));

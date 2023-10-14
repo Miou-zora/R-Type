@@ -66,10 +66,10 @@ void Client::handleConnect(const boost::system::error_code& error)
         boost::array<char, rtype::network::message::MAX_PACKET_SIZE> packed = network::message::pack<network::message::client::Connect>(message);
         m_socket->async_send_to(boost::asio::buffer(packed, sizeof(network::message::client::Connect)), *m_endpoint,
             boost::bind(&Client::handleSend, this, boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
+                boost::asio::placeholders::bytes_transferred));
         m_socket->async_receive_from(boost::asio::buffer(m_recvBuffer), *m_endpoint,
             boost::bind(&Client::handleReceive, this, boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
+                boost::asio::placeholders::bytes_transferred));
     } else {
         std::cerr << "Failed to connect to server" << std::endl;
     }

@@ -7,8 +7,8 @@
 
 #pragma once
 #include <iostream>
-#include <vector>
 #include <tuple>
+#include <vector>
 
 #include <boost/array.hpp>
 #include <boost/asio.hpp>

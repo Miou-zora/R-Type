@@ -21,13 +21,14 @@ public:
     void operator()(ecs::Registry& registry) const
     {
         while (!network::Client::getInstance().getRecvMsgBuffer()->empty()) {
-            std::tuple<boost::array<char, rtype::network::message::MAX_PACKET_SIZE>, size_t> message = network::Client::getInstance().getRecvMsgBuffer()->back();
-            network::Client::getInstance().getRecvMsgBuffer()->pop_back();
+            std::tuple<boost::array<char, rtype::network::message::MAX_PACKET_SIZE>, size_t> message = network::Client::getInstance().getRecvMsgBuffer()->front();
+            network::message::NetworkMessageHeader header = reinterpret_cast<network::message::NetworkMessageHeader&>(std::get<0>(message)[0]);
             if (!rtype::network::message::server::checkMessageIntegrity(std::get<0>(message), std::get<1>(message))) {
                 std::cerr << "Network error (checkMessageIntegrity): malformed message." << std::endl;
                 continue;
             }
             network::Client::getInstance().getInbox()->push(std::get<0>(message));
+            network::Client::getInstance().getRecvMsgBuffer()->erase(network::Client::getInstance().getRecvMsgBuffer()->begin());
         }
     }
 };

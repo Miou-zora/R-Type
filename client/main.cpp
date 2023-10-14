@@ -6,14 +6,18 @@
 */
 
 #include <iostream>
-namespace raylib {
-#include <raylib.h>
-}
+
+#include "AckSystem.hpp"
 #include "Click.hpp"
+#include "Client.hpp"
 #include "Control.hpp"
 #include "Draw.hpp"
+#include "NetworkInboxChecker.hpp"
+#include "NetworkInboxHandler.hpp"
+#include "NetworkOutboxHandler.hpp"
 #include "Scroll.hpp"
 #include "Selection.hpp"
+#include "SwitchScene.hpp"
 #include "VelocityApplicator.hpp"
 #include "loads.hpp"
 #include "systems/TextInput.hpp"
@@ -21,12 +25,9 @@ namespace raylib {
 #include <boost/asio.hpp>
 #include <ctime>
 #include <string>
-#include "NetworkInboxHandler.hpp"
-#include "NetworkOutboxHandler.hpp"
-#include "NetworkInboxChecker.hpp"
-#include "Client.hpp"
-#include "AckSystem.hpp"
-#include "SwitchScene.hpp"
+namespace raylib {
+#include <raylib.h>
+}
 
 int main(int ac, char* av[])
 {

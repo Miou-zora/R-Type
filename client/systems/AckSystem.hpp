@@ -30,8 +30,9 @@ public:
         boost::array<char, rtype::network::message::MAX_PACKET_SIZE> packed = network::message::pack<network::message::client::Ack>(message);
         network::Client::getInstance().getOutbox()->push(packed);
     }
+
 private:
     static float _lastAck;
 };
-    float AckSystem::_lastAck = 0;
+float AckSystem::_lastAck = 0;
 }

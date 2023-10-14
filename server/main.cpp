@@ -76,7 +76,7 @@ void addSystems(rtype::ecs::Registry& reg)
     reg.addSystem<rtype::component::GameRoom>(rtype::system::RoomCleanup());
     reg.addSystem<rtype::component::NetworkPlayer>(rtype::system::NetworkServerTickUpdater());
     reg.addSystem<rtype::component::Health>(rtype::system::ServerDeath());
-    reg.addSystem<rtype::component::NetworkPlayer, rtype::component::GameRoom>(rtype::system::NetworkPlayerDisconnection(std::chrono::milliseconds(5000)));
+    reg.addSystem<rtype::component::NetworkPlayer, rtype::component::GameRoom>(rtype::system::NetworkPlayerDisconnection(std::chrono::milliseconds(10000)));
 }
 
 int main(int ac, char* av[])
