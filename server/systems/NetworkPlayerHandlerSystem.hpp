@@ -193,9 +193,7 @@ private:
             std::cerr << "handleStartGameCallback: warning: Player " << networkPlayerEntity << " tried to start a game without being in a game room" << std::endl;
             return;
         }
-        auto startGameAck = rtype::network::message::createEvent<rtype::network::message::server::GameStarted>();
         rtype::utils::GameLogicManager::getInstance().startGame(registry, networkPlayerEntity);
-        networkPlayer.criticalMessages[startGameAck.header.id] = rtype::network::message::pack(startGameAck);
         std::cout << "handleStartGameCallback: info: Player " << networkPlayerEntity << " started the game" << std::endl;
     }
 

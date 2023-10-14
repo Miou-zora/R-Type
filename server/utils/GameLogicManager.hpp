@@ -14,6 +14,7 @@
 #include "Enemy.hpp"
 #include "GameRoom.hpp"
 #include "Health.hpp"
+#include "NetworkPlayer.hpp"
 #include "NetworkPlayerControl.hpp"
 #include "Path.hpp"
 #include "PrefabManager.hpp"
@@ -105,8 +106,9 @@ public:
      * @brief Handle creation of a bullet when a player shoots
      * @param registry ECS registry
      * @param playerIndex Player entity index
+     * @return The id of the bullet
      */
-    void createShootedBullet(rtype::ecs::Registry& registry, size_t playerIndex)
+    std::size_t createShootedBullet(rtype::ecs::Registry& registry, size_t playerIndex)
     {
         rtype::ecs::Entity bullet = rtype::utils::PrefabManager::getInstance().instantiate("bullet", registry);
         auto& playerTransform = registry.getComponents<rtype::component::Transform>()[playerIndex].value();
@@ -117,6 +119,7 @@ public:
         auto& gameRoom = registry.getComponents<rtype::component::GameRoom>()[bullet].value();
         auto& playerGameRoom = registry.getComponents<rtype::component::GameRoom>()[playerIndex].value();
         gameRoom = playerGameRoom;
+        return bullet;
     }
 
     /**
@@ -138,6 +141,24 @@ public:
         rtype::ecs::Entity spawner = rtype::utils::PrefabManager::getInstance().instantiate("enemySpawner", registry);
         registry.getComponents<rtype::component::GameRoom>()[spawner].value() = gameRoom;
         registry.getComponents<rtype::component::Spawner>()[spawner].value().addEntityToSpawnList("enemy", getValue<float>("enemySpawnCooldown"));
+        for (auto&& [gameRoomOpt, networkPlayerOpt] : ecs::containers::Zipper(registry.getComponents<rtype::component::GameRoom>(), registry.getComponents<rtype::component::NetworkPlayer>())) {
+            auto& gameRoom = gameRoomOpt.value();
+            auto& networkPlayer = networkPlayerOpt.value();
+            if (gameRoom.id != playerGameRoom.id) {
+                continue;
+            }
+            auto startGameAck = rtype::network::message::createEvent<rtype::network::message::server::GameStarted>();
+            networkPlayer.criticalMessages[startGameAck.header.id] = rtype::network::message::pack(startGameAck);
+            for (auto&& [pIndex, gameRoomOpt, networkPlayerOpt] : ecs::containers::IndexedZipper(registry.getComponents<rtype::component::GameRoom>(), registry.getComponents<rtype::component::NetworkPlayer>())) {
+                auto& gameRoom = gameRoomOpt.value();
+                if (gameRoom.id != playerGameRoom.id) {
+                    continue;
+                }
+                auto& playerTransform = registry.getComponents<rtype::component::Transform>()[pIndex].value();
+                auto playerSpawned = rtype::network::message::createEvent<rtype::network::message::server::PlayerSpawn>(pIndex, playerTransform.position.x, playerTransform.position.y);
+                networkPlayer.criticalMessages[playerSpawned.header.id] = rtype::network::message::pack(playerSpawned);
+            }
+        }
     }
 
     /**

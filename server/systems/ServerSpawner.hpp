@@ -9,8 +9,10 @@
 
 #include <unordered_map>
 
+#include "BulletInformation.hpp"
 #include "ECS.hpp"
 #include "GameRoom.hpp"
+#include "NetworkPlayer.hpp"
 #include "PrefabManager.hpp"
 #include "Transform.hpp"
 #include "components/Spawner.hpp"
@@ -43,8 +45,10 @@ private:
         while (spawner.spawnList.size() != 0 && spawner.timer >= spawner.spawnList[0].spawnDelay) {
             spawner.timer -= spawner.spawnList[0].spawnDelay;
             auto entity = rtype::utils::PrefabManager::getInstance().instantiate(spawner.spawnList[0].entityName, registry);
-            if (registry.hasComponent<rtype::component::GameRoom>(entity))
+            if (registry.hasComponent<rtype::component::GameRoom>(entity)) {
                 registry.getComponents<rtype::component::GameRoom>()[entity].value().id = spawnerGameRoomId;
+                sendSpawnToNetworkPlayers(registry, entity);
+            }
             if (registry.hasComponent<rtype::component::Transform>(entity) && registry.hasComponent<rtype::component::Transform>(registry.entityFromIndex(index))) {
                 rtype::component::Transform& entityTransform = registry.getComponents<rtype::component::Transform>()[entity].value();
                 entityTransform.position += registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value().position;
@@ -55,6 +59,40 @@ private:
             }
             spawner.spawnList.erase(spawner.spawnList.begin());
         }
+    }
+
+    void sendSpawnToNetworkPlayers(rtype::ecs::Registry& registry, rtype::ecs::Entity entity) const
+    {
+        auto& entityGameRoom = registry.getComponents<rtype::component::GameRoom>()[entity].value();
+        auto msg = getSpawnMessage(registry, entity);
+        if (!msg.has_value())
+            return;
+        for (auto&& [index, networkPlayer, gameRoom] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::NetworkPlayer>(), registry.getComponents<rtype::component::GameRoom>())) {
+            if (gameRoom.value().id == entityGameRoom.id) {
+                addToCriticalMessages(networkPlayer.value(), msg.value());
+            }
+        }
+    }
+
+    std::optional<boost::array<char, rtype::network::message::MAX_PACKET_SIZE>> getSpawnMessage(rtype::ecs::Registry& registry, std::size_t index) const
+    {
+        if (registry.hasComponent<rtype::tag::Enemy>(registry.entityFromIndex(index))) {
+            const auto& transform = registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value();
+            auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemySpawn>(index, transform.position.x, transform.position.y);
+            return std::make_optional<boost::array<char, rtype::network::message::MAX_PACKET_SIZE>>(rtype::network::message::pack(msg));
+        }
+        return std::nullopt;
+    }
+
+    /**
+     * @brief Add the message to critical messages if needed
+     * @param player Network player
+     * @param msg Message
+     */
+    void addToCriticalMessages(rtype::component::NetworkPlayer& player, const boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& msg) const
+    {
+        const auto& unpacked = reinterpret_cast<const rtype::network::message::NetworkMessageHeader*>(msg.data());
+        player.criticalMessages[unpacked->id] = msg;
     }
 };
 }
