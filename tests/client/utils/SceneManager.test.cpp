@@ -40,7 +40,6 @@ TEST(SceneManager, unloadCurrentScene)
 
     ASSERT_EQ(sceneManager.getScenes()[rtype::utils::Scene::LOGIN][0], "port_zone");
     ASSERT_EQ(sceneManager.getCurrentScene(), rtype::utils::Scene::NONE);
-    ASSERT_EQ(sceneManager.getPreviousScene(), rtype::utils::Scene::LOGIN);
     ASSERT_EQ(sceneManager.getEntities().size(), 0);
 }
 

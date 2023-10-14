@@ -62,9 +62,9 @@ void initInputIp(rtype::ecs::Registry& reg)
         .addComponent<rtype::component::DebugColliderDisplay>(true)
         .addComponent<rtype::component::Collider>(assetsManager.getTexture("ip_zone").width, assetsManager.getTexture("ip_zone").height)
         .addComponent<rtype::component::Drawable>("ip_zone", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("ip_zone").width, assetsManager.getTexture("ip_zone").height), 1)
-        .addComponent<rtype::component::TextInputable>()
+        .addComponent<rtype::component::TextInputable>(15)
         .addComponent<rtype::component::Selectable>()
-        .addComponent<rtype::component::Text>("", rtype::component::Text::DEFAULT_FONT, 25)
+        .addComponent<rtype::component::Text>("127.0.0.1", rtype::component::Text::DEFAULT_FONT, 25)
         .addComponent<rtype::component::Nameable>("IP");
     prefabManager.createPrefab("ip_text")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(650, 510))
@@ -82,9 +82,9 @@ void initInputPort(rtype::ecs::Registry& reg)
         .addComponent<rtype::component::DebugColliderDisplay>(true)
         .addComponent<rtype::component::Collider>(assetsManager.getTexture("port_zone").width, assetsManager.getTexture("port_zone").height)
         .addComponent<rtype::component::Drawable>("port_zone", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("port_zone").width, assetsManager.getTexture("port_zone").height), 1)
-        .addComponent<rtype::component::TextInputable>()
+        .addComponent<rtype::component::TextInputable>(5)
         .addComponent<rtype::component::Selectable>()
-        .addComponent<rtype::component::Text>("", rtype::component::Text::DEFAULT_FONT, 25)
+        .addComponent<rtype::component::Text>("12345", rtype::component::Text::DEFAULT_FONT, 25)
         .addComponent<rtype::component::Nameable>("PORT");
 
     prefabManager.createPrefab("port_text")
@@ -129,7 +129,7 @@ void title(rtype::ecs::Registry& reg)
 
     prefabManager.createPrefab("main_title")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(550, 200))
-        .addComponent<rtype::component::Drawable>("main_title", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("main_title").width, assetsManager.getTexture("main_title").height), 0);
+        .addComponent<rtype::component::Drawable>("main_title", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("main_title").width, assetsManager.getTexture("main_title").height), 1);
 }
 
 void initLogin(rtype::ecs::Registry& reg)

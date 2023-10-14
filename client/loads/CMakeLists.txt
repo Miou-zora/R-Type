@@ -4,6 +4,7 @@ set(SRC
     ${SRC}
     "${CMAKE_CURRENT_SOURCE_DIR}/loginPage.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/menuPage.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/joinPage.cpp"
     PARENT_SCOPE
 )
 

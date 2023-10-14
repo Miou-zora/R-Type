@@ -25,6 +25,8 @@ namespace raylib {
 #include "NetworkOutboxHandler.hpp"
 #include "NetworkInboxChecker.hpp"
 #include "Client.hpp"
+#include "AckSystem.hpp"
+#include "SwitchScene.hpp"
 
 int main(int ac, char* av[])
 {
@@ -32,17 +34,18 @@ int main(int ac, char* av[])
     rtype::ecs::Registry reg;
 
     // add systems
+    reg.addSystem<rtype::component::Selectable, rtype::component::Transform, rtype::component::Collider>(rtype::system::Selection());
+    reg.addSystem<rtype::component::Selectable, rtype::component::TextInputable, rtype::component::Text>(rtype::system::TextInput());
+    reg.addSystem<rtype::component::Drawable, rtype::component::Scrollable>(rtype::system::Scroll());
     reg.addSystem<rtype::component::Controllable, rtype::component::Velocity>(rtype::system::Control());
     reg.addSystem<rtype::component::Transform, rtype::component::Velocity>(rtype::system::VelocityApplicator());
     reg.addSystem<>(rtype::system::Draw());
-    reg.addSystem<rtype::component::Selectable, rtype::component::Transform, rtype::component::Collider>(rtype::system::Selection());
-    reg.addSystem<rtype::component::Selectable, rtype::component::TextInputable, rtype::component::Text>(rtype::system::TextInput());
     reg.addSystem<rtype::component::DebugColliderDisplay, rtype::component::Transform, rtype::component::Collider>(rtype::system::DebugColliderDisplayer());
     reg.addSystem<rtype::component::Clickable, rtype::component::Transform, rtype::component::Collider>(rtype::system::Click());
-    reg.addSystem<rtype::component::Drawable, rtype::component::Scrollable>(rtype::system::Scroll());
     reg.addSystem<>(rtype::system::NetworkInboxChecker());
     reg.addSystem<>(rtype::system::NetworkInboxHandler());
     reg.addSystem<>(rtype::system::NetworkOutboxHandler());
+    reg.addSystem<>(rtype::system::SwitchScene());
 
     // add components
     reg.registerComponent<rtype::component::Controllable>();
@@ -62,9 +65,10 @@ int main(int ac, char* av[])
 
     initLogin(reg);
     initMenu(reg);
+    initJoin(reg);
 
     // remember to load the first scene LOGIN
-    sceneManager.loadScene(rtype::utils::Scene::LOGIN, reg);
+    sceneManager.setNextScene(rtype::utils::Scene::LOGIN);
 
     while (!raylib::WindowShouldClose()) {
         reg.runSystems();

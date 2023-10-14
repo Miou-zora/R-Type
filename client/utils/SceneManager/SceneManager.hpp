@@ -21,9 +21,12 @@ namespace rtype::utils
  *
  */
 class SceneManager {
+private:
+    SceneManager() : m_currentScene(Scene::NONE), m_previousScene(Scene::NONE), m_nextScene(Scene::NONE) {};
 public:
-    SceneManager() : m_currentScene(Scene::NONE), m_previousScene(Scene::NONE) {};
     ~SceneManager() = default;
+    SceneManager(const SceneManager &) = delete;
+    SceneManager &operator=(const SceneManager &) = delete;
 
     /**
      * @brief Get the instance of the SceneManager. If it doesn't exist, it will be created.
@@ -58,6 +61,8 @@ public:
 
     Scene getCurrentScene() const { return m_currentScene; }
     Scene getPreviousScene() const { return m_previousScene; }
+    void setNextScene(Scene scene) { m_nextScene = scene; }
+    Scene getNextScene() const { return m_nextScene; }
 
     #ifdef UNIT_TEST
         std::vector<ecs::Entity> &getEntities() { return m_entities; }
@@ -68,6 +73,7 @@ private:
     static SceneManager *m_instance;
     Scene m_currentScene;
     Scene m_previousScene;
+    Scene m_nextScene;
     std::map<Scene, std::vector<std::string>> m_scenes = {
         {Scene::LOGIN, {}},
         {Scene::MENU, {}},

@@ -9,7 +9,6 @@
 
 void rtype::utils::SceneManager::unloadCurrentScene(rtype::ecs::Registry &registry)
 {
-    m_previousScene = m_currentScene;
     if (m_entities.empty()) {
         m_currentScene = Scene::NONE;
         return;
@@ -23,8 +22,7 @@ void rtype::utils::SceneManager::unloadCurrentScene(rtype::ecs::Registry &regist
 
 bool rtype::utils::SceneManager::loadScene(rtype::utils::Scene scene, rtype::ecs::Registry &registry)
 {
-    if (m_currentScene == scene)
-        return false;
+    m_previousScene = m_currentScene;
     unloadCurrentScene(registry);
     m_currentScene = scene;
     for (auto &prefab : m_scenes[scene]) {

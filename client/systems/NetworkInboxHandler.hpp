@@ -35,17 +35,17 @@ namespace rtype::system
                 {
                     case network::message::server::ConnectAck::type:
                         network::Client::getInstance().setConnected(true);
-                        sceneManager.loadScene(rtype::utils::Scene::MENU, registry);
+                        sceneManager.setNextScene(rtype::utils::Scene::MENU);
                         break;
                     case network::message::server::RoomInformation::type:
-                        sceneManager.loadScene(rtype::utils::Scene::ROOM, registry);
+                        sceneManager.setNextScene(rtype::utils::Scene::ROOM);
                         // TODO: save room info with roomInfo component
                         break;
                     case network::message::server::LevelInformation::type:
                         // TODO: save level info in roomInfo component
                         break;
                     case network::message::server::GameStarted::type:
-                        sceneManager.loadScene(rtype::utils::Scene::GAME, registry);
+                        sceneManager.setNextScene(rtype::utils::Scene::GAME);
                         break;
                     case network::message::server::GameEnded::type:
                         break;

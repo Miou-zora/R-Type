@@ -19,7 +19,7 @@ public:
     AckSystem() = default;
     ~AckSystem() = default;
 
-    void operator()(ecs::Registry& registry)
+    void operator()(ecs::Registry& registry) const
     {
         network::message::client::Ack message = network::message::createEvent<network::message::client::Ack>();
         boost::array<char, rtype::network::message::MAX_PACKET_SIZE> packed = network::message::pack<network::message::client::Ack>(message);

@@ -17,15 +17,15 @@ void initMenuSingleButton(rtype::ecs::Registry& reg)
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(700, 500))
         .addComponent<rtype::component::Clickable>(
             [&]() {
-                rtype::network::message::client::CreateRoom message = rtype::network::message::createEvent<rtype::network::message::client::CreateRoom>();
-                boost::array<char, rtype::network::message::MAX_PACKET_SIZE> packed = rtype::network::message::pack<rtype::network::message::client::CreateRoom>(message);
-                rtype::network::Client::getInstance().getOutbox()->push(packed);
-                rtype::network::message::client::ChooseLevel levelMessage = rtype::network::message::createEvent<rtype::network::message::client::ChooseLevel>(1);
-                boost::array<char, rtype::network::message::MAX_PACKET_SIZE> levelPacked = rtype::network::message::pack<rtype::network::message::client::ChooseLevel>(levelMessage);
-                rtype::network::Client::getInstance().getOutbox()->push(levelPacked);
                 rtype::network::message::client::StartGame startMessage = rtype::network::message::createEvent<rtype::network::message::client::StartGame>();
                 boost::array<char, rtype::network::message::MAX_PACKET_SIZE> startPacked = rtype::network::message::pack<rtype::network::message::client::StartGame>(startMessage);
                 rtype::network::Client::getInstance().getOutbox()->push(startPacked);
+                rtype::network::message::client::ChooseLevel levelMessage = rtype::network::message::createEvent<rtype::network::message::client::ChooseLevel>(1);
+                boost::array<char, rtype::network::message::MAX_PACKET_SIZE> levelPacked = rtype::network::message::pack<rtype::network::message::client::ChooseLevel>(levelMessage);
+                rtype::network::Client::getInstance().getOutbox()->push(levelPacked);
+                rtype::network::message::client::CreateRoom message = rtype::network::message::createEvent<rtype::network::message::client::CreateRoom>();
+                boost::array<char, rtype::network::message::MAX_PACKET_SIZE> packed = rtype::network::message::pack<rtype::network::message::client::CreateRoom>(message);
+                rtype::network::Client::getInstance().getOutbox()->push(packed);
             })
         .addComponent<rtype::component::Collider>(assetsManager.getTexture("single_button").width, assetsManager.getTexture("login_start_button").height)
         .addComponent<rtype::component::Drawable>("single_button", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("login_start_button").width, assetsManager.getTexture("login_start_button").height), 1);
@@ -41,6 +41,9 @@ void initMenuCreateRoomButton(rtype::ecs::Registry& reg)
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(700, 600))
         .addComponent<rtype::component::Clickable>(
             [&]() {
+                rtype::network::message::client::ChooseLevel levelMessage = rtype::network::message::createEvent<rtype::network::message::client::ChooseLevel>(1);
+                boost::array<char, rtype::network::message::MAX_PACKET_SIZE> levelPacked = rtype::network::message::pack<rtype::network::message::client::ChooseLevel>(levelMessage);
+                rtype::network::Client::getInstance().getOutbox()->push(levelPacked);
                 rtype::network::message::client::CreateRoom message = rtype::network::message::createEvent<rtype::network::message::client::CreateRoom>();
                 boost::array<char, rtype::network::message::MAX_PACKET_SIZE> packed = rtype::network::message::pack<rtype::network::message::client::CreateRoom>(message);
                 rtype::network::Client::getInstance().getOutbox()->push(packed);
@@ -60,7 +63,7 @@ rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getIns
         .addComponent<rtype::component::Clickable>(
             [&]() {
                 rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
-                sceneManager.loadScene(rtype::utils::Scene::JOIN, reg);
+                sceneManager.setNextScene(rtype::utils::Scene::JOIN);
             })
         .addComponent<rtype::component::Collider>(assetsManager.getTexture("join_room_button").width, assetsManager.getTexture("join_room_button").height)
         .addComponent<rtype::component::Drawable>("join_room_button", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("join_room_button").width, assetsManager.getTexture("join_room_button").height), 1);
