@@ -6,6 +6,7 @@ set(SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/menuPage.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/joinPage.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/roomPage.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/GamePrefabs.cpp"
     PARENT_SCOPE
 )
 

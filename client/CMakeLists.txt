@@ -24,6 +24,9 @@ cmrc_add_resource_library(
     assets/textures/buttons/white_square.png
     assets/textures/spacebg.png
     assets/textures/R-Type_Logo.png
+    assets/textures/r-typesheet5.png
+    assets/textures/r-typesheet43.png
+    assets/textures/bullet.png
 )
 
 set(SRC)

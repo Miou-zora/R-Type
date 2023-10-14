@@ -43,9 +43,9 @@ int main(int ac, char* av[])
     reg.addSystem<rtype::component::DebugColliderDisplay, rtype::component::Transform, rtype::component::Collider>(rtype::system::DebugColliderDisplayer());
     reg.addSystem<rtype::component::Clickable, rtype::component::Transform, rtype::component::Collider>(rtype::system::Click());
     reg.addSystem<rtype::component::Drawable, rtype::component::Scrollable>(rtype::system::Scroll());
+    reg.addSystem<>(rtype::system::NetworkOutboxHandler());
     reg.addSystem<>(rtype::system::NetworkInboxChecker());
     reg.addSystem<>(rtype::system::NetworkInboxHandler());
-    reg.addSystem<>(rtype::system::NetworkOutboxHandler());
     reg.addSystem<>(rtype::system::SwitchScene());
     reg.addSystem<>(rtype::system::AckSystem());
     reg.addSystem<rtype::component::RoomInformations>(rtype::system::UpdateRoomInformations());
@@ -64,6 +64,9 @@ int main(int ac, char* av[])
     reg.registerComponent<rtype::component::Scrollable>();
     reg.registerComponent<rtype::component::Nameable>();
     reg.registerComponent<rtype::component::RoomInformations>();
+    reg.registerComponent<rtype::component::ServerID>();
+    reg.registerComponent<rtype::component::AllyNumber>();
+    reg.registerComponent<rtype::component::Speed>();
 
     rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
 
@@ -71,6 +74,7 @@ int main(int ac, char* av[])
     initMenu(reg);
     initJoin(reg);
     initRoom(reg);
+    initGamePrefabs(reg);
 
     // remember to load the first scene LOGIN
     sceneManager.setNextScene(rtype::utils::Scene::LOGIN);

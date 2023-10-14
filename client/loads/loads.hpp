@@ -35,3 +35,4 @@ void initLogin(rtype::ecs::Registry& reg);
 void initMenu(rtype::ecs::Registry& reg);
 void initJoin(rtype::ecs::Registry& reg);
 void initRoom(rtype::ecs::Registry& reg);
+void initGamePrefabs(rtype::ecs::Registry& reg);
