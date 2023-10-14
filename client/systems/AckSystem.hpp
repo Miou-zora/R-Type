@@ -21,9 +21,17 @@ public:
 
     void operator()(ecs::Registry& registry) const
     {
+        float deltaTime = registry.getDeltaTime();
+        _lastAck += deltaTime;
+        if (_lastAck < 1)
+            return;
+        _lastAck = 0;
         network::message::client::Ack message = network::message::createEvent<network::message::client::Ack>();
         boost::array<char, rtype::network::message::MAX_PACKET_SIZE> packed = network::message::pack<network::message::client::Ack>(message);
         network::Client::getInstance().getOutbox()->push(packed);
     }
+private:
+    static float _lastAck;
 };
+    float AckSystem::_lastAck = 0;
 }
