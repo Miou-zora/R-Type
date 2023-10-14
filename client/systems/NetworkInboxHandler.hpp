@@ -118,7 +118,7 @@ private:
             registry.getComponents<rtype::component::RoomInformations>()[index]->id = roomInformation.roomId;
         }
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::RoomInformations>())) {
-            registry.getComponents<rtype::component::RoomInformations>()[index]->playersCount = 1; // TODO: update the number of players with received data
+            registry.getComponents<rtype::component::RoomInformations>()[index]->playersCount = roomInformation.playersCount;
         }
     }
 

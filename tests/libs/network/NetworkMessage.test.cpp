@@ -111,10 +111,11 @@ TEST(NetworkMessage, serverCreateEventConnectAck)
 
 TEST(NetworkMessage, serverCreateEventRoomInformation)
 {
-    rtype::network::message::server::RoomInformation msg = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(42);
+    rtype::network::message::server::RoomInformation msg = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(42, 1);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0001);
     ASSERT_EQ(msg.roomId, 42);
+    ASSERT_EQ(msg.playersCount, 1);
 }
 
 TEST(NetworkMessage, serverCreateEventLevelInformation)
@@ -207,7 +208,7 @@ TEST(NetworkMessage, serverCreateEventEnemyMovement)
 
 TEST(NetworkMessage, serverCreateEventBulletShoot)
 {
-    rtype::network::message::server::BulletShoot msg = rtype::network::message::createEvent<rtype::network::message::server::BulletShoot>(42, 24, 42, 24, 42);
+    rtype::network::message::server::BulletShoot msg = rtype::network::message::createEvent<rtype::network::message::server::BulletShoot>(42, 24, 42, 24, 42, 1);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0030);
     ASSERT_EQ(msg.playerId, 42);
@@ -215,6 +216,7 @@ TEST(NetworkMessage, serverCreateEventBulletShoot)
     ASSERT_EQ(msg.y, 42);
     ASSERT_EQ(msg.xVelocity, 24);
     ASSERT_EQ(msg.yVelocity, 42);
+    ASSERT_EQ(msg.team, 1);
 }
 
 TEST(NetworkMessage, serverCreateEventBulletPosition)

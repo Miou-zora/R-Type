@@ -257,6 +257,14 @@ namespace rtype::network {
                 NetworkMessageFooter footer;
             };
 
+            struct LeaveRoom {
+                LeaveRoom() = default;
+
+                static const u_int16_t type = 0x0006;
+                NetworkMessageHeader header;
+                NetworkMessageFooter footer;
+            };
+
             struct PlayerMovement {
                 PlayerMovement(float _x, float _y, bool keys_pressed[4])
                     : x(_x), y(_y)
@@ -320,6 +328,7 @@ namespace rtype::network {
                 {ChooseLevel::type, sizeof(ChooseLevel)},
                 {StartGame::type, sizeof(StartGame)},
                 {CreateRoom::type, sizeof(CreateRoom)},
+                {LeaveRoom::type, sizeof(LeaveRoom)},
                 {PlayerMovement::type, sizeof(PlayerMovement)},
                 {PlayerShoot::type, sizeof(PlayerShoot)},
                 {PlayerReload::type, sizeof(PlayerReload)},
@@ -364,14 +373,15 @@ namespace rtype::network {
             };
 
             struct RoomInformation {
-                RoomInformation(u_int16_t _roomId)
-                    : roomId(_roomId)
+                RoomInformation(u_int16_t _roomId, u_int16_t _playersCount)
+                    : roomId(_roomId), playersCount(_playersCount)
                 {
                 }
 
                 static const u_int16_t type = 0x0001;
                 NetworkMessageHeader header;
                 u_int16_t roomId;
+                u_int16_t playersCount;
                 NetworkMessageFooter footer;
             };
 
@@ -498,8 +508,8 @@ namespace rtype::network {
             };
 
             struct BulletShoot {
-                BulletShoot(u_int16_t _playerId, float _x, float _y, float _xVelocity, float _yVelocity)
-                    : playerId(_playerId), x(_x), y(_y), xVelocity(_xVelocity), yVelocity(_yVelocity)
+                BulletShoot(u_int16_t _playerId, float _x, float _y, float _xVelocity, float _yVelocity, u_int8_t _team)
+                    : playerId(_playerId), x(_x), y(_y), xVelocity(_xVelocity), yVelocity(_yVelocity), team(_team)
                 {
                 }
 
@@ -510,6 +520,7 @@ namespace rtype::network {
                 float y;
                 float xVelocity;
                 float yVelocity;
+                u_int8_t team;
                 NetworkMessageFooter footer;
             };
 

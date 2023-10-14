@@ -35,7 +35,7 @@ class Packer:
 class Server(Packer):
     FORMATS: Dict[int, str] = {
         0x0000: _HEADER_FOOTER_FORMAT.format(data='Q'),
-        0x0001: _HEADER_FOOTER_FORMAT.format(data='H'),
+        0x0001: _HEADER_FOOTER_FORMAT.format(data='HH'),
         0x0002: _HEADER_FOOTER_FORMAT.format(data='H'),
         0x0003: _HEADER_FOOTER_FORMAT.format(data=''),
         0x0004: _HEADER_FOOTER_FORMAT.format(data=''),
@@ -46,7 +46,7 @@ class Server(Packer):
         0x0020: _HEADER_FOOTER_FORMAT.format(data='Hff'),
         0x0021: _HEADER_FOOTER_FORMAT.format(data='H'),
         0x0022: _HEADER_FOOTER_FORMAT.format(data='Hff'),
-        0x0030: _HEADER_FOOTER_FORMAT.format(data='Hffff'),
+        0x0030: _HEADER_FOOTER_FORMAT.format(data='Hffffc'),
         0x0031: _HEADER_FOOTER_FORMAT.format(data='Hff'),
         0x0032: _HEADER_FOOTER_FORMAT.format(data='HH'),
         0x0033: _HEADER_FOOTER_FORMAT.format(data='H'),
@@ -76,6 +76,7 @@ class Client(Packer):
         0x0003: _HEADER_FOOTER_FORMAT.format(data='H'),
         0x0004: _HEADER_FOOTER_FORMAT.format(data=''),
         0x0005: _HEADER_FOOTER_FORMAT.format(data=''),
+        0x0006: _HEADER_FOOTER_FORMAT.format(data=''),
         0x0010: _HEADER_FOOTER_FORMAT.format(data='ff????'),
         0x0011: _HEADER_FOOTER_FORMAT.format(data=''),
         0x0012: _HEADER_FOOTER_FORMAT.format(data=''),
@@ -88,6 +89,7 @@ class Client(Packer):
     ChooseLevel: int = 0x0003
     StartGame: int = 0x0004
     CreateRoom: int = 0x0005
+    LeaveRoom: int = 0x0006
     PlayerMovement: int = 0x0010
     PlayerShoot: int = 0x0011
     PlayerReload: int = 0x0012

@@ -81,6 +81,7 @@ This section describes the messages sent by the client to the server.
 | 0x0003 | `network::message::client::ChooseLevel` | `u_int16_t level_id;` | Used to choose a level |
 | 0x0004 | `network::message::client::StartGame` | ` ` | Used to start the game if not already started |
 | 0x0005 | `network::message::client::CreateRoom` | ` ` | Used to create a room |
+| 0x0006 | `network::message::client::LeaveRoom` | ` ` | Used to leave a room |
 | 0x0010 | `network::message::client::PlayerMovement` | `float x_velocity;` <br> `float y_velocity;` <br> `bool keys_pressed[4]` | Used to move the player. The keys_pressed are : <br> `up (w, z, etc..) = 0` <br> `down (s, etc..) = 1` <br> `left (a, q, etc..) = 2` <br> `right (d) = 3` |
 | 0x0011 | `network::message::client::PlayerShoot` | ` ` | Used to shoot a bullet. |
 | 0x0012 | `network::message::client::PlayerReload` | ` ` | Used to reload a weapon. |
@@ -94,7 +95,7 @@ This section describes the messages sent by the server to the client.
 | Message Type | StructName |  Stored data | Description |
 | ------------ | ------ | ----------- | ----------- |
 | 0x0000 | `network::message::server::ConnectAck` | `size_t id;` | Used to acknowledge the connection (the ID should be used for debugging purposes) |
-| 0x0001 | `network::message::server::RoomInformation` | `u_int16_t room_id;` | Used to tell the client which room they are in |
+| 0x0001 | `network::message::server::RoomInformation` | `u_int16_t room_id;` <br> `u_int16_t player_count` | Used to tell the client which room they are in and with how many players |
 | 0x0002 | `network::message::server::LevelInformation` | `u_int16_t level_id;` | Used to tell the client which level they are in |
 | 0x0003 | `network::message::server::GameStarted` | ` ` | Used to tell the client that the game has started |
 | 0x0004 | `network::message::server::GameEnded` | ` ` | Used to tell the client that the game has ended |
@@ -105,7 +106,7 @@ This section describes the messages sent by the server to the client.
 | 0x0020 | `network::message::server::EnemySpawn` | `u_int16_t enemy_id;` <br> `float x;` <br> `float y;` | Used to indicate that an enemy spawned |
 | 0x0021 | `network::message::server::EnemyDeath` | `u_int16_t enemy_id;` | Used to indicate that an enemy died |
 | 0x0022 | `network::message::server::EnemyMovement` | `u_int16_t enemy_id;` <br> `float x;` <br> `float y;` | Used to indicate that an enemy moved |
-| 0x0030 | `network::message::server::BulletShoot` | `u_int16_t player_id;` <br> `float x;` <br> `float y;` <br> `float x_velocity;` <br> `float y_velocity;` | Used to indicate that a bullet was shot |
+| 0x0030 | `network::message::server::BulletShoot` | `u_int16_t player_id;` <br> `float x;` <br> `float y;` <br> `float x_velocity;` <br> `float y_velocity;` <br> `u_int8_t team` | Used to indicate that a bullet was shot |
 | 0x0031 | `network::message::server::BulletPosition` | `u_int16_t bullet_id;` <br> `float x;` <br> `float y;` | Used to indicate that a bullet moved |
 | 0x0032 | `network::message::server::BulletHit` | `u_int16_t bullet_id;` <br> `u_int16_t hit_id;` | Used to indicate that a bullet hit something (id is the entity that got hit, either player or enemy) |
 | 0x0033 | `network::message::server::BulletDespawn` | `u_int16_t bullet_id;` | Used to indicate that a bullet despawned |
@@ -122,7 +123,7 @@ sequenceDiagram
     C->>S: Connect
     S->>C: ConnectAck <id>
     C->>S: ChooseRoom <room_id> or CreateRoom
-    S->>C: RoomInformation <room_id>
+    S->>C: RoomInformation <room_id, player_count>
     C->>S: ChooseLevel <level_id>
     S->>C: LevelInformation <level_id>
     C->>S: StartGame

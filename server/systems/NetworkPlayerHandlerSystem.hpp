@@ -114,8 +114,8 @@ private:
     {
         auto component = rtype::component::GameRoom();
         registry.emplaceComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity), std::move(component));
-        std::cout << "handleCreateRoomCallback: info: Player " << networkPlayerEntity << " created a room" << std::endl;
-        auto roomInformation = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(component.id);
+        std::cout << "handleCreateRoomCallback: info: Player " << networkPlayerEntity << " created a room " << component.id << std::endl;
+        auto roomInformation = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(component.id, rtype::utils::GameLogicManager::countPlayersInGameRoom(registry, component));
         networkPlayer.criticalMessages[roomInformation.header.id] = rtype::network::message::pack(roomInformation);
     }
 
@@ -144,7 +144,7 @@ private:
             return;
         }
         registry.emplaceComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity), std::move(component));
-        auto roomInformation = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(component.id);
+        auto roomInformation = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(component.id, rtype::utils::GameLogicManager::countPlayersInGameRoom(registry, component));
         networkPlayer.criticalMessages[roomInformation.header.id] = rtype::network::message::pack(roomInformation);
         std::cout << "handleChooseRoomCallback: info: Player " << networkPlayerEntity << " joined room " << component.id << std::endl;
     }
