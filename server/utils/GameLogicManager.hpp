@@ -35,24 +35,25 @@ private:
      */
     GameLogicManager()
     {
-        addValue<int>("playerSpeed", 200);
-        addValue<rtype::utils::Vector<float>>("defaultPlayerPosition", rtype::utils::Vector<float>(50, 50));
+        addValue<int>("playerSpeed", 500);
+        addValue<rtype::utils::Vector<float>>("defaultPlayerPosition", rtype::utils::Vector<float>(100, 100));
         addValue<float>("playerShootCooldown", 0.5);
         addValue<int>("playerHealth", 100);
         addValue<float>("playerHitboxWidth", 64);
         addValue<float>("playerHitboxHeight", 64);
-        addValue<float>("enemySpawnerMovementSpeed", 30);
-        addValue<float>("enemySpawnCooldown", 2);
-        addValue<int>("enemySpeed", 400);
+        addValue<float>("enemySpawnerMovementSpeed", 200);
+        addValue<float>("enemySpawnCooldown", 4);
+        addValue<int>("enemySpeed", 1000);
         addValue<int>("enemyHealth", 1);
         addValue<float>("enemyHitboxWidth", 64);
         addValue<float>("enemyHitboxHeight", 64);
         addValue<rtype::utils::Vector<float>>("defaultEnemyPosition", rtype::utils::Vector<float>(500, 500));
         addValue<float>("enemyShootCooldown", 2);
-        addValue<float>("bulletSpeed", 500);
+        addValue<float>("bulletSpeed", 1500);
         addValue<float>("bulletHitboxWidth", 5);
         addValue<float>("bulletHitboxHeight", 5);
         addValue<int>("bulletDamage", 1);
+        addValue<float>("bulletDistance", 1600);
     }
 
 public:
@@ -112,7 +113,7 @@ public:
         auto& bulletTransform = registry.getComponents<rtype::component::Transform>()[bullet].value();
         bulletTransform.position = playerTransform.position;
         auto& path = registry.getComponents<rtype::component::Path>()[bullet].value();
-        path.addPoint(playerTransform.position.x + 1000, playerTransform.position.y);
+        path.addPoint(playerTransform.position.x + getValue<float>("bulletDistance"), playerTransform.position.y);
         auto& gameRoom = registry.getComponents<rtype::component::GameRoom>()[bullet].value();
         auto& playerGameRoom = registry.getComponents<rtype::component::GameRoom>()[playerIndex].value();
         gameRoom = playerGameRoom;
@@ -218,17 +219,14 @@ public:
         bullet.addComponent<rtype::tag::Ally>();
 
         rtype::ecs::Prefab& enemySpawner = manager.createPrefab("enemySpawner");
-        enemySpawner.addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(800, 0));
+        enemySpawner.addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(1600, std::rand() % 1024));
         enemySpawner.addComponent<rtype::component::Spawner>(true);
         enemySpawner.addComponent<rtype::component::Velocity>();
         enemySpawner.addComponent<rtype::component::GameRoom>();
         std::vector<rtype::component::Path::Point> enemySpawnerPath;
-        // TODO: use infinite entity path when it gets implemented
-        for (std::size_t c = 0; c < 12; c++) {
-            enemySpawnerPath.push_back(rtype::component::Path::Point(rtype::utils::Vector<float>(800, 150), rtype::component::Path::Referential::World));
-            enemySpawnerPath.push_back(rtype::component::Path::Point(rtype::utils::Vector<float>(800, 450), rtype::component::Path::Referential::World));
-        }
-        enemySpawner.addComponent<rtype::component::Path>(getValue<float>("enemySpawnerMovementSpeed"), enemySpawnerPath);
+        enemySpawnerPath.push_back(rtype::component::Path::Point(rtype::utils::Vector<float>(1600, 0), rtype::component::Path::Referential::World));
+        enemySpawnerPath.push_back(rtype::component::Path::Point(rtype::utils::Vector<float>(1600, 1024), rtype::component::Path::Referential::World));
+        enemySpawner.addComponent<rtype::component::Path>(getValue<float>("enemySpawnerMovementSpeed"), enemySpawnerPath, false, rtype::component::Path::Type::Loop);
     }
 
 private:
