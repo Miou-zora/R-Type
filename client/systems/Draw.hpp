@@ -55,7 +55,7 @@ public:
             const float& fontSize = (float)text->size * transformable->scale;
             const float& spacing = text->spacing * transformable->scale;
             const raylib::Color& color = text->color;
-            raylib::DrawTextEx(font, textToDraw.c_str(), position, fontSize, spacing, color);
+            raylib::DrawTextPro(font, textToDraw.c_str(), position, raylib::Vector2 { 0, 0 }, transformable->rotation, fontSize, spacing, color);
         }
     }
 
