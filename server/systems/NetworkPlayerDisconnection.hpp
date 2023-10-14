@@ -39,7 +39,7 @@ public:
         }
         sendDisconnectMessagesToPlayers(registry, networkPlayers, toDelete);
         for (auto&& i : toDelete) {
-            registry.killEntity(rtype::ecs::Entity(i));
+            registry.killEntity(registry.entityFromIndex(i));
         }
     }
 
@@ -54,19 +54,18 @@ private:
         ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers,
         std::vector<std::size_t>& toDelete) const
     {
-        for (auto&& [i, networkPlayerOpt] : ecs::containers::IndexedZipper(networkPlayers)) {
-            auto& networkPlayer = networkPlayerOpt.value();
-            if (!registry.hasComponent<rtype::component::GameRoom>(registry.entityFromIndex(i)))
-                continue;
-            auto& playerRoom = registry.getComponents<rtype::component::GameRoom>()[i].value();
-            for (auto&& [j, gameRoomOpt] : ecs::containers::IndexedZipper(registry.getComponents<rtype::component::GameRoom>())) {
-                if (!gameRoomOpt.has_value())
+        for (auto&& i : toDelete) {
+            auto &toDeleteGameRoom = registry.getComponents<rtype::component::GameRoom>()[i].value();
+            auto msg = rtype::network::message::createEvent<rtype::network::message::server::PlayerDeath>(i, true);
+            auto packed = rtype::network::message::pack<rtype::network::message::server::PlayerDeath>(msg);
+            for (auto&& [pindex, networkPlayerOpt] : ecs::containers::IndexedZipper(networkPlayers)) {
+                auto& networkPlayer = networkPlayerOpt.value();
+                if (!registry.hasComponent<rtype::component::GameRoom>(registry.entityFromIndex(pindex)))
                     continue;
-                auto& gameRoom = gameRoomOpt.value();
-                if (gameRoom.id != playerRoom.id)
-                    continue;
-                auto msg = rtype::network::message::createEvent<rtype::network::message::server::PlayerDeath>(i, true);
-                networkPlayer.outbox->push(rtype::network::message::pack<rtype::network::message::server::PlayerDeath>(msg));
+                auto& gameRoom = registry.getComponents<rtype::component::GameRoom>()[pindex].value();
+                if (gameRoom.id == toDeleteGameRoom.id) {
+                    networkPlayer.outbox->push(packed);
+                }
             }
         }
     }
