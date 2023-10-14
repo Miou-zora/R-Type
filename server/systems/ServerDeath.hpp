@@ -53,6 +53,8 @@ private:
             return;
         for (auto&& [pIndex, networkPlayerOpt, gameRoomOpt] : ecs::containers::IndexedZipper(registry.getComponents<rtype::component::NetworkPlayer>(), registry.getComponents<rtype::component::GameRoom>())) {
             auto& networkPlayer = networkPlayerOpt.value();
+            if (gameRoomOpt.value().id != killedEntityRoom.id)
+                continue;
             networkPlayer.outbox->push(networkPacket.value());
         }
     }

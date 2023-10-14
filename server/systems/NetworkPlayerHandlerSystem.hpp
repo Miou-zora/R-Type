@@ -25,9 +25,9 @@ public:
             rtype::component::NetworkPlayer& networkPlayer = networkPlayerOpt.value();
             auto& inbox = networkPlayer.inbox;
             while (!inbox->empty()) {
-                auto& msg = inbox->top();
-                inbox->pop();
+                const auto& msg = inbox->top();
                 handleAnyCallback(registry, networkPlayers, networkPlayer, i, msg);
+                inbox->pop();
             }
         }
     }
@@ -128,10 +128,10 @@ private:
         ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers,
         rtype::component::NetworkPlayer& networkPlayer,
         size_t networkPlayerEntity,
-        boost::array<char, 512UL> msg) const
+        const boost::array<char, 512UL>& msg) const
     {
         // TODO: make something useful like send error message if room does not exist
-        auto chooseRoom = rtype::network::message::unpack<rtype::network::message::client::ChooseRoom>(msg);
+        auto& chooseRoom = rtype::network::message::unpack<rtype::network::message::client::ChooseRoom>(msg);
         auto component = rtype::component::GameRoom(chooseRoom.roomId);
         registry.emplaceComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity), std::move(component));
         auto roomInformation = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(component.id);
@@ -150,9 +150,9 @@ private:
         ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers,
         rtype::component::NetworkPlayer& networkPlayer,
         size_t networkPlayerEntity,
-        boost::array<char, 512UL> msg) const
+        const boost::array<char, 512UL>& msg) const
     {
-        auto chooseLevel = rtype::network::message::unpack<rtype::network::message::client::ChooseLevel>(msg);
+        auto& chooseLevel = rtype::network::message::unpack<rtype::network::message::client::ChooseLevel>(msg);
         auto gameLevel = rtype::component::GameLevel(chooseLevel.levelId);
         // TODO : check if it exist or add in perfab
         registry.emplaceComponent<rtype::component::GameLevel>(registry.entityFromIndex(networkPlayerEntity), std::move(gameLevel));
@@ -172,7 +172,7 @@ private:
         ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers,
         rtype::component::NetworkPlayer& networkPlayer,
         size_t networkPlayerEntity,
-        boost::array<char, 512UL> msg) const
+        const boost::array<char, 512UL>& msg) const
     {
         auto startGameAck = rtype::network::message::createEvent<rtype::network::message::server::GameStarted>();
         rtype::utils::GameLogicManager::getInstance().startGame(registry, networkPlayerEntity);
@@ -191,12 +191,12 @@ private:
         ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers,
         rtype::component::NetworkPlayer& networkPlayer,
         size_t networkPlayerEntity,
-        boost::array<char, 512UL> msg) const
+        const boost::array<char, 512UL>& msg) const
     {
         if (!registry.hasComponent<rtype::component::NetworkPlayerControl>(registry.entityFromIndex(networkPlayerEntity))) {
             return;
         }
-        auto playerMove = rtype::network::message::unpack<rtype::network::message::client::PlayerMovement>(msg);
+        auto& playerMove = rtype::network::message::unpack<rtype::network::message::client::PlayerMovement>(msg);
         auto& playerControl = registry.getComponents<rtype::component::NetworkPlayerControl>()[networkPlayerEntity].value();
         playerControl.up = playerMove.keys_pressed[0];
         playerControl.down = playerMove.keys_pressed[1];

@@ -126,15 +126,27 @@ namespace rtype::network {
         }
 
         /**
+         * @brief Unpack a message from a raw byte buffer
+         * @tparam T Type of the message to unpack
+         * @param buffer The raw byte buffer
+         * @return T The unpacked message
+        */
+        template<typename T>
+        const T unpack(const char *buffer)
+        {
+            return (*reinterpret_cast<const T *>(buffer));
+        }
+
+        /**
          * @brief Unpack a message from a boost array
          * @tparam T Type of the message to unpack
          * @param buffer The boost array
          * @return T The unpacked message
         */
         template<typename T>
-        T unpack(boost::array<char, MAX_PACKET_SIZE> &buffer)
+        const T unpack(const boost::array<char, MAX_PACKET_SIZE> &buffer)
         {
-            return (*reinterpret_cast<T *>(buffer.data()));
+            return (*reinterpret_cast<const T *>(buffer.data()));
         }
 
         /**

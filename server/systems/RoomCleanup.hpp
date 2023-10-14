@@ -14,8 +14,6 @@ public:
         ecs::SparseArray<rtype::component::GameRoom>& gameRooms) const
     {
         for (auto&& [index, gameRoom] : ecs::containers::IndexedZipper(gameRooms)) {
-            if (!gameRoom.has_value())
-                continue;
             if (isGameRoomEmpty(registry, gameRoom.value())) {
                 deleteEntitiesWithSameGameRoomId(registry, gameRoom.value());
             }

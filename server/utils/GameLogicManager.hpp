@@ -93,7 +93,7 @@ public:
      * @param registry ECS registry
      * @return Entity index of the new player
      */
-    rtype::ecs::Entity createNewPlayer(rtype::ecs::Registry& registry, boost::asio::ip::udp::endpoint& endpoint)
+    rtype::ecs::Entity createNewPlayer(rtype::ecs::Registry& registry, const boost::asio::ip::udp::endpoint& endpoint)
     {
         rtype::ecs::Entity entity = rtype::utils::PrefabManager::getInstance().instantiate("player", registry);
         registry.emplaceComponent<rtype::component::NetworkPlayer>(entity, endpoint);
@@ -141,6 +141,7 @@ public:
         rtype::ecs::Prefab& player = manager.createPrefab("player");
         player.addComponent<rtype::component::Transform>();
         player.addComponent<rtype::component::Velocity>();
+        player.addComponent<rtype::component::GameRoom>();
         player.addComponent<rtype::component::Health>(getValue<int>("playerHealth"));
         player.addComponent<rtype::component::Collider>(getValue<float>("playerHitboxWidth"), getValue<float>("playerHitboxHeight"));
         player.addComponent<rtype::component::Speed>(getValue<int>("playerSpeed"));

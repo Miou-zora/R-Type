@@ -24,7 +24,7 @@ public:
         auto& networkServer = rtype::network::NetworkServer::getInstance();
 
         for (auto&& [i, networkPlayerOpt] : ecs::containers::IndexedZipper(networkPlayers)) {
-            rtype::component::NetworkPlayer& networkPlayer = networkPlayerOpt.value();
+            const rtype::component::NetworkPlayer& networkPlayer = networkPlayerOpt.value();
             sendInformationsToPlayer(i, registry, networkPlayer);
         }
     }
@@ -36,7 +36,7 @@ private:
      * @param registry Registry of the game
      * @param networkPlayer NetworkPlayer component of the player
      */
-    void sendInformationsToPlayer(size_t i, ecs::Registry& registry, rtype::component::NetworkPlayer& networkPlayer) const
+    void sendInformationsToPlayer(size_t i, ecs::Registry& registry, const rtype::component::NetworkPlayer& networkPlayer) const
     {
         sendPlayerPositions(i, registry, networkPlayer);
         sendBulletPositions(i, registry, networkPlayer);
@@ -49,7 +49,7 @@ private:
      * @param registry Registry of the game
      * @param networkPlayer NetworkPlayer component of the player
      */
-    void sendPlayerPositions(size_t i, ecs::Registry& registry, rtype::component::NetworkPlayer& networkPlayer) const
+    void sendPlayerPositions(size_t i, ecs::Registry& registry, const rtype::component::NetworkPlayer& networkPlayer) const
     {
         auto& outbox = networkPlayer.outbox;
         if (!registry.hasComponent<rtype::component::GameRoom>(rtype::ecs::Entity(i)))
@@ -76,7 +76,7 @@ private:
      * @param registry Registry of the game
      * @param networkPlayer NetworkPlayer component of the player
      */
-    void sendBulletPositions(size_t i, ecs::Registry& registry, rtype::component::NetworkPlayer& networkPlayer) const
+    void sendBulletPositions(size_t i, ecs::Registry& registry, const rtype::component::NetworkPlayer& networkPlayer) const
     {
         auto& outbox = networkPlayer.outbox;
         if (!registry.hasComponent<rtype::component::GameRoom>(registry.entityFromIndex(i)))
@@ -104,7 +104,7 @@ private:
      * @param registry Registry of the game
      * @param networkPlayer NetworkPlayer component of the player
      */
-    void sendEnemyPositions(size_t i, ecs::Registry& registry, rtype::component::NetworkPlayer& networkPlayer) const
+    void sendEnemyPositions(size_t i, ecs::Registry& registry, const rtype::component::NetworkPlayer& networkPlayer) const
     {
         auto& outbox = networkPlayer.outbox;
         if (!registry.hasComponent<rtype::component::GameRoom>(registry.entityFromIndex(i)))

@@ -22,16 +22,17 @@ public:
         rtype::network::NetworkServer& networkServer = rtype::network::NetworkServer::getInstance();
         auto& recvMsgBuffer = networkServer.getRecvMsgBuffer();
         while (!networkServer.getRecvMsgBuffer().empty()) {
-            auto [endpoint, recvBuffer, size] = networkServer.getRecvMsgBuffer().back();
-            networkServer.getRecvMsgBuffer().pop_back();
+            const auto& [endpoint, recvBuffer, size] = networkServer.getRecvMsgBuffer().back();
             if (rtype::network::message::client::checkMessageIntegrity(recvBuffer, size) == false) {
                 std::cerr << "Network error (checkMessageIntegrity): malformed message for endpoint " << endpoint << std::endl;
+                networkServer.getRecvMsgBuffer().pop_back();
                 continue;
             }
             auto networkPlayerEntity = getNetworkPlayerEntity(registry, endpoint);
             auto& networkPlayer = registry.getComponents<rtype::component::NetworkPlayer>()[networkPlayerEntity].value();
             networkPlayer.inbox->push(recvBuffer);
             networkPlayer.lastMessage = std::chrono::high_resolution_clock::now();
+            networkServer.getRecvMsgBuffer().pop_back();
         }
     }
 
@@ -41,13 +42,12 @@ private:
      * @param registry ECS registry
      * @param endpoint Endpoint
      */
-    rtype::ecs::Entity getNetworkPlayerEntity(ecs::Registry& registry, boost::asio::ip::udp::endpoint& endpoint) const
+    rtype::ecs::Entity getNetworkPlayerEntity(ecs::Registry& registry, const boost::asio::ip::udp::endpoint& endpoint) const
     {
         for (auto&& [i, networkPlayerOpt] : ecs::containers::IndexedZipper(registry.getComponents<rtype::component::NetworkPlayer>())) {
             if (!networkPlayerOpt.has_value())
                 continue;
-            rtype::component::NetworkPlayer& networkPlayer = networkPlayerOpt.value();
-            if (networkPlayer.endpoint == endpoint)
+            if (networkPlayerOpt.value().endpoint == endpoint)
                 return registry.entityFromIndex(i);
         }
         rtype::ecs::Entity entity = rtype::utils::GameLogicManager::getInstance().createNewPlayer(registry, endpoint);

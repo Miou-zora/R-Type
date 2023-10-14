@@ -36,7 +36,7 @@ public:
 private:
     void updateSpawner(ecs::Registry& registry, rtype::component::Spawner& spawner, std::size_t index) const
     {
-        auto& spawnerGameRoom = registry.getComponents<rtype::component::GameRoom>()[index].value();
+        u_int16_t spawnerGameRoomId = registry.getComponents<rtype::component::GameRoom>()[index].value().id;
         if (spawner.spawnList.size() == 0)
             return;
         spawner.timer += registry.getDeltaTime();
@@ -44,7 +44,7 @@ private:
             spawner.timer -= spawner.spawnList[0].spawnDelay;
             auto entity = rtype::utils::PrefabManager::getInstance().instantiate(spawner.spawnList[0].entityName, registry);
             if (registry.hasComponent<rtype::component::GameRoom>(entity))
-                registry.getComponents<rtype::component::GameRoom>()[entity].value() = spawnerGameRoom;
+                registry.getComponents<rtype::component::GameRoom>()[entity].value().id = spawnerGameRoomId;
             if (registry.hasComponent<rtype::component::Transform>(entity) && registry.hasComponent<rtype::component::Transform>(registry.entityFromIndex(index))) {
                 rtype::component::Transform& entityTransform = registry.getComponents<rtype::component::Transform>()[entity].value();
                 entityTransform.position += registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value().position;
