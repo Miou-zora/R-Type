@@ -32,8 +32,6 @@ private:
         auto& networkPlayers = registry.getComponents<rtype::component::NetworkPlayer>();
         auto& gameRooms = registry.getComponents<rtype::component::GameRoom>();
         for (auto&& [index, networkPlayerOpt, gameRoomOpt] : ecs::containers::IndexedZipper(networkPlayers, gameRooms)) {
-            if (!networkPlayerOpt.has_value() || !gameRoomOpt.has_value())
-                continue;
             auto& playerGameRoom = gameRoomOpt.value();
             if (playerGameRoom.id == gameRoom.id)
                 return false;

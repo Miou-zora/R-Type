@@ -94,6 +94,7 @@ private:
     {
         auto connectAck = rtype::network::message::createEvent<rtype::network::message::server::ConnectAck>(networkPlayerEntity);
         networkPlayer.outbox->push(rtype::network::message::pack(connectAck));
+        std::cout << "handleConnectCallback: info: Player " << networkPlayerEntity << " connected" << std::endl;
     }
 
     /**
@@ -112,6 +113,7 @@ private:
     {
         auto component = rtype::component::GameRoom();
         registry.emplaceComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity), std::move(component));
+        std::cout << "handleCreateRoomCallback: info: Player " << networkPlayerEntity << " created a room" << std::endl;
         auto roomInformation = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(component.id);
         networkPlayer.outbox->push(rtype::network::message::pack(roomInformation));
     }
@@ -130,12 +132,20 @@ private:
         size_t networkPlayerEntity,
         const boost::array<char, 512UL>& msg) const
     {
-        // TODO: make something useful like send error message if room does not exist
         auto& chooseRoom = rtype::network::message::unpack<rtype::network::message::client::ChooseRoom>(msg);
         auto component = rtype::component::GameRoom(chooseRoom.roomId);
+        if (rtype::utils::GameLogicManager::countPlayersInGameRoom(registry, component) >= 4) {
+            std::cerr << "handleChooseRoomCallback: warning: Player " << networkPlayerEntity << " tried to join a full game room" << std::endl;
+            return;
+        }
+        if (rtype::utils::GameLogicManager::isGameStarted(registry, component)) {
+            std::cerr << "handleChooseRoomCallback: warning: Player " << networkPlayerEntity << " tried to join a game that has already started" << std::endl;
+            return;
+        }
         registry.emplaceComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity), std::move(component));
         auto roomInformation = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(component.id);
         networkPlayer.outbox->push(rtype::network::message::pack(roomInformation));
+        std::cout << "handleChooseRoomCallback: info: Player " << networkPlayerEntity << " joined room " << component.id << std::endl;
     }
 
     /**
@@ -152,12 +162,16 @@ private:
         size_t networkPlayerEntity,
         const boost::array<char, 512UL>& msg) const
     {
+        if (!registry.hasComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity))) {
+            std::cerr << "handleChooseLevelCallback: warning: Player " << networkPlayerEntity << " tried to choose a level without being in a game room" << std::endl;
+            return;
+        }
         auto& chooseLevel = rtype::network::message::unpack<rtype::network::message::client::ChooseLevel>(msg);
         auto gameLevel = rtype::component::GameLevel(chooseLevel.levelId);
-        // TODO : check if it exist or add in perfab
         registry.emplaceComponent<rtype::component::GameLevel>(registry.entityFromIndex(networkPlayerEntity), std::move(gameLevel));
         auto levelInformation = rtype::network::message::createEvent<rtype::network::message::server::LevelInformation>(gameLevel.level);
         networkPlayer.outbox->push(rtype::network::message::pack(levelInformation));
+        std::cout << "handleChooseLevelCallback: info: Player " << networkPlayerEntity << " chose level " << gameLevel.level << std::endl;
     }
 
     /**
@@ -174,9 +188,14 @@ private:
         size_t networkPlayerEntity,
         const boost::array<char, 512UL>& msg) const
     {
+        if (!registry.hasComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity))) {
+            std::cerr << "handleStartGameCallback: warning: Player " << networkPlayerEntity << " tried to start a game without being in a game room" << std::endl;
+            return;
+        }
         auto startGameAck = rtype::network::message::createEvent<rtype::network::message::server::GameStarted>();
         rtype::utils::GameLogicManager::getInstance().startGame(registry, networkPlayerEntity);
         networkPlayer.outbox->push(rtype::network::message::pack(startGameAck));
+        std::cout << "handleStartGameCallback: info: Player " << networkPlayerEntity << " started the game" << std::endl;
     }
 
     /**

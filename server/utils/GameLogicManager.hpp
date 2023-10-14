@@ -140,6 +140,46 @@ public:
     }
 
     /**
+     * @brief Count the numbers of players in a game room
+     * @param registry ECS registry
+     * @param gameRoom Game room
+     * @return Number of players in the game room
+     */
+    static std::size_t countPlayersInGameRoom(rtype::ecs::Registry& registry, const rtype::component::GameRoom& gameRoom)
+    {
+        std::size_t count = 0;
+
+        for (auto&& [index, networkPlayerOpt, gameRoomOpt] : ecs::containers::IndexedZipper(registry.getComponents<rtype::component::NetworkPlayer>(), registry.getComponents<rtype::component::GameRoom>())) {
+            auto& networkPlayer = networkPlayerOpt.value();
+            auto& playerGameRoom = gameRoomOpt.value();
+            if (playerGameRoom.id == gameRoom.id) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * @brief Check if the game already started
+     * @param registry ECS registry
+     * @param gameRoom Game room
+     * @return true if the game already started, false otherwise
+     */
+    static bool isGameStarted(rtype::ecs::Registry& registry, const rtype::component::GameRoom& gameRoom)
+    {
+        for (auto&& [index, networkPlayerOpt, gameRoomOpt] : ecs::containers::IndexedZipper(registry.getComponents<rtype::component::NetworkPlayer>(), registry.getComponents<rtype::component::GameRoom>())) {
+            auto& networkPlayer = networkPlayerOpt.value();
+            auto& playerGameRoom = gameRoomOpt.value();
+            if (playerGameRoom.id == gameRoom.id) {
+                if (registry.hasComponent<rtype::component::Transform>(registry.entityFromIndex(index))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * @brief Create all the game prefabs
      */
     void createPrefabs()
@@ -147,7 +187,6 @@ public:
         rtype::utils::PrefabManager& manager = rtype::utils::PrefabManager::getInstance();
         rtype::ecs::Prefab& player = manager.createPrefab("player");
         player.addComponent<rtype::component::Velocity>();
-        player.addComponent<rtype::component::GameRoom>();
         player.addComponent<rtype::component::Health>(getValue<int>("playerHealth"));
         player.addComponent<rtype::component::Collider>(getValue<float>("playerHitboxWidth"), getValue<float>("playerHitboxHeight"));
         player.addComponent<rtype::component::Speed>(getValue<int>("playerSpeed"));
