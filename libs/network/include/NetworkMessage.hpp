@@ -258,7 +258,7 @@ namespace rtype::network {
             };
 
             struct PlayerMovement {
-                PlayerMovement(u_int16_t _x, u_int16_t _y, bool keys_pressed[4])
+                PlayerMovement(float _x, float _y, bool keys_pressed[4])
                     : x(_x), y(_y)
                 {
                     std::memcpy(this->keys_pressed, keys_pressed, sizeof(this->keys_pressed));
@@ -404,7 +404,7 @@ namespace rtype::network {
             };
 
             struct PlayerSpawn {
-                PlayerSpawn(u_int16_t _playerId, u_int16_t _x, u_int16_t _y)
+                PlayerSpawn(u_int16_t _playerId, float _x, float _y)
                     : playerId(_playerId), x(_x), y(_y)
                 {
                 }
@@ -431,7 +431,7 @@ namespace rtype::network {
             };
 
             struct PlayerMovement {
-                PlayerMovement(u_int16_t _playerId, u_int16_t _x, u_int16_t _y)
+                PlayerMovement(u_int16_t _playerId, float _x, float _y)
                     : playerId(_playerId), x(_x), y(_y)
                 {
                 }
@@ -458,7 +458,7 @@ namespace rtype::network {
             };
 
             struct EnemySpawn {
-                EnemySpawn(u_int16_t _enemyId, u_int16_t _x, u_int16_t _y)
+                EnemySpawn(u_int16_t _enemyId, float _x, float _y)
                     : enemyId(_enemyId), x(_x), y(_y)
                 {
                 }
@@ -498,7 +498,7 @@ namespace rtype::network {
             };
 
             struct BulletShoot {
-                BulletShoot(u_int16_t _playerId, int32_t _x, int32_t _y, int32_t _xVelocity, int32_t _yVelocity)
+                BulletShoot(u_int16_t _playerId, float _x, float _y, float _xVelocity, float _yVelocity)
                     : playerId(_playerId), x(_x), y(_y), xVelocity(_xVelocity), yVelocity(_yVelocity)
                 {
                 }
@@ -514,7 +514,7 @@ namespace rtype::network {
             };
 
             struct BulletPosition {
-                BulletPosition(u_int16_t _bulletId, int32_t _x, int32_t _y)
+                BulletPosition(u_int16_t _bulletId, float _x, float _y)
                     : bulletId(_bulletId), x(_x), y(_y)
                 {
                 }

@@ -42,13 +42,13 @@ namespace rtype::system
         void _updatePath(rtype::component::Transform &transformable, rtype::component::Velocity &velocity, rtype::component::Path &path,
                          rtype::component::Path::Point targetPoint, float lengthToTravel, ecs::Registry &registry, int index, rtype::utils::Vector<float> &vectorToNextPoint) const
         {
-            while (lengthToTravel > 0 && !path.listOfPoints.empty())
+            while (lengthToTravel > 0.0f && !path.listOfPoints.empty())
             {
                 if ((targetPoint.vector.distance(transformable.position) >= (vectorToNextPoint.normalized() * lengthToTravel).getLength() && targetPoint.referential == rtype::component::Path::Referential::World) ||
                     (targetPoint.vector.getLength() >= (vectorToNextPoint.normalized() * lengthToTravel).getLength() && targetPoint.referential == rtype::component::Path::Referential::Entity))
                 {
                     velocity.vector += vectorToNextPoint.normalized() * lengthToTravel;
-                    lengthToTravel = 0;
+                    lengthToTravel = 0.0f;
                     if (targetPoint.referential == rtype::component::Path::Referential::Entity) {
                         targetPoint.vector -= velocity.vector;
                         path.listOfPoints[0].vector -= velocity.vector;

@@ -156,7 +156,7 @@ private:
      * @brief Sends an Ack message to the server
      * @param msgId the id of the message to acknowledge
      */
-    void sendAck(int msgId) const
+    void sendAck(u_int64_t msgId) const
     {
         network::message::client::Ack ack = network::message::createEvent<network::message::client::Ack>(msgId);
         boost::array<char, rtype::network::message::MAX_PACKET_SIZE> packed = network::message::pack<network::message::client::Ack>(ack);

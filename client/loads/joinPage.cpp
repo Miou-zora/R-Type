@@ -38,12 +38,12 @@ void initJoinRoomButton(rtype::ecs::Registry& reg)
                 rtype::network::Client::getInstance().getOutbox()->push(packed);
             })
         .addComponent<rtype::component::DebugColliderDisplay>(true)
-        .addComponent<rtype::component::Collider>(assetsManager.getTexture("join_page_join_room_button").width, assetsManager.getTexture("join_page_join_room_button").height)
-        .addComponent<rtype::component::Drawable>("join_page_join_room_button", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("join_page_join_room_button").width, assetsManager.getTexture("join_page_join_room_button").height), 1);
+        .addComponent<rtype::component::Collider>(static_cast<float>(assetsManager.getTexture("join_page_join_room_button").width), static_cast<float>(assetsManager.getTexture("join_page_join_room_button").height))
+        .addComponent<rtype::component::Drawable>("join_page_join_room_button", 1.0f, rtype::utils::Rectangle(0.0f, 0.0f, static_cast<float>(assetsManager.getTexture("join_page_join_room_button").width), static_cast<float>(assetsManager.getTexture("join_page_join_room_button").height)), 1);
 
     prefabManager.createPrefab("join_error_text")
-        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0, 0))
-        .addComponent<rtype::component::Text>("", rtype::component::Text::DEFAULT_FONT, 50, 3, raylib::RED)
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0.0f, 0.0f))
+        .addComponent<rtype::component::Text>("", rtype::component::Text::DEFAULT_FONT, 50, 3.0f, raylib::RED)
         .addComponent<rtype::component::Nameable>("ERROR JOIN");
 }
 
@@ -56,8 +56,8 @@ void initInputRoomId(rtype::ecs::Registry& reg)
     prefabManager.createPrefab("room_id_zone")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(770, 500))
         .addComponent<rtype::component::DebugColliderDisplay>(true)
-        .addComponent<rtype::component::Collider>(assetsManager.getTexture("room_id_zone").width, assetsManager.getTexture("room_id_zone").height)
-        .addComponent<rtype::component::Drawable>("room_id_zone", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("room_id_zone").width, assetsManager.getTexture("room_id_zone").height), 1)
+        .addComponent<rtype::component::Collider>(static_cast<float>(assetsManager.getTexture("room_id_zone").width), static_cast<float>(assetsManager.getTexture("room_id_zone").height))
+        .addComponent<rtype::component::Drawable>("room_id_zone", 1.0f, rtype::utils::Rectangle(0.0f, 0.0f, static_cast<float>(assetsManager.getTexture("room_id_zone").width), static_cast<float>(assetsManager.getTexture("room_id_zone").height)), 1)
         .addComponent<rtype::component::TextInputable>(5)
         .addComponent<rtype::component::Selectable>()
         .addComponent<rtype::component::Text>("", rtype::component::Text::DEFAULT_FONT, 25)
@@ -65,7 +65,7 @@ void initInputRoomId(rtype::ecs::Registry& reg)
 
     prefabManager.createPrefab("room_id_text")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(645, 510))
-        .addComponent<rtype::component::Text>("ROOM ID:", rtype::component::Text::DEFAULT_FONT, 25, 3, raylib::WHITE);
+        .addComponent<rtype::component::Text>("ROOM ID:", rtype::component::Text::DEFAULT_FONT, 25, 3.0f, raylib::WHITE);
 }
 
 void initBackButton(rtype::ecs::Registry& reg)
@@ -75,14 +75,14 @@ void initBackButton(rtype::ecs::Registry& reg)
     assetsManager.loadTexture("back_button", "assets/textures/buttons/BackButton.png");
 
     prefabManager.createPrefab("back_button")
-        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(685, 700))
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(685.0f, 700.0f))
         .addComponent<rtype::component::Clickable>(
             [&]() {
                 rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
                 sceneManager.setNextScene(rtype::utils::Scene::MENU);
             })
-        .addComponent<rtype::component::Collider>(assetsManager.getTexture("back_button").width, assetsManager.getTexture("back_button").height)
-        .addComponent<rtype::component::Drawable>("back_button", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("back_button").width, assetsManager.getTexture("back_button").height), 1);
+        .addComponent<rtype::component::Collider>(static_cast<float>(assetsManager.getTexture("back_button").width), static_cast<float>(assetsManager.getTexture("back_button").height))
+        .addComponent<rtype::component::Drawable>("back_button", 1.0f, rtype::utils::Rectangle(0.0f, 0.0f, static_cast<float>(assetsManager.getTexture("back_button").width), static_cast<float>(assetsManager.getTexture("back_button").height)), 1);
 }
 
 void initJoin(rtype::ecs::Registry& reg)

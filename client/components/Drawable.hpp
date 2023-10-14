@@ -16,7 +16,7 @@ namespace rtype::component {
  */
 struct Drawable {
     const static std::string NO_TEXTURE;
-    Drawable(const std::string& textureName_ = NO_TEXTURE, float scale_ = 1, const rtype::utils::Rectangle& sourceRectangle_ = rtype::utils::Rectangle(), int zIndex_ = 0)
+    Drawable(const std::string& textureName_ = NO_TEXTURE, float scale_ = 1.0f, const rtype::utils::Rectangle& sourceRectangle_ = rtype::utils::Rectangle(), int zIndex_ = 0)
         : textureName(textureName_)
         , scale(scale_)
         , sourceRectangle(sourceRectangle_)

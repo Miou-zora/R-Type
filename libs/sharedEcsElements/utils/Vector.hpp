@@ -133,7 +133,7 @@ namespace rtype::utils
 
         T getLength() const
         {
-            return (std::sqrt(std::pow(x, 2) + std::pow(y, 2)));
+            return static_cast<T>(std::sqrt(std::pow(x, 2) + std::pow(y, 2)));
         }
 
         Vector<T> normalized() const
@@ -143,7 +143,7 @@ namespace rtype::utils
 
         T distance(const Vector<T> &other) const
         {
-            return (std::sqrt(std::pow(x - other.x, 2) + std::pow(y - other.y, 2)));
+            return static_cast<T>(std::sqrt(std::pow(x - other.x, 2) + std::pow(y - other.y, 2)));
         }
 
         static Vector<T> getVector(const Vector<T> &a, const Vector<T> &b)

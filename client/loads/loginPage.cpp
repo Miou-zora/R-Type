@@ -43,7 +43,7 @@ void initLoginStartButton(rtype::ecs::Registry& reg)
             })
         .addComponent<rtype::component::DebugColliderDisplay>(true)
         .addComponent<rtype::component::Collider>(assetsManager.getTexture("login_start_button").width, assetsManager.getTexture("login_start_button").height)
-        .addComponent<rtype::component::Drawable>("login_start_button", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("login_start_button").width, assetsManager.getTexture("login_start_button").height), 1);
+        .addComponent<rtype::component::Drawable>("login_start_button", 1.0f, rtype::utils::Rectangle(0.0f, 0.0f, assetsManager.getTexture("login_start_button").width, assetsManager.getTexture("login_start_button").height), 1);
 
     prefabManager.createPrefab("login_error_text")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0, 0))
@@ -61,7 +61,7 @@ void initInputIp(rtype::ecs::Registry& reg)
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(660, 500))
         .addComponent<rtype::component::DebugColliderDisplay>(true)
         .addComponent<rtype::component::Collider>(assetsManager.getTexture("ip_zone").width, assetsManager.getTexture("ip_zone").height)
-        .addComponent<rtype::component::Drawable>("ip_zone", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("ip_zone").width, assetsManager.getTexture("ip_zone").height), 1)
+        .addComponent<rtype::component::Drawable>("ip_zone", 1.0f, rtype::utils::Rectangle(0.0f, 0.0f, assetsManager.getTexture("ip_zone").width, assetsManager.getTexture("ip_zone").height), 1)
         .addComponent<rtype::component::TextInputable>(15)
         .addComponent<rtype::component::Selectable>()
         .addComponent<rtype::component::Text>("127.0.0.1", rtype::component::Text::DEFAULT_FONT, 25)

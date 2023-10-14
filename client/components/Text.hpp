@@ -17,7 +17,7 @@ namespace rtype::component {
  */
 struct Text {
     const static std::string DEFAULT_FONT;
-    Text(const std::string& text_ = "", const std::string& font_ = DEFAULT_FONT, int size_ = 10, float spacing_ = 3, raylib::Color color_ = raylib::BLACK)
+    Text(const std::string& text_ = "", const std::string& font_ = DEFAULT_FONT, int size_ = 10, float spacing_ = 3.0f, raylib::Color color_ = raylib::BLACK)
         : text(text_)
         , font(font_)
         , size(size_)

@@ -112,6 +112,7 @@ namespace rtype::ecs
             }
             catch (std::bad_any_cast const &e)
             {
+                (void)e;
                 throw ecs::BadAnyCast(("Registry::getComponents::BadAnyCast: Component not registered: " + std::string(std::type_index(typeid(Component)).name())));
             };
         }
@@ -132,6 +133,7 @@ namespace rtype::ecs
             }
             catch (std::bad_any_cast const &e)
             {
+                (void)e;
                 throw ecs::BadAnyCast("Registry::getComponents::BadAnyCast: Component not registered: " + std::string(std::type_index(typeid(Component)).name()));
             };
         }

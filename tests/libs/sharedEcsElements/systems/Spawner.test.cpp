@@ -24,13 +24,13 @@ public:
     {
         return m_deltaTime;
     }
-    float m_deltaTime = 0.1;
+    float m_deltaTime = 0.1f;
 };
 
 
 TEST(SpawnerSystem, noEntityNoLoop)
 {
-    rtype::ecs::Registry registry(std::make_shared<TestDeltaTimeProvider>(5));
+    rtype::ecs::Registry registry(std::make_shared<TestDeltaTimeProvider>(5.0f));
 
     registry.registerComponent<rtype::component::Spawner>();
     registry.registerComponent<rtype::component::Transform>();
@@ -39,7 +39,7 @@ TEST(SpawnerSystem, noEntityNoLoop)
     rtype::ecs::Entity spawner = registry.spawnEntity();
     rtype::component::Spawner spawnerComponent;
     registry.addComponent<rtype::component::Spawner>(spawner, std::move(spawnerComponent));
-    registry.addComponent<rtype::component::Transform>(spawner, rtype::component::Transform(rtype::utils::Vector<float>(3, 4)));
+    registry.addComponent<rtype::component::Transform>(spawner, rtype::component::Transform(rtype::utils::Vector<float>(3.0f, 4.0f)));
 
     ASSERT_EQ(registry.getComponents<rtype::component::Transform>().size(), 1);
     ASSERT_EQ(registry.getComponents<rtype::component::Spawner>().size(), 1);
@@ -52,7 +52,7 @@ TEST(SpawnerSystem, noEntityNoLoop)
 
 TEST(SpawnerSystem, oneEntityNoLoop)
 {
-    rtype::ecs::Registry registry(std::make_shared<TestDeltaTimeProvider>(0.5));
+    rtype::ecs::Registry registry(std::make_shared<TestDeltaTimeProvider>(0.5f));
 
     registry.registerComponent<rtype::component::Spawner>();
     registry.registerComponent<rtype::component::Transform>();
@@ -80,8 +80,8 @@ TEST(SpawnerSystem, oneEntityNoLoop)
     ASSERT_EQ(registry.getComponents<rtype::component::Transform>().size(), 2);
     ASSERT_EQ(registry.getComponents<rtype::component::Spawner>().size(), 1);
 
-    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[1].value().position.x, 1 + 3);
-    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[1].value().position.y, 2 + 4);
+    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[1].value().position.x, 1.0f + 3.0f);
+    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[1].value().position.y, 2.0f + 4.0f);
 
     registry.runSystems();
     ASSERT_EQ(registry.getComponents<rtype::component::Transform>().size(), 2);
@@ -121,7 +121,7 @@ TEST(SpawnerSystem, manyEntityNoLoop)
 
 TEST(SpawnerSystem, noEntityLoop)
 {
-    rtype::ecs::Registry registry(std::make_shared<TestDeltaTimeProvider>(5));
+    rtype::ecs::Registry registry(std::make_shared<TestDeltaTimeProvider>(5.0f));
 
     registry.registerComponent<rtype::component::Spawner>();
     registry.registerComponent<rtype::component::Transform>();
@@ -131,7 +131,7 @@ TEST(SpawnerSystem, noEntityLoop)
     rtype::component::Spawner spawnerComponent;
     spawnerComponent.looping = true;
     registry.addComponent<rtype::component::Spawner>(spawner, std::move(spawnerComponent));
-    registry.addComponent<rtype::component::Transform>(spawner, rtype::component::Transform(rtype::utils::Vector<float>(3, 4)));
+    registry.addComponent<rtype::component::Transform>(spawner, rtype::component::Transform(rtype::utils::Vector<float>(3.0f, 4.0f)));
 
     ASSERT_EQ(registry.getComponents<rtype::component::Transform>().size(), 1);
     ASSERT_EQ(registry.getComponents<rtype::component::Spawner>().size(), 1);
@@ -144,7 +144,7 @@ TEST(SpawnerSystem, noEntityLoop)
 
 TEST(SpawnerSystem, oneEntityLoop)
 {
-    rtype::ecs::Registry registry(std::make_shared<TestDeltaTimeProvider>(0.5));
+    rtype::ecs::Registry registry(std::make_shared<TestDeltaTimeProvider>(0.5f));
 
     registry.registerComponent<rtype::component::Spawner>();
     registry.registerComponent<rtype::component::Transform>();
@@ -159,7 +159,7 @@ TEST(SpawnerSystem, oneEntityLoop)
     spawnerComponent.looping = true;
     spawnerComponent.addEntityToSpawnList("test", 1);
     registry.addComponent<rtype::component::Spawner>(spawner, std::move(spawnerComponent));
-    registry.addComponent<rtype::component::Transform>(spawner, rtype::component::Transform(rtype::utils::Vector<float>(3, 4)));
+    registry.addComponent<rtype::component::Transform>(spawner, rtype::component::Transform(rtype::utils::Vector<float>(3.0f, 4.0f)));
 
     ASSERT_EQ(registry.getComponents<rtype::component::Transform>().size(), 1);
     ASSERT_EQ(registry.getComponents<rtype::component::Spawner>().size(), 1);
@@ -173,8 +173,8 @@ TEST(SpawnerSystem, oneEntityLoop)
     ASSERT_EQ(registry.getComponents<rtype::component::Transform>().size(), 2);
     ASSERT_EQ(registry.getComponents<rtype::component::Spawner>().size(), 1);
 
-    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[1].value().position.x, 1 + 3);
-    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[1].value().position.y, 2 + 4);
+    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[1].value().position.x, 1.0f + 3.0f);
+    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[1].value().position.y, 2.0f + 4.0f);
 
     registry.runSystems();
     ASSERT_EQ(registry.getComponents<rtype::component::Transform>().size(), 2);
@@ -184,8 +184,8 @@ TEST(SpawnerSystem, oneEntityLoop)
     ASSERT_EQ(registry.getComponents<rtype::component::Transform>().size(), 3);
     ASSERT_EQ(registry.getComponents<rtype::component::Spawner>().size(), 1);
 
-    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[2].value().position.x, 1 + 3);
-    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[2].value().position.y, 2 + 4);
+    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[2].value().position.x, 1.0f + 3.0f);
+    ASSERT_EQ(registry.getComponents<rtype::component::Transform>()[2].value().position.y, 2.0f + 4.0f);
 }
 
 TEST(SpawnerSystem, manyEntityLoop)
@@ -206,7 +206,7 @@ TEST(SpawnerSystem, manyEntityLoop)
     spawnerComponent.addEntityToSpawnList("test", 1);
     spawnerComponent.addEntityToSpawnList("test", 2);
     registry.addComponent<rtype::component::Spawner>(spawner, std::move(spawnerComponent));
-    registry.addComponent<rtype::component::Transform>(spawner, rtype::component::Transform(rtype::utils::Vector<float>(3, 4)));
+    registry.addComponent<rtype::component::Transform>(spawner, rtype::component::Transform(rtype::utils::Vector<float>(3.0f, 4.0f)));
 
     ASSERT_EQ(registry.getComponents<rtype::component::Transform>().size(), 1);
     ASSERT_EQ(registry.getComponents<rtype::component::Spawner>().size(), 1);

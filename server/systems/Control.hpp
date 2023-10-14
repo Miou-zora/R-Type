@@ -27,10 +27,10 @@ public:
     {
         for (auto&& [index, controllable, velocity, speed] : ecs::containers::IndexedZipper(controllables, velocities, speeds)) {
             rtype::utils::Vector<float> direction((controllable.value().right.get() - controllable.value().left.get()), (controllable.value().down.get() - controllable.value().up.get()));
-            if (direction.getLength() != 0)
-                velocity.value().vector = direction.normalized() * registry.getDeltaTime() * speed.value().value;
+            if (direction.getLength() != 0.0f)
+                velocity.value().vector = direction.normalized() * registry.getDeltaTime() * static_cast<float>(speed.value().value);
             else
-                velocity.value().vector = rtype::utils::Vector<float>(0, 0);
+                velocity.value().vector = rtype::utils::Vector<float>(0.0f, 0.0f);
         }
     }
 };

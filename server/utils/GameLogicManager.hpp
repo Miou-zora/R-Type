@@ -219,13 +219,13 @@ public:
         bullet.addComponent<rtype::tag::Ally>();
 
         rtype::ecs::Prefab& enemySpawner = manager.createPrefab("enemySpawner");
-        enemySpawner.addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(1600, std::rand() % 1024));
+        enemySpawner.addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(1600.0f, static_cast<float>(std::rand() % 1024)));
         enemySpawner.addComponent<rtype::component::Spawner>(true);
         enemySpawner.addComponent<rtype::component::Velocity>();
         enemySpawner.addComponent<rtype::component::GameRoom>();
         std::vector<rtype::component::Path::Point> enemySpawnerPath;
-        enemySpawnerPath.push_back(rtype::component::Path::Point(rtype::utils::Vector<float>(1600, 0), rtype::component::Path::Referential::World));
-        enemySpawnerPath.push_back(rtype::component::Path::Point(rtype::utils::Vector<float>(1600, 1024), rtype::component::Path::Referential::World));
+        enemySpawnerPath.push_back(rtype::component::Path::Point(rtype::utils::Vector<float>(1600.0f, 0.0f), rtype::component::Path::Referential::World));
+        enemySpawnerPath.push_back(rtype::component::Path::Point(rtype::utils::Vector<float>(1600.0f, 1024.0f), rtype::component::Path::Referential::World));
         enemySpawner.addComponent<rtype::component::Path>(getValue<float>("enemySpawnerMovementSpeed"), enemySpawnerPath, false, rtype::component::Path::Type::Loop);
     }
 
