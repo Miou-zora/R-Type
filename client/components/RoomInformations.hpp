@@ -15,7 +15,7 @@ namespace rtype::component
      */
     struct RoomInformations
     {
-        RoomInformations(int playersCount_ = 1, int level_ = 1) : playersCount(playersCount_), level(level_){};
+        RoomInformations(int playersCount_ = 1, int level_ = 1, int id_ = 0) : playersCount(playersCount_), level(level_), id(id_) {};
         ~RoomInformations() = default;
 
         RoomInformations(const RoomInformations &other) = default;
@@ -23,6 +23,7 @@ namespace rtype::component
 
         int playersCount;
         int level;
+        int id;
     };
 }
 
