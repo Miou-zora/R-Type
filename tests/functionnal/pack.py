@@ -80,7 +80,7 @@ class Client(Packer):
         0x0011: _HEADER_FOOTER_FORMAT.format(data=''),
         0x0012: _HEADER_FOOTER_FORMAT.format(data=''),
         0x0013: _HEADER_FOOTER_FORMAT.format(data='h'),
-        0xFF00: _HEADER_FOOTER_FORMAT.format(data=''),
+        0xFF00: _HEADER_FOOTER_FORMAT.format(data='Q'),
     }
     Connect: int = 0x0000
     Disconnect: int = 0x0001

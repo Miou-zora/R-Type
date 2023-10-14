@@ -301,10 +301,14 @@ namespace rtype::network {
             };
 
             struct Ack {
-                Ack() = default;
+                Ack(u_int64_t _msgId)
+                    : msgId(_msgId)
+                {
+                }
 
                 static const u_int16_t type = 0xFF00;
                 NetworkMessageHeader header;
+                u_int64_t msgId;
                 NetworkMessageFooter footer;
             };
             #pragma pack(pop)

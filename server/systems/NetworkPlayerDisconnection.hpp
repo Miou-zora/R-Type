@@ -63,9 +63,7 @@ private:
                 if (!registry.hasComponent<rtype::component::GameRoom>(registry.entityFromIndex(pindex)))
                     continue;
                 auto& gameRoom = registry.getComponents<rtype::component::GameRoom>()[pindex].value();
-                if (gameRoom.id == toDeleteGameRoom.id) {
-                    networkPlayer.outbox->push(packed);
-                }
+                networkPlayer.criticalMessages[msg.header.id] = packed;
             }
         }
     }

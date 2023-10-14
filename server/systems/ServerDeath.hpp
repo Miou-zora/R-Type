@@ -55,7 +55,7 @@ private:
             auto& networkPlayer = networkPlayerOpt.value();
             if (gameRoomOpt.value().id != killedEntityRoom.id)
                 continue;
-            networkPlayer.outbox->push(networkPacket.value());
+            addToCriticalMessages(networkPlayer, networkPacket.value());
         }
     }
 
@@ -72,6 +72,17 @@ private:
             return std::make_optional<boost::array<char, rtype::network::message::MAX_PACKET_SIZE>>(rtype::network::message::pack(msg));
         }
         return std::nullopt;
+    }
+
+    /**
+     * @brief Add the message to critical messages if needed
+     * @param player Network player
+     * @param msg Message
+     */
+    void addToCriticalMessages(rtype::component::NetworkPlayer& player, const boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& msg) const
+    {
+        const auto& unpacked = reinterpret_cast<const rtype::network::message::NetworkMessageHeader*>(msg.data());
+        player.criticalMessages[unpacked->id] = msg;
     }
 };
 }

@@ -96,7 +96,7 @@ TEST(NetworkMessage, createEventPlayerSwitchWeapon)
 
 TEST(NetworkMessage, createEventAck)
 {
-    rtype::network::message::client::Ack msg = rtype::network::message::createEvent<rtype::network::message::client::Ack>();
+    rtype::network::message::client::Ack msg = rtype::network::message::createEvent<rtype::network::message::client::Ack>(-1);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0xFF00);
 }

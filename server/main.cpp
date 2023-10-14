@@ -19,6 +19,7 @@
 #include "NetworkMessageQueue.hpp"
 #include "NetworkPlayer.hpp"
 #include "NetworkPlayerControl.hpp"
+#include "NetworkPlayerCriticalDispatcher.hpp"
 #include "NetworkPlayerDisconnection.hpp"
 #include "NetworkPlayerHandlerSystem.hpp"
 #include "NetworkServer.hpp"
@@ -74,6 +75,7 @@ void addSystems(rtype::ecs::Registry& reg)
     reg.addSystem<rtype::component::Transform, rtype::component::Velocity, rtype::component::Path>(rtype::system::Path());
     reg.addSystem<rtype::component::Spawner>(rtype::system::ServerSpawner());
     reg.addSystem<rtype::component::GameRoom>(rtype::system::RoomCleanup());
+    reg.addSystem<rtype::component::NetworkPlayer>(rtype::system::NetworkPlayerCriticalDispatcher());
     reg.addSystem<rtype::component::NetworkPlayer>(rtype::system::NetworkServerTickUpdater());
     reg.addSystem<rtype::component::Health>(rtype::system::ServerDeath());
     reg.addSystem<rtype::component::NetworkPlayer, rtype::component::GameRoom>(rtype::system::NetworkPlayerDisconnection(std::chrono::milliseconds(10000)));

@@ -38,5 +38,7 @@ struct NetworkPlayer {
         rtype::network::message::NetworkMessageHeaderEquality,
         rtype::network::message::NetworkMessageHeaderCompare>>
         outbox;
+    std::unordered_map<u_int64_t, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>> criticalMessages;
+    std::unordered_map<u_int64_t, std::chrono::time_point<std::chrono::high_resolution_clock>> criticalMessagesTime;
 };
 }

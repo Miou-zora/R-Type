@@ -32,40 +32,53 @@ public:
             case network::message::server::ConnectAck::type:
                 network::Client::getInstance().setConnected(true);
                 sceneManager.setNextScene(rtype::utils::Scene::MENU);
+                sendAck(header.id);
                 break;
             case network::message::server::RoomInformation::type:
                 sceneManager.setNextScene(rtype::utils::Scene::ROOM);
+                sendAck(header.id);
                 // TODO: save room info with roomInfo component
                 break;
             case network::message::server::LevelInformation::type:
                 // TODO: save level info in roomInfo component
+                sendAck(header.id);
                 break;
             case network::message::server::GameStarted::type:
                 sceneManager.setNextScene(rtype::utils::Scene::GAME);
+                sendAck(header.id);
                 break;
             case network::message::server::GameEnded::type:
+                sendAck(header.id);
                 break;
             case network::message::server::PlayerSpawn::type:
+                sendAck(header.id);
                 break;
             case network::message::server::PlayerDeath::type:
+                sendAck(header.id);
                 break;
             case network::message::server::PlayerMovement::type:
                 break;
             case network::message::server::PlayerWeaponSwitch::type:
+                sendAck(header.id);
                 break;
             case network::message::server::EnemySpawn::type:
+                sendAck(header.id);
                 break;
             case network::message::server::EnemyDeath::type:
+                sendAck(header.id);
                 break;
             case network::message::server::EnemyMovement::type:
                 break;
             case network::message::server::BulletShoot::type:
+                sendAck(header.id);
                 break;
             case network::message::server::BulletPosition::type:
                 break;
             case network::message::server::BulletHit::type:
+                sendAck(header.id);
                 break;
             case network::message::server::BulletDespawn::type:
+                sendAck(header.id);
                 break;
             default:
                 break;
@@ -75,5 +88,15 @@ public:
     }
 
 private:
+    /**
+     * @brief Sends an Ack message to the server
+     * @param msgId the id of the message to acknowledge
+     */
+    void sendAck(int msgId) const
+    {
+        network::message::client::Ack ack = network::message::createEvent<network::message::client::Ack>(msgId);
+        boost::array<char, rtype::network::message::MAX_PACKET_SIZE> packed = network::message::pack<network::message::client::Ack>(ack);
+        network::Client::getInstance().getOutbox()->push(packed);
+    }
 };
 }

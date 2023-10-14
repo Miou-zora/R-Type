@@ -85,7 +85,7 @@ This section describes the messages sent by the client to the server.
 | 0x0011 | `network::message::client::PlayerShoot` | ` ` | Used to shoot a bullet. |
 | 0x0012 | `network::message::client::PlayerReload` | ` ` | Used to reload a weapon. |
 | 0x0013 | `network::message::client::PlayerSwitchWeapon` | `int16_t weapon_type;` | Used to switch weapon. |
-| 0xFF00 | `network::message::client::Ack` | ` ` | Used to let the server know that the client is still connected. |
+| 0xFF00 | `network::message::client::Ack` | ` u_int64_t msg_id; ` | Used to let the server know that the client received a message. |
 
 ### 3.2. Messages sent by the server
 
@@ -163,6 +163,6 @@ sequenceDiagram
     Note over C,S: (after enemy died)
     S->>C: EnemyMovement <enemy_id, x, y>
     Note over C,S: (after enemy moved)
-    C->>S: Ack
+    C->>S: Ack <msg_id>
 ```
 

@@ -26,7 +26,7 @@ public:
         if (_lastAck < 1)
             return;
         _lastAck = 0;
-        network::message::client::Ack message = network::message::createEvent<network::message::client::Ack>();
+        network::message::client::Ack message = network::message::createEvent<network::message::client::Ack>(-1);
         boost::array<char, rtype::network::message::MAX_PACKET_SIZE> packed = network::message::pack<network::message::client::Ack>(message);
         network::Client::getInstance().getOutbox()->push(packed);
     }

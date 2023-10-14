@@ -71,6 +71,7 @@ private:
             handlePlayerShootCallback(registry, networkPlayers, networkPlayer, networkPlayerEntity, msg);
             break;
         case rtype::network::message::client::Ack::type:
+            handlePlayerAckCallback(networkPlayer, msg);
             break;
         default:
             std::cerr << "Unknown message type " << static_cast<int>(msgHeader->type) << std::endl;
@@ -93,7 +94,7 @@ private:
         const boost::array<char, 512UL>& msg) const
     {
         auto connectAck = rtype::network::message::createEvent<rtype::network::message::server::ConnectAck>(networkPlayerEntity);
-        networkPlayer.outbox->push(rtype::network::message::pack(connectAck));
+        networkPlayer.criticalMessages[connectAck.header.id] = rtype::network::message::pack(connectAck);
         std::cout << "handleConnectCallback: info: Player " << networkPlayerEntity << " connected" << std::endl;
     }
 
@@ -115,7 +116,7 @@ private:
         registry.emplaceComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity), std::move(component));
         std::cout << "handleCreateRoomCallback: info: Player " << networkPlayerEntity << " created a room" << std::endl;
         auto roomInformation = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(component.id);
-        networkPlayer.outbox->push(rtype::network::message::pack(roomInformation));
+        networkPlayer.criticalMessages[roomInformation.header.id] = rtype::network::message::pack(roomInformation);
     }
 
     /**
@@ -144,7 +145,7 @@ private:
         }
         registry.emplaceComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity), std::move(component));
         auto roomInformation = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(component.id);
-        networkPlayer.outbox->push(rtype::network::message::pack(roomInformation));
+        networkPlayer.criticalMessages[roomInformation.header.id] = rtype::network::message::pack(roomInformation);
         std::cout << "handleChooseRoomCallback: info: Player " << networkPlayerEntity << " joined room " << component.id << std::endl;
     }
 
@@ -170,7 +171,7 @@ private:
         auto gameLevel = rtype::component::GameLevel(chooseLevel.levelId);
         registry.emplaceComponent<rtype::component::GameLevel>(registry.entityFromIndex(networkPlayerEntity), std::move(gameLevel));
         auto levelInformation = rtype::network::message::createEvent<rtype::network::message::server::LevelInformation>(gameLevel.level);
-        networkPlayer.outbox->push(rtype::network::message::pack(levelInformation));
+        networkPlayer.criticalMessages[levelInformation.header.id] = rtype::network::message::pack(levelInformation);
         std::cout << "handleChooseLevelCallback: info: Player " << networkPlayerEntity << " chose level " << gameLevel.level << std::endl;
     }
 
@@ -194,7 +195,7 @@ private:
         }
         auto startGameAck = rtype::network::message::createEvent<rtype::network::message::server::GameStarted>();
         rtype::utils::GameLogicManager::getInstance().startGame(registry, networkPlayerEntity);
-        networkPlayer.outbox->push(rtype::network::message::pack(startGameAck));
+        networkPlayer.criticalMessages[startGameAck.header.id] = rtype::network::message::pack(startGameAck);
         std::cout << "handleStartGameCallback: info: Player " << networkPlayerEntity << " started the game" << std::endl;
     }
 
@@ -243,6 +244,20 @@ private:
         }
         auto& playerControl = registry.getComponents<rtype::component::NetworkPlayerControl>()[networkPlayerEntity].value();
         playerControl.shoot = true;
+    }
+
+    /**
+     * @brief Handle player ack callback
+     * @param networkPlayer Network player
+     * @param msg Message
+     */
+    void handlePlayerAckCallback(rtype::component::NetworkPlayer& networkPlayer,
+        const boost::array<char, 512UL>& msg) const
+    {
+        auto& ack = rtype::network::message::unpack<rtype::network::message::client::Ack>(msg);
+        if (networkPlayer.criticalMessages.find(ack.msgId) != networkPlayer.criticalMessages.end()) {
+            networkPlayer.criticalMessages.erase(ack.msgId);
+        }
     }
 };
 }
