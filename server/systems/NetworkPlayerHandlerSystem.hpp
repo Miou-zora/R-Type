@@ -144,8 +144,15 @@ private:
             return;
         }
         registry.emplaceComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity), std::move(component));
-        auto roomInformation = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(component.id, rtype::utils::GameLogicManager::countPlayersInGameRoom(registry, component));
-        networkPlayer.criticalMessages[roomInformation.header.id] = rtype::network::message::pack(roomInformation);
+        for (auto&& [gameRoomOpt, networkPlayerOpt] : ecs::containers::Zipper(registry.getComponents<rtype::component::GameRoom>(), registry.getComponents<rtype::component::NetworkPlayer>())) {
+            auto& gameRoom = gameRoomOpt.value();
+            auto& loopNetworkPlayer = networkPlayerOpt.value();
+            if (gameRoom.id != component.id) {
+                continue;
+            }
+            auto roomInformation = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(component.id, rtype::utils::GameLogicManager::countPlayersInGameRoom(registry, component));
+            loopNetworkPlayer.criticalMessages[roomInformation.header.id] = rtype::network::message::pack(roomInformation);
+        }
         std::cout << "handleChooseRoomCallback: info: Player " << networkPlayerEntity << " joined room " << component.id << std::endl;
     }
 
