@@ -14,7 +14,7 @@ void initLoginStartButton(rtype::ecs::Registry& reg)
     assetsManager.loadTexture("login_start_button", "assets/textures/buttons/StartButton.png");
 
     prefabManager.createPrefab("login_start_button")
-        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(700, 700))
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(660, 700))
         .addComponent<rtype::component::Clickable>(
             [&]() {
                 std::string ip = "";
@@ -34,7 +34,7 @@ void initLoginStartButton(rtype::ecs::Registry& reg)
                     std::cerr << "Invalid IP or PORT" << std::endl;
                     if (error != -1) {
                         reg.getComponents<rtype::component::Text>()[error]->text = "INVALID IP OR PORT";
-                        reg.getComponents<rtype::component::Transform>()[error]->position = rtype::utils::Vector<float>(550, 375);
+                        reg.getComponents<rtype::component::Transform>()[error]->position = rtype::utils::Vector<float>(510, 375);
                     }
                     return;
                 }
@@ -58,7 +58,7 @@ void initInputIp(rtype::ecs::Registry& reg)
     assetsManager.loadTexture("ip_zone", "assets/textures/buttons/IPZone.png");
 
     prefabManager.createPrefab("ip_zone")
-        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(700, 500))
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(660, 500))
         .addComponent<rtype::component::DebugColliderDisplay>(true)
         .addComponent<rtype::component::Collider>(assetsManager.getTexture("ip_zone").width, assetsManager.getTexture("ip_zone").height)
         .addComponent<rtype::component::Drawable>("ip_zone", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("ip_zone").width, assetsManager.getTexture("ip_zone").height), 1)
@@ -67,7 +67,7 @@ void initInputIp(rtype::ecs::Registry& reg)
         .addComponent<rtype::component::Text>("127.0.0.1", rtype::component::Text::DEFAULT_FONT, 25)
         .addComponent<rtype::component::Nameable>("IP");
     prefabManager.createPrefab("ip_text")
-        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(650, 510))
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(610, 510))
         .addComponent<rtype::component::Text>("IP:", rtype::component::Text::DEFAULT_FONT, 25, 3, raylib::WHITE);
 }
 
@@ -78,7 +78,7 @@ void initInputPort(rtype::ecs::Registry& reg)
     assetsManager.loadTexture("port_zone", "assets/textures/buttons/PortZone.png");
 
     prefabManager.createPrefab("port_zone")
-        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(750, 600))
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(710, 600))
         .addComponent<rtype::component::DebugColliderDisplay>(true)
         .addComponent<rtype::component::Collider>(assetsManager.getTexture("port_zone").width, assetsManager.getTexture("port_zone").height)
         .addComponent<rtype::component::Drawable>("port_zone", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("port_zone").width, assetsManager.getTexture("port_zone").height), 1)
@@ -88,7 +88,7 @@ void initInputPort(rtype::ecs::Registry& reg)
         .addComponent<rtype::component::Nameable>("PORT");
 
     prefabManager.createPrefab("port_text")
-        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(650, 610))
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(610, 610))
         .addComponent<rtype::component::Text>("PORT:", rtype::component::Text::DEFAULT_FONT, 25, 3, raylib::WHITE);
 }
 
@@ -99,7 +99,7 @@ void initExitButton(rtype::ecs::Registry& reg)
     assetsManager.loadTexture("exit_button", "assets/textures/buttons/ExitButton.png");
 
     prefabManager.createPrefab("exit_button")
-        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(725, 800))
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(685, 800))
         .addComponent<rtype::component::DebugColliderDisplay>(true)
         .addComponent<rtype::component::Clickable>(
             [&]() {
@@ -128,7 +128,7 @@ void title(rtype::ecs::Registry& reg)
     assetsManager.loadTexture("main_title", "assets/textures/R-Type_Logo.png");
 
     prefabManager.createPrefab("main_title")
-        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(550, 200))
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(510, 200))
         .addComponent<rtype::component::Drawable>("main_title", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("main_title").width, assetsManager.getTexture("main_title").height), 1);
 }
 

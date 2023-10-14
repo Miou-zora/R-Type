@@ -5,8 +5,6 @@
 ** main
 */
 
-#include <iostream>
-
 #include "AckSystem.hpp"
 #include "Click.hpp"
 #include "Client.hpp"
@@ -18,12 +16,14 @@
 #include "Scroll.hpp"
 #include "Selection.hpp"
 #include "SwitchScene.hpp"
+#include "UpdateRoomInformations.hpp"
 #include "VelocityApplicator.hpp"
 #include "loads.hpp"
 #include "systems/TextInput.hpp"
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 #include <ctime>
+#include <iostream>
 #include <string>
 namespace raylib {
 #include <raylib.h>
@@ -35,18 +35,20 @@ int main(int ac, char* av[])
     rtype::ecs::Registry reg;
 
     // add systems
-    reg.addSystem<rtype::component::Selectable, rtype::component::Transform, rtype::component::Collider>(rtype::system::Selection());
-    reg.addSystem<rtype::component::Selectable, rtype::component::TextInputable, rtype::component::Text>(rtype::system::TextInput());
-    reg.addSystem<rtype::component::Drawable, rtype::component::Scrollable>(rtype::system::Scroll());
     reg.addSystem<rtype::component::Controllable, rtype::component::Velocity>(rtype::system::Control());
     reg.addSystem<rtype::component::Transform, rtype::component::Velocity>(rtype::system::VelocityApplicator());
     reg.addSystem<>(rtype::system::Draw());
+    reg.addSystem<rtype::component::Selectable, rtype::component::Transform, rtype::component::Collider>(rtype::system::Selection());
+    reg.addSystem<rtype::component::Selectable, rtype::component::TextInputable, rtype::component::Text>(rtype::system::TextInput());
     reg.addSystem<rtype::component::DebugColliderDisplay, rtype::component::Transform, rtype::component::Collider>(rtype::system::DebugColliderDisplayer());
     reg.addSystem<rtype::component::Clickable, rtype::component::Transform, rtype::component::Collider>(rtype::system::Click());
+    reg.addSystem<rtype::component::Drawable, rtype::component::Scrollable>(rtype::system::Scroll());
     reg.addSystem<>(rtype::system::NetworkInboxChecker());
     reg.addSystem<>(rtype::system::NetworkInboxHandler());
     reg.addSystem<>(rtype::system::NetworkOutboxHandler());
     reg.addSystem<>(rtype::system::SwitchScene());
+    reg.addSystem<>(rtype::system::AckSystem());
+    reg.addSystem<rtype::component::RoomInformations>(rtype::system::UpdateRoomInformations());
 
     // add components
     reg.registerComponent<rtype::component::Controllable>();
@@ -61,12 +63,14 @@ int main(int ac, char* av[])
     reg.registerComponent<rtype::component::Clickable>();
     reg.registerComponent<rtype::component::Scrollable>();
     reg.registerComponent<rtype::component::Nameable>();
+    reg.registerComponent<rtype::component::RoomInformations>();
 
     rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
 
     initLogin(reg);
     initMenu(reg);
     initJoin(reg);
+    initRoom(reg);
 
     // remember to load the first scene LOGIN
     sceneManager.setNextScene(rtype::utils::Scene::LOGIN);

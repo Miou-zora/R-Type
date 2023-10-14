@@ -29,7 +29,9 @@ namespace raylib {
 #include <raylib.h>
 }
 #include "NetworkMessage.hpp"
+#include "RoomInformations.hpp"
 
 void initLogin(rtype::ecs::Registry& reg);
 void initMenu(rtype::ecs::Registry& reg);
 void initJoin(rtype::ecs::Registry& reg);
+void initRoom(rtype::ecs::Registry& reg);

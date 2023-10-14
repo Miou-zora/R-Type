@@ -21,6 +21,7 @@ cmrc_add_resource_library(
     assets/textures/buttons/SingleButton.png
     assets/textures/buttons/JoinRoomButton.png
     assets/textures/buttons/CreateRoomButton.png
+    assets/textures/buttons/white_square.png
     assets/textures/spacebg.png
     assets/textures/R-Type_Logo.png
 )

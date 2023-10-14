@@ -14,7 +14,7 @@ void initJoinRoomButton(rtype::ecs::Registry& reg)
     assetsManager.loadTexture("join_page_join_room_button", "assets/textures/buttons/JoinRoomButton.png");
 
     prefabManager.createPrefab("join_page_join_room_button")
-        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(700, 600))
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(660, 600))
         .addComponent<rtype::component::Clickable>(
             [&]() {
                 std::string roomId = "";
@@ -29,7 +29,7 @@ void initJoinRoomButton(rtype::ecs::Registry& reg)
                     std::cerr << "Invalid ROOM ID" << std::endl;
                     if (error != -1) {
                         reg.getComponents<rtype::component::Text>()[error]->text = "INVALID ID FORMAT";
-                        reg.getComponents<rtype::component::Transform>()[error]->position = rtype::utils::Vector<float>(550, 375);
+                        reg.getComponents<rtype::component::Transform>()[error]->position = rtype::utils::Vector<float>(510, 375);
                     }
                     return;
                 }
@@ -54,7 +54,7 @@ void initInputRoomId(rtype::ecs::Registry& reg)
     assetsManager.loadTexture("room_id_zone", "assets/textures/buttons/PortZone.png");
 
     prefabManager.createPrefab("room_id_zone")
-        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(810, 500))
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(770, 500))
         .addComponent<rtype::component::DebugColliderDisplay>(true)
         .addComponent<rtype::component::Collider>(assetsManager.getTexture("room_id_zone").width, assetsManager.getTexture("room_id_zone").height)
         .addComponent<rtype::component::Drawable>("room_id_zone", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("room_id_zone").width, assetsManager.getTexture("room_id_zone").height), 1)
@@ -64,7 +64,7 @@ void initInputRoomId(rtype::ecs::Registry& reg)
         .addComponent<rtype::component::Nameable>("ROOM_ID");
 
     prefabManager.createPrefab("room_id_text")
-        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(685, 510))
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(645, 510))
         .addComponent<rtype::component::Text>("ROOM ID:", rtype::component::Text::DEFAULT_FONT, 25, 3, raylib::WHITE);
 }
 
@@ -75,7 +75,7 @@ void initBackButton(rtype::ecs::Registry& reg)
     assetsManager.loadTexture("back_button", "assets/textures/buttons/BackButton.png");
 
     prefabManager.createPrefab("back_button")
-        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(725, 700))
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(685, 700))
         .addComponent<rtype::component::Clickable>(
             [&]() {
                 rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();

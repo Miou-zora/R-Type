@@ -14,7 +14,7 @@ void initMenuSingleButton(rtype::ecs::Registry& reg)
     assetsManager.loadTexture("single_button", "assets/textures/buttons/SingleButton.png");
 
     prefabManager.createPrefab("single_button")
-        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(700, 500))
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(660, 500))
         .addComponent<rtype::component::Clickable>(
             [&]() {
                 rtype::network::message::client::CreateRoom message = rtype::network::message::createEvent<rtype::network::message::client::CreateRoom>();
@@ -38,7 +38,7 @@ void initMenuCreateRoomButton(rtype::ecs::Registry& reg)
     assetsManager.loadTexture("create_room_button", "assets/textures/buttons/CreateRoomButton.png");
 
     prefabManager.createPrefab("create_room_button")
-        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(700, 600))
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(660, 600))
         .addComponent<rtype::component::Clickable>(
             [&]() {
                 rtype::network::message::client::CreateRoom message = rtype::network::message::createEvent<rtype::network::message::client::CreateRoom>();
@@ -59,7 +59,7 @@ void initMenuJoinRoomButton(rtype::ecs::Registry& reg)
     assetsManager.loadTexture("join_room_button", "assets/textures/buttons/JoinRoomButton.png");
 
     prefabManager.createPrefab("join_room_button")
-        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(700, 700))
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(660, 700))
         .addComponent<rtype::component::Clickable>(
             [&]() {
                 rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
