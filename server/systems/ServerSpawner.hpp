@@ -83,7 +83,7 @@ private:
         auto& transform = registry.getComponents<rtype::component::Transform>()[entity].value();
         transform.position.x = 1600.0f;
         transform.position.y = 128.0f + (static_cast<float>(std::rand() % (1024 - 128)));
-        path.addPoint(-50.0f, transform.position.y);
+        path.addPoint(-200.0f, transform.position.y);
     }
 
     std::optional<boost::array<char, rtype::network::message::MAX_PACKET_SIZE>> getSpawnMessage(rtype::ecs::Registry& registry, std::size_t index) const

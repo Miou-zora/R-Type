@@ -12,11 +12,13 @@
 #include "DamageInflictor.hpp"
 #include "ECS.hpp"
 #include "Enemy.hpp"
+#include "EnemyDespawner.hpp"
 #include "EnemyInformation.hpp"
 #include "EnemyShootControl.hpp"
 #include "GameLevel.hpp"
 #include "GameLogicManager.hpp"
 #include "GameRoom.hpp"
+#include "GameRoomCollision.hpp"
 #include "IntervalTimer.hpp"
 #include "NetworkMessageQueue.hpp"
 #include "NetworkPlayer.hpp"
@@ -74,7 +76,8 @@ void addSystems(rtype::ecs::Registry& reg)
     reg.addSystem<rtype::component::NetworkPlayerControl, rtype::component::Shooter>(rtype::system::ShootControl());
     reg.addSystem<rtype::component::Shooter>(rtype::system::EnemyShootControl());
     reg.addSystem<rtype::component::BulletInformation, rtype::component::Path>(rtype::system::BulletDestroyer());
-    reg.addSystem<rtype::component::Collider, rtype::component::Transform>(rtype::system::Collision());
+    reg.addSystem<rtype::component::EnemyInformation, rtype::component::Path>(rtype::system::EnemyDespawner());
+    reg.addSystem<rtype::component::Collider, rtype::component::Transform>(rtype::system::GameRoomCollision());
     reg.addSystem<rtype::component::Damage, rtype::component::Collider>(rtype::system::DamageInflictor());
     reg.addSystem<rtype::component::Transform, rtype::component::Velocity, rtype::component::Path>(rtype::system::Path());
     reg.addSystem<rtype::component::Spawner>(rtype::system::ServerSpawner());
