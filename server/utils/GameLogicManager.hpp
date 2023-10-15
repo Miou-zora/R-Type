@@ -277,6 +277,7 @@ public:
         enemyBullet.addComponent<rtype::component::Velocity>();
         enemyBullet.addComponent<rtype::component::Collider>(getValue<float>("enemyBulletHitboxWidth"), getValue<float>("enemyBulletHitboxHeight"));
         enemyBullet.addComponent<rtype::component::Damage>(getValue<int>("enemyBulletDamage"));
+        enemyBullet.addComponent<rtype::component::Health>(getValue<int>("bulletDamage"));
         enemyBullet.addComponent<rtype::component::GameRoom>();
         enemyBullet.addComponent<rtype::component::BulletInformation>();
         enemyBullet.addComponent<rtype::component::Path>(getValue<float>("enemyBulletSpeed"));
