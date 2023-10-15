@@ -47,7 +47,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
 
     prefabManagerInstance.createPrefab("EnemyProjectile") // Can add animation component
         .addComponent<rtype::component::Transform>()
-        .addComponent<rtype::component::Drawable>("enemyProjectileSheet", 1, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("enemyProjectileSheet").width, assetsManagerInstance.getTexture("enemyProjectileSheet").height), 5)
+        .addComponent<rtype::component::Drawable>("enemyProjectileSheet", 4, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("enemyProjectileSheet").width, assetsManagerInstance.getTexture("enemyProjectileSheet").height), 5)
         .addComponent<rtype::component::ServerID>();
     rtype::component::Animation enemyAnimation;
     enemyAnimation.currentFrame = 0;
@@ -60,12 +60,12 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     }
     prefabManagerInstance.createPrefab("Enemy") // Can add animation component
         .addComponent<rtype::component::Transform>()
-        .addComponent<rtype::component::Drawable>("enemySheet", 1, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("enemySheet").width / 16, assetsManagerInstance.getTexture("enemySheet").height), 5)
+        .addComponent<rtype::component::Drawable>("enemySheet", 4, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("enemySheet").width / 16, assetsManagerInstance.getTexture("enemySheet").height), 5)
         .addComponent<rtype::component::Animation>(enemyAnimation)
         .addComponent<rtype::component::ServerID>();
     prefabManagerInstance.createPrefab("Player")
         .addComponent<rtype::component::Transform>()
-        .addComponent<rtype::component::Drawable>("ShipsSheet", 5, rtype::utils::Rectangle(1, 3, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 5)
+        .addComponent<rtype::component::Drawable>("ShipsSheet", 4, rtype::utils::Rectangle(1, 3, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 5)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::Controllable>(
             []() { return raylib::IsKeyDown(raylib::KEY_UP); },
