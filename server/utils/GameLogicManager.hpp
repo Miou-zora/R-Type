@@ -144,7 +144,8 @@ public:
         auto& bulletTransform = registry.getComponents<rtype::component::Transform>()[bullet].value();
         bulletTransform.position = enemyTransform.position;
         auto& path = registry.getComponents<rtype::component::Path>()[bullet].value();
-        path.addPoint(enemyTransform.position.x - getValue<float>("enemyBulletDistance"), enemyTransform.position.y);
+        registry.getComponents<rtype::component::Transform>()[bullet].value().position.y += 55;
+        path.addPoint(enemyTransform.position.x - getValue<float>("enemyBulletDistance"), enemyTransform.position.y + 55);
         auto& gameRoom = registry.getComponents<rtype::component::GameRoom>()[bullet].value();
         auto& enemyGameRoom = registry.getComponents<rtype::component::GameRoom>()[enemyIndex].value();
         gameRoom = enemyGameRoom;

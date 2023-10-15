@@ -254,12 +254,10 @@ private:
     {
         rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
         network::message::server::EnemySpawn enemySpawn = reinterpret_cast<network::message::server::EnemySpawn&>(message[0]);
-        {
-            rtype::ecs::Entity enemy = prefabManager.instantiate("Enemy", registry);
-            registry.getComponents<rtype::component::ServerID>()[enemy]->id = enemySpawn.enemyId;
-            registry.getComponents<rtype::component::Transform>()[enemy]->position.x = enemySpawn.x;
-            registry.getComponents<rtype::component::Transform>()[enemy]->position.y = enemySpawn.y;
-        }
+        rtype::ecs::Entity enemy = prefabManager.instantiate("Enemy", registry);
+        registry.getComponents<rtype::component::ServerID>()[enemy]->id = enemySpawn.enemyId;
+        registry.getComponents<rtype::component::Transform>()[enemy]->position.x = enemySpawn.x;
+        registry.getComponents<rtype::component::Transform>()[enemy]->position.y = enemySpawn.y;
     }
 
     /**
@@ -311,8 +309,13 @@ private:
     {
         rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
         network::message::server::BulletShoot bulletShoot = reinterpret_cast<network::message::server::BulletShoot&>(message[0]);
-        {
+        if (bulletShoot.team == 0) {
             rtype::ecs::Entity bullet = prefabManager.instantiate("AllyProjectile", registry);
+            registry.getComponents<rtype::component::ServerID>()[bullet]->id = bulletShoot.bulletId;
+            registry.getComponents<rtype::component::Transform>()[bullet]->position.x = bulletShoot.x;
+            registry.getComponents<rtype::component::Transform>()[bullet]->position.y = bulletShoot.y;
+        } else {
+            rtype::ecs::Entity bullet = prefabManager.instantiate("EnemyProjectile", registry);
             registry.getComponents<rtype::component::ServerID>()[bullet]->id = bulletShoot.bulletId;
             registry.getComponents<rtype::component::Transform>()[bullet]->position.x = bulletShoot.x;
             registry.getComponents<rtype::component::Transform>()[bullet]->position.y = bulletShoot.y;

@@ -49,7 +49,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
 
     prefabManagerInstance.createPrefab("EnemyProjectile") // Can add animation component
         .addComponent<rtype::component::Transform>()
-        .addComponent<rtype::component::Drawable>("enemyProjectileSheet", 4, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("enemyProjectileSheet").width, assetsManagerInstance.getTexture("enemyProjectileSheet").height), 5)
+        .addComponent<rtype::component::Drawable>("enemyProjectileSheet", 5, rtype::utils::Rectangle(135, 5, 7, 6), 5)
         .addComponent<rtype::component::ServerID>();
 
     rtype::component::Animation enemyAnimation;
