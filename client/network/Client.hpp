@@ -126,6 +126,17 @@ public:
      * @return The buffer of the received messages.
      */
     std::shared_ptr<std::vector<std::tuple<boost::array<char, network::message::MAX_PACKET_SIZE>, size_t>>> getRecvMsgBuffer() const;
+    /**
+     * @brief Set the Client Id object
+     *
+     * @param id
+     */
+    void setClientId(size_t id);
+    /**
+     * @brief   Get the Client Id object
+     * @return  size_t
+     */
+    size_t getClientId() const;
 
 private:
     std::string m_ip;
@@ -140,6 +151,7 @@ private:
     std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderEquality, network::message::NetworkMessageHeaderCompare>> m_inbox;
     std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderEquality, network::message::NetworkMessageHeaderCompare>> m_outbox;
     bool m_connected;
+    size_t m_clientId;
 };
 
 inline Client* Client::m_instance = nullptr;

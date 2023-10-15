@@ -10,6 +10,7 @@
 #include "Client.hpp"
 #include "Control.hpp"
 #include "Draw.hpp"
+#include "NetworkControl.hpp"
 #include "NetworkInboxChecker.hpp"
 #include "NetworkInboxHandler.hpp"
 #include "NetworkOutboxHandler.hpp"
@@ -49,6 +50,7 @@ int main(int ac, char* av[])
     reg.addSystem<>(rtype::system::SwitchScene());
     reg.addSystem<>(rtype::system::AckSystem());
     reg.addSystem<rtype::component::RoomInformations>(rtype::system::UpdateRoomInformations());
+    reg.addSystem<rtype::component::Controllable, rtype::component::Velocity>(rtype::system::NetworkControl());
 
     // add components
     reg.registerComponent<rtype::component::Controllable>();

@@ -23,7 +23,7 @@ public:
 
     void operator()(ecs::Registry& registry,
         ecs::SparseArray<rtype::component::Controllable> const& controllables,
-        ecs::SparseArray<rtype::component::Velocity>& velocities)
+        ecs::SparseArray<rtype::component::Velocity>& velocities) const
     {
         bool noKeysPressed;
 

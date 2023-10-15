@@ -112,7 +112,9 @@ private:
     {
         rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
         network::message::server::ConnectAck connectAck = reinterpret_cast<network::message::server::ConnectAck&>(message[0]);
-        network::Client::getInstance().setConnected(true);
+        network::Client& client = network::Client::getInstance();
+        client.setConnected(true);
+        client.setClientId(connectAck.playerId);
         sceneManager.setNextScene(rtype::utils::Scene::MENU);
     }
 
@@ -176,19 +178,19 @@ private:
     {
         network::message::server::PlayerSpawn playerSpawn = reinterpret_cast<network::message::server::PlayerSpawn&>(message[0]);
         rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
-        int existingPlayers = -1;
+        int existingPlayers = 0;
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::AllyNumber>())) {
             if (registry.getComponents<rtype::component::AllyNumber>()[index]->id > existingPlayers) {
-                existingPlayers = index;
+                existingPlayers = registry.getComponents<rtype::component::AllyNumber>()[index]->id;
             }
         }
-        if (existingPlayers == -1) {
+        if (playerSpawn.playerId == network::Client::getInstance().getClientId()) {
             rtype::ecs::Entity newPlayer = prefabManager.instantiate("Player", registry);
             registry.getComponents<rtype::component::Transform>()[newPlayer]->position.x = playerSpawn.x;
             registry.getComponents<rtype::component::Transform>()[newPlayer]->position.y = playerSpawn.y;
             registry.getComponents<rtype::component::ServerID>()[newPlayer]->id = playerSpawn.playerId;
         } else {
-            rtype::ecs::Entity newAlly = prefabManager.instantiate("Ally1", registry);
+            rtype::ecs::Entity newAlly = prefabManager.instantiate("Ally" + std::to_string(existingPlayers + 1), registry);
             registry.getComponents<rtype::component::Transform>()[newAlly]->position.x = playerSpawn.x;
             registry.getComponents<rtype::component::Transform>()[newAlly]->position.y = playerSpawn.y;
             registry.getComponents<rtype::component::ServerID>()[newAlly]->id = playerSpawn.playerId;

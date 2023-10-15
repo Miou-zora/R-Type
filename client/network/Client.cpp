@@ -137,4 +137,14 @@ std::shared_ptr<std::vector<std::tuple<boost::array<char, network::message::MAX_
 {
     return m_recvMsgBuffer;
 }
+
+void Client::setClientId(size_t id)
+{
+    m_clientId = id;
+}
+
+size_t Client::getClientId() const
+{
+    return m_clientId;
+}
 }
