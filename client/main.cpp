@@ -20,6 +20,7 @@
 #include "UpdateRoomInformations.hpp"
 #include "VelocityApplicator.hpp"
 #include "loads.hpp"
+#include "Animator.hpp"
 #include "systems/TextInput.hpp"
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
@@ -36,6 +37,7 @@ int main(int ac, char* av[])
     rtype::ecs::Registry reg;
 
     // add systems
+    reg.addSystem<rtype::component::Animation, rtype::component::Drawable>(rtype::system::Animator());
     reg.addSystem<rtype::component::Controllable, rtype::component::Velocity>(rtype::system::Control());
     reg.addSystem<rtype::component::Transform, rtype::component::Velocity>(rtype::system::VelocityApplicator());
     reg.addSystem<>(rtype::system::Draw());
@@ -69,6 +71,7 @@ int main(int ac, char* av[])
     reg.registerComponent<rtype::component::ServerID>();
     reg.registerComponent<rtype::component::AllyNumber>();
     reg.registerComponent<rtype::component::Speed>();
+    reg.registerComponent<rtype::component::Animation>();
 
     rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
 

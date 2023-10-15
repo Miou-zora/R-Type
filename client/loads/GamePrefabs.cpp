@@ -36,9 +36,19 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("enemyProjectileSheet", 1, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("enemyProjectileSheet").width, assetsManagerInstance.getTexture("enemyProjectileSheet").height), 1)
         .addComponent<rtype::component::ServerID>();
+    rtype::component::Animation enemyAnimation;
+    enemyAnimation.currentFrame = 0;
+    enemyAnimation.finished = false;
+    enemyAnimation.loop = true;
+    enemyAnimation.playing = true;
+    for (std::size_t frame = 0; frame < 8; frame++) {
+        enemyAnimation.framesPosition.push_back(rtype::utils::Vector<int>(1 + frame * 33, 0));
+        enemyAnimation.frameTimes.push_back(0.15);
+    }
     prefabManagerInstance.createPrefab("Enemy") // Can add animation component
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("enemySheet", 1, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("enemySheet").width / 16, assetsManagerInstance.getTexture("enemySheet").height), 1)
+        .addComponent<rtype::component::Animation>(enemyAnimation)
         .addComponent<rtype::component::ServerID>();
     prefabManagerInstance.createPrefab("Player")
         .addComponent<rtype::component::Transform>()
