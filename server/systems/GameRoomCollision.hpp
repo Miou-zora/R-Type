@@ -13,6 +13,9 @@
 #include "Transform.hpp"
 
 namespace rtype::system {
+/**
+ * @brief System used to check for collisions between entities inside the same room
+ */
 class GameRoomCollision {
 public:
     GameRoomCollision() = default;

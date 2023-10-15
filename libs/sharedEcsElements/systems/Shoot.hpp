@@ -14,6 +14,9 @@
 
 namespace rtype::system
 {
+    /**
+     * @brief Shoot system used to shoot projectiles
+     */
     class Shoot
     {
     public:

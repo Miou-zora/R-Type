@@ -16,6 +16,9 @@
 
 namespace rtype::system
 {
+    /**
+     * @brief System used to inflict damage to entities that collide with the entity
+     */
     class DamageInflictor
     {
     public:

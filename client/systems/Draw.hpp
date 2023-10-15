@@ -18,6 +18,9 @@ namespace raylib {
 }
 
 namespace rtype::system {
+/**
+ * @brief System used to draw the entities
+ */
 class Draw {
 public:
     Draw() = default;

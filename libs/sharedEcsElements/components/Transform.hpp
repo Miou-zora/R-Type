@@ -12,6 +12,9 @@
 
 namespace rtype::component
 {
+    /**
+     * @brief Transform component used to store the position, scale and rotation of an entity
+     */
     struct Transform {
 
         Transform(rtype::utils::Vector<float> position_ = rtype::utils::Vector<float>(0, 0), float scale_ = 1, float rotation_ = 0): position(position_), scale(scale_), rotation(rotation_) {};

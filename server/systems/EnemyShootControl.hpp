@@ -18,6 +18,9 @@
 #include "components/Path.hpp"
 
 namespace rtype::system {
+/**
+ * @brief EnemyShootControl system used to shoot bullets
+ */
 class EnemyShootControl {
 public:
     EnemyShootControl() = default;

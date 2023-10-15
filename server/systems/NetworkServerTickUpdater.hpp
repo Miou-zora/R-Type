@@ -14,6 +14,9 @@
 #include "Transform.hpp"
 
 namespace rtype::system {
+/**
+ * @brief NetworkServerTickUpdater system used to send all the game informations to the players using tick
+ */
 class NetworkServerTickUpdater {
 public:
     NetworkServerTickUpdater() = default;

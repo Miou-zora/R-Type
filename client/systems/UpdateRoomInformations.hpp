@@ -15,6 +15,9 @@
 #include "Text.hpp"
 
 namespace rtype::system {
+/**
+ * @brief System used to update the room informations on the window
+ */
 class UpdateRoomInformations {
 public:
     UpdateRoomInformations() = default;

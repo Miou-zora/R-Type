@@ -12,6 +12,9 @@
 #include <vector>
 
 namespace rtype::component {
+/**
+ * @brief Component used to store informations about an animation
+ */
 struct Animation {
     Animation() = default;
     ~Animation() = default;

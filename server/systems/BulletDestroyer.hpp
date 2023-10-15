@@ -7,6 +7,9 @@
 #include "components/Path.hpp"
 
 namespace rtype::system {
+/**
+ * @brief BulletDestroyer system used to destroy bullets when they reach the end of their path
+ */
 class BulletDestroyer {
 public:
     BulletDestroyer() = default;

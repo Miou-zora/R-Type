@@ -10,7 +10,6 @@
 namespace rtype::component {
 /**
  * @brief RoomInformations component used to store the room informations
- *
  */
 struct RoomInformations {
     RoomInformations(int playersCount_ = 1, int level_ = 1, int id_ = 0)

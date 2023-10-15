@@ -16,6 +16,9 @@ namespace raylib {
 }
 
 namespace rtype::system {
+/**
+ * @brief System used to handle the text input
+ */
 class TextInput {
 public:
     TextInput() = default;

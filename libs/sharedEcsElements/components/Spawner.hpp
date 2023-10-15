@@ -13,6 +13,9 @@
 
 namespace rtype::component
 {
+    /**
+     * @brief Spawner component used to store the informations about the spawner and the entities to spawn
+     */
     struct Spawner
     {
     private:

@@ -10,6 +10,9 @@
 #include "NetworkServer.hpp"
 
 namespace rtype::system {
+/**
+ * @brief NetworkServerOutboxDispatcher system used to dispatch outbox messages to the according network player
+ */
 class NetworkServerOutboxDispatcher {
 public:
     NetworkServerOutboxDispatcher() = default;

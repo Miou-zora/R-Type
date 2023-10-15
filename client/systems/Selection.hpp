@@ -16,6 +16,9 @@ namespace raylib {
 }
 
 namespace rtype::system {
+/**
+ * @brief System used to select an entity
+ */
 class Selection {
 public:
     Selection() = default;

@@ -14,6 +14,9 @@
 
 namespace rtype::system
 {
+    /**
+     * @brief Path system used to move an entity along a path
+     */
     class Path
     {
     public:

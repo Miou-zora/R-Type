@@ -18,6 +18,9 @@
 #include "components/Path.hpp"
 
 namespace rtype::system {
+/**
+ * @brief ShootControl system used to shoot bullets for players
+ */
 class ShootControl {
 public:
     ShootControl() = default;

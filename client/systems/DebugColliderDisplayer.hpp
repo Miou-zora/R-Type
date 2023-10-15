@@ -16,6 +16,9 @@ namespace raylib {
 }
 
 namespace rtype::system {
+/**
+ * @brief System used to display the colliders of the entities
+ */
 class DebugColliderDisplayer {
 public:
     DebugColliderDisplayer(void) = default;

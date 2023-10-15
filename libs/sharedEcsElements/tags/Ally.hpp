@@ -9,6 +9,9 @@
 
 namespace rtype::tag
 {
+    /**
+     * @brief Ally tag used to mark an entity as an ally
+     */
     struct Ally {
         Ally() = default;
         ~Ally() = default;

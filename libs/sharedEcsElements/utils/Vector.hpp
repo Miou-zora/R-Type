@@ -12,6 +12,9 @@
 
 namespace rtype::utils
 {
+    /**
+     * @brief Vector class used to store a vector
+     */
     template <typename T>
     class Vector
     {

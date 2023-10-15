@@ -3,6 +3,9 @@
 #include "ECS.hpp"
 
 namespace rtype::component {
+/**
+ * @brief BulletInformation component used to store informations about the bullet's shooter
+ */
 struct BulletInformation {
     BulletInformation(int type_ = 0)
         : type(type_) {};

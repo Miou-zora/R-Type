@@ -12,6 +12,9 @@
 
 namespace rtype::system
 {
+    /**
+     * @brief Logging system used to log informations
+     */
     class Logging
     {
     public:

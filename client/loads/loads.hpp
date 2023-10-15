@@ -31,8 +31,28 @@ namespace raylib {
 #include "NetworkMessage.hpp"
 #include "RoomInformations.hpp"
 
+/**
+ * @brief Init the Login scene (prefabs)
+ * @param reg The ECS registry
+ */
 void initLogin(rtype::ecs::Registry& reg);
+/**
+ * @brief Init the Menu scene (prefabs)
+ * @param reg The ECS registry
+ */
 void initMenu(rtype::ecs::Registry& reg);
+/**
+ * @brief Init the Join scene (prefabs)
+ * @param reg The ECS registry
+ */
 void initJoin(rtype::ecs::Registry& reg);
+/**
+ * @brief Init the Create scene (prefabs)
+ * @param reg The ECS registry
+ */
 void initRoom(rtype::ecs::Registry& reg);
+/**
+ * @brief Init the Game scene (prefabs)
+ * @param reg The ECS registry
+ */
 void initGamePrefabs(rtype::ecs::Registry& reg);

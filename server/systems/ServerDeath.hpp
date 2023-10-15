@@ -15,6 +15,9 @@
 #include "NetworkPlayer.hpp"
 
 namespace rtype::system {
+/**
+ * @brief Death system used to kill entities with a health component with a value of 0 or less
+ */
 class ServerDeath {
 public:
     ServerDeath() = default;

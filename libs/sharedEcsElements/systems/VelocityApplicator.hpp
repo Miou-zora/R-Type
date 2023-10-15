@@ -13,6 +13,9 @@
 
 namespace rtype::system
 {
+    /**
+     * @brief VelocityApplicator system used to apply the velocity to the position
+     */
     class VelocityApplicator
     {
     public:

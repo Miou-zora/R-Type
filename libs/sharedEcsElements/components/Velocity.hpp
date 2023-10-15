@@ -11,6 +11,9 @@
 
 namespace rtype::component
 {
+    /**
+     * @brief Velocity component used to store the velocity of an entity
+     */
     struct Velocity {
 
         Velocity(void) : vector(0, 0) {};

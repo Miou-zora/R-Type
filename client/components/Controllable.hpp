@@ -10,6 +10,9 @@
 #include <functional>
 
 namespace rtype::component {
+/**
+ * @brief Controllable component used to store informations about the controls of an entity
+ */
 struct Controllable {
     Controllable(
         std::function<bool(void)> is_key_up_pressed_,

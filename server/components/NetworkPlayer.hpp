@@ -8,6 +8,9 @@
 #include "NetworkMessageQueue.hpp"
 
 namespace rtype::component {
+/**
+ * @brief NetworkPlayer component used to store informations about the network player
+ */
 struct NetworkPlayer {
     NetworkPlayer(boost::asio::ip::udp::endpoint _endpoint)
     {

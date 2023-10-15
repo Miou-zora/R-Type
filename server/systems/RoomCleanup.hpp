@@ -5,6 +5,9 @@
 #include "NetworkPlayer.hpp"
 
 namespace rtype::system {
+/**
+ * @brief RoomCleanup system used to clean up empty game rooms
+ */
 class RoomCleanup {
 public:
     RoomCleanup() = default;

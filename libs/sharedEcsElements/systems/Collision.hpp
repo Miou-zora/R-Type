@@ -13,6 +13,9 @@
 
 namespace rtype::system
 {
+    /**
+     * @brief Collision system used to check for collisions between entities with a collider component
+     */
     class Collision
     {
     public:

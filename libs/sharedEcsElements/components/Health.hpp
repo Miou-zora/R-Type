@@ -8,6 +8,9 @@
 #pragma once
 namespace rtype::component
 {
+    /**
+     * @brief Health component used to store the health of an entity
+     */
     struct Health
     {
         Health(int value_ = 1) : value(value_){};

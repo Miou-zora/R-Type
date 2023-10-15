@@ -14,6 +14,9 @@
 #include <queue>
 
 namespace rtype::component {
+    /**
+     * @brief GameLevel component used to store informations about the game level
+     */
     struct GameLevel {
         GameLevel(u_int16_t level)
             : level(level) {}

@@ -11,6 +11,9 @@
 #include "PrefabManager.hpp"
 
 namespace rtype::system {
+/**
+ * @brief NetworkServerInboxDispatcher system used to dispatch inbox messages to the according network player
+ */
 class NetworkServerInboxDispatcher {
 public:
     NetworkServerInboxDispatcher() = default;

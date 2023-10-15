@@ -10,6 +10,9 @@
 #include "NetworkServer.hpp"
 
 namespace rtype::system {
+/**
+ * @brief NetworkPlayerCriticalDispatcher system used to dispatch critical messages to the network
+ */
 class NetworkPlayerCriticalDispatcher {
 public:
     NetworkPlayerCriticalDispatcher() = default;

@@ -14,7 +14,9 @@
 #include "NetworkServer.hpp"
 
 namespace rtype::system {
-// Class to kick players that got inactive for too long in a gameroom
+/**
+ * @brief NetworkPlayerDisconnection system used to kick players that are not responding
+ */
 class NetworkPlayerDisconnection {
 public:
     NetworkPlayerDisconnection(std::chrono::milliseconds timeout)

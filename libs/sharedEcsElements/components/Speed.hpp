@@ -9,6 +9,9 @@
 
 namespace rtype::component
 {
+    /**
+     * @brief Speed component used to store the speed of an entity
+     */
     struct Speed
     {
         Speed(int value_ = 100) : value(value_){};

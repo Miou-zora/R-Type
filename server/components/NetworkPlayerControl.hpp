@@ -3,6 +3,9 @@
 #include "ToggleBool.hpp"
 
 namespace rtype::component {
+/**
+ * @brief NetworkPlayerControl component used to store informations about the controls of an entity through the network
+ */
 struct NetworkPlayerControl {
     NetworkPlayerControl() = default;
     ~NetworkPlayerControl() = default;

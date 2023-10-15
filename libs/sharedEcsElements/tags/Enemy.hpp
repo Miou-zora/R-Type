@@ -9,6 +9,9 @@
 
 namespace rtype::tag
 {
+    /**
+     * @brief Enemy tag used to mark an entity as an enemy
+     */
     struct Enemy {
         Enemy() = default;
         ~Enemy() = default;

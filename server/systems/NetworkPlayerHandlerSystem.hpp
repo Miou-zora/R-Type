@@ -13,6 +13,9 @@
 #include "NetworkServer.hpp"
 
 namespace rtype::system {
+/**
+ * @brief NetworkPlayerHandlerSystem system used to handle network player messages
+ */
 class NetworkPlayerHandlerSystem {
 public:
     NetworkPlayerHandlerSystem() = default;

@@ -15,6 +15,9 @@
 #include "Velocity.hpp"
 
 namespace rtype::system {
+/**
+ * @brief Control system used to update the velocity of the entities based on inputs
+ */
 class Control {
 public:
     Control() = default;

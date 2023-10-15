@@ -12,6 +12,9 @@
 #include "ECS.hpp"
 
 namespace rtype::system {
+/**
+ * @brief Animator system used to update the animations
+ */
 class Animator {
 public:
     Animator() = default;

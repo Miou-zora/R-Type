@@ -16,6 +16,9 @@
 namespace rtype::component {
     static u_int16_t g_nextGameRoomId = 0;
 
+    /**
+     * @brief GameRoom component used to store informations about the game room
+     */
     struct GameRoom {
         GameRoom(u_int16_t id = g_nextGameRoomId++)
             : id(id) {}

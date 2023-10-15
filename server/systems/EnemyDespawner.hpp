@@ -7,6 +7,9 @@
 #include "components/Path.hpp"
 
 namespace rtype::system {
+/**
+ * @brief EnemyDespawner system used to destroy enemies when they reach the end of their path
+ */
 class EnemyDespawner {
 public:
     EnemyDespawner() = default;

@@ -14,6 +14,9 @@ namespace raylib
 
 namespace rtype::utils
 {
+    /**
+     * @brief Rectangle class used to store a rectangle
+     */
     class Rectangle
     {
     public:
