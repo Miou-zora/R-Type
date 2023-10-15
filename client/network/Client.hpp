@@ -32,8 +32,8 @@ private:
         m_resolver = std::make_shared<boost::asio::ip::udp::resolver>(*m_ioService);
         m_socket = std::make_shared<boost::asio::ip::udp::socket>(*m_ioService);
         m_endpoint = std::make_shared<boost::asio::ip::udp::endpoint>();
-        m_outbox = std::make_shared<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderCompare, network::message::NetworkMessageHeaderEquality>>();
-        m_inbox = std::make_shared<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderCompare, network::message::NetworkMessageHeaderEquality>>();
+        m_outbox = std::make_shared<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderEquality, network::message::NetworkMessageHeaderCompare>>();
+        m_inbox = std::make_shared<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderEquality, network::message::NetworkMessageHeaderCompare>>();
         m_recvMsgBuffer = std::make_shared<std::vector<std::tuple<boost::array<char, network::message::MAX_PACKET_SIZE>, size_t>>>();
     }
 
@@ -76,6 +76,12 @@ public:
      */
     void handleSend(const boost::system::error_code& error, std::size_t bytes_transferred);
     /**
+     * @brief Handle the send of the first packet.
+     * @param error The error code.
+     * @param bytes_transferred The number of bytes transferred.
+     */
+    void handleHello(const boost::system::error_code& error, std::size_t bytes_transferred);
+    /**
      * @brief Handle the connection to the server.
      * @param error The error code.
      */
@@ -89,12 +95,12 @@ public:
      * @brief Get the inbox of the client.
      * @return The inbox of the client.
      */
-    std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderCompare, network::message::NetworkMessageHeaderEquality>> getInbox() const;
+    std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderEquality, network::message::NetworkMessageHeaderCompare>> getInbox() const;
     /**
      * @brief Get the outbox of the client.
      * @return The outbox of the client.
      */
-    std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderCompare, network::message::NetworkMessageHeaderEquality>> getOutbox() const;
+    std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderEquality, network::message::NetworkMessageHeaderCompare>> getOutbox() const;
     /**
      * @brief Get the socket of the client.
      * @return The socket of the client.
@@ -131,8 +137,8 @@ private:
     std::shared_ptr<std::thread> m_thread;
     boost::array<char, network::message::MAX_PACKET_SIZE> m_recvBuffer;
     std::shared_ptr<std::vector<std::tuple<boost::array<char, network::message::MAX_PACKET_SIZE>, size_t>>> m_recvMsgBuffer;
-    std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderCompare, network::message::NetworkMessageHeaderEquality>> m_inbox;
-    std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderCompare, network::message::NetworkMessageHeaderEquality>> m_outbox;
+    std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderEquality, network::message::NetworkMessageHeaderCompare>> m_inbox;
+    std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderEquality, network::message::NetworkMessageHeaderCompare>> m_outbox;
     bool m_connected;
 };
 

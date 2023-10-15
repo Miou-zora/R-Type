@@ -65,10 +65,7 @@ void Client::handleConnect(const boost::system::error_code& error)
         network::message::client::Connect message = network::message::createEvent<network::message::client::Connect>();
         boost::array<char, rtype::network::message::MAX_PACKET_SIZE> packed = network::message::pack<network::message::client::Connect>(message);
         m_socket->async_send_to(boost::asio::buffer(packed, sizeof(network::message::client::Connect)), *m_endpoint,
-            boost::bind(&Client::handleSend, this, boost::asio::placeholders::error,
-                boost::asio::placeholders::bytes_transferred));
-        m_socket->async_receive_from(boost::asio::buffer(m_recvBuffer), *m_endpoint,
-            boost::bind(&Client::handleReceive, this, boost::asio::placeholders::error,
+            boost::bind(&Client::handleHello, this, boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
     } else {
         std::cerr << "Failed to connect to server" << std::endl;
@@ -95,12 +92,23 @@ void Client::handleSend(const boost::system::error_code& error, std::size_t byte
     }
 }
 
-std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderCompare, network::message::NetworkMessageHeaderEquality>> Client::getInbox() const
+void Client::handleHello(const boost::system::error_code& error, std::size_t bytes_transferred)
+{
+    if (error) {
+        std::cerr << "Network error (handleSend): " << error.message() << std::endl;
+    } else {
+        m_socket->async_receive_from(boost::asio::buffer(m_recvBuffer), *m_endpoint,
+            boost::bind(&Client::handleReceive, this, boost::asio::placeholders::error,
+                boost::asio::placeholders::bytes_transferred));
+    }
+}
+
+std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderEquality, network::message::NetworkMessageHeaderCompare>> Client::getInbox() const
 {
     return m_inbox;
 }
 
-std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderCompare, network::message::NetworkMessageHeaderEquality>> Client::getOutbox() const
+std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_PACKET_SIZE>, network::message::NetworkMessageHeaderEquality, network::message::NetworkMessageHeaderCompare>> Client::getOutbox() const
 {
     return m_outbox;
 }

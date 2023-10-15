@@ -21,6 +21,8 @@ public:
 
     void operator()(ecs::Registry& registry) const
     {
+        if (!network::Client::getInstance().isConnected())
+            return;
         float deltaTime = registry.getDeltaTime();
         _lastAck += deltaTime;
         if (_lastAck < 1)
