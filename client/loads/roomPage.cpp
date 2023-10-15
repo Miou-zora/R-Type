@@ -89,6 +89,9 @@ void initBackRoomButton(rtype::ecs::Registry& reg)
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(685.0f, 700.0f))
         .addComponent<rtype::component::Clickable>(
             [&]() {
+                rtype::network::message::client::LeaveRoom leaveMessage = rtype::network::message::createEvent<rtype::network::message::client::LeaveRoom>();
+                boost::array<char, rtype::network::message::MAX_PACKET_SIZE> leavePacked = rtype::network::message::pack<rtype::network::message::client::LeaveRoom>(leaveMessage);
+                rtype::network::Client::getInstance().getOutbox()->push(leavePacked);
                 rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
                 sceneManager.setNextScene(sceneManager.getPreviousScene());
             })

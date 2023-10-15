@@ -61,6 +61,9 @@ private:
         case rtype::network::message::client::ChooseRoom::type:
             handleChooseRoomCallback(registry, networkPlayers, networkPlayer, networkPlayerEntity, msg);
             break;
+        case rtype::network::message::client::LeaveRoom::type:
+            handleLeaveRoomCallback(registry, networkPlayers, networkPlayer, networkPlayerEntity, msg);
+            break;
         case rtype::network::message::client::StartGame::type:
             handleStartGameCallback(registry, networkPlayers, networkPlayer, networkPlayerEntity, msg);
             break;
@@ -154,6 +157,34 @@ private:
             loopNetworkPlayer.criticalMessages[roomInformation.header.id] = rtype::network::message::pack(roomInformation);
         }
         std::cout << "handleChooseRoomCallback: info: Player " << networkPlayerEntity << " joined room " << component.id << std::endl;
+    }
+
+    /**
+     * @brief Handle leave room callback
+     * @param registry ECS registry
+     * @param networkPlayers Network players
+     * @param networkPlayer Network player
+     * @param networkPlayerEntity Network player entity
+     * @param msg Message
+     */
+    void handleLeaveRoomCallback(ecs::Registry& registry,
+        ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers,
+        rtype::component::NetworkPlayer& networkPlayer,
+        size_t networkPlayerEntity,
+        const boost::array<char, 512UL>& msg) const
+    {
+        auto playerRoom = registry.getComponents<rtype::component::GameRoom>()[networkPlayerEntity].value();
+        registry.removeComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity));
+        for (auto&& [gameRoomOpt, networkPlayerOpt] : ecs::containers::Zipper(registry.getComponents<rtype::component::GameRoom>(), registry.getComponents<rtype::component::NetworkPlayer>())) {
+            auto& gameRoom = gameRoomOpt.value();
+            auto& loopNetworkPlayer = networkPlayerOpt.value();
+            if (gameRoom.id != playerRoom.id) {
+                continue;
+            }
+            auto roomInformation = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(playerRoom.id, rtype::utils::GameLogicManager::countPlayersInGameRoom(registry, playerRoom));
+            loopNetworkPlayer.criticalMessages[roomInformation.header.id] = rtype::network::message::pack(roomInformation);
+        }
+        std::cout << "handleLeaveRoomCallback: info: Player " << networkPlayerEntity << " leaved room " << playerRoom.id << std::endl;
     }
 
     /**
