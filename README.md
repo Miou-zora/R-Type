@@ -1,4 +1,8 @@
 # R-Type
+![image](https://github.com/EpitechPromo2026/B-CPP-500-NAN-5-1-rtype-lucas.hauszler/assets/91665380/5cbffad1-884d-4164-9742-152b58a0c3e9)
+
+[R-Type](https://fr.wikipedia.org/wiki/R-Type_(jeu_vid%C3%A9o)) is a classic side-scrolling shoot 'em up video game with a cooperative multiplayer feature. In this game, players can team up with a friend to control small spacecraft as they navigate through a series of challenging levels filled with various enemy spacecraft and obstacles. The objective is to defeat the waves of enemies and powerful bosses while avoiding their attacks, and this cooperative multiplayer mode allows players to work together to overcome the game's challenges, making it even more enjoyable as a team.
+This is an [Epitech](https://www.epitech.eu/) project involving the development of a network game with an [ECS (Entity Component System)](https://github.com/EpitechPromo2026/B-CPP-500-NAN-5-1-rtype-lucas.hauszler/wiki/Librairies#1-entity-component-system).
 
 ## How to build
 
@@ -52,3 +56,8 @@ The build script will automatically install the dependencies using vcpkg and bui
 
 Executables will be compiled at the root of the project directory, unter the names `rtype_server` and `rtype_client` (+ `.exe` on Windows). You can run them simply by running the executables.
 
+## Contributors
+
+| <a href="https://github.com/Miou-zora"><img alt="Miou-zora" src="https://avatars.githubusercontent.com/u/91665686?v=4" width="100"></a> | <a href="https://github.com/ripel2"><img alt="Ripel2" src="https://avatars.githubusercontent.com/u/70372762?v=4" width="100"></a> | <a href="https://github.com/Queng123"><img alt="Queng123" src="https://avatars.githubusercontent.com/u/91665380?v=4" width="100"></a> | <a href="https://github.com/FoxaxeWasTaken"><img alt="FoxaxeWasTaken" src="https://avatars.githubusercontent.com/u/91660228?v=4" width="100"></a> | 
+| --- | --- | --- | --- |
+| [Miou-zora](https://github.com/Miou-zora) | [Ripel2](https://github.com/ripel2) | [Queng123](https://github.com/Queng123) | [FoxaxeWasTaken](https://github.com/FoxaxeWasTaken) |
