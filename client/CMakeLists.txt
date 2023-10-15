@@ -27,6 +27,11 @@ cmrc_add_resource_library(
     assets/textures/r-typesheet5.png
     assets/textures/r-typesheet43.png
     assets/textures/bullet.png
+    assets/textures/layers/parallax-space-background.png
+    assets/textures/layers/parallax-space-big-planet.png
+    assets/textures/layers/parallax-space-far-planets.png
+    assets/textures/layers/parallax-space-stars.png
+    assets/textures/layers/parallax-space-ring-planet.png
     assets/textures/ally_bullets.png
 )
 
