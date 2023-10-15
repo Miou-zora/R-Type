@@ -106,7 +106,7 @@ This section describes the messages sent by the server to the client.
 | 0x0020 | `network::message::server::EnemySpawn` | `u_int16_t enemy_id;` <br> `float x;` <br> `float y;` | Used to indicate that an enemy spawned |
 | 0x0021 | `network::message::server::EnemyDeath` | `u_int16_t enemy_id;` | Used to indicate that an enemy died |
 | 0x0022 | `network::message::server::EnemyMovement` | `u_int16_t enemy_id;` <br> `float x;` <br> `float y;` | Used to indicate that an enemy moved |
-| 0x0030 | `network::message::server::BulletShoot` | `u_int16_t player_id;` <br> `float x;` <br> `float y;` <br> `float x_velocity;` <br> `float y_velocity;` <br> `u_int8_t team` | Used to indicate that a bullet was shot |
+| 0x0030 | `network::message::server::BulletShoot` | `u_int16_t bullet_id;` <br> `float x;` <br> `float y;` <br> `float x_velocity;` <br> `float y_velocity;` <br> `u_int8_t team` | Used to indicate that a bullet was shot |
 | 0x0031 | `network::message::server::BulletPosition` | `u_int16_t bullet_id;` <br> `float x;` <br> `float y;` | Used to indicate that a bullet moved |
 | 0x0032 | `network::message::server::BulletHit` | `u_int16_t bullet_id;` <br> `u_int16_t hit_id;` | Used to indicate that a bullet hit something (id is the entity that got hit, either player or enemy) |
 | 0x0033 | `network::message::server::BulletDespawn` | `u_int16_t bullet_id;` | Used to indicate that a bullet despawned |
@@ -133,7 +133,7 @@ sequenceDiagram
     Note over C,S: (for every player in the room)
     S->>C: EnemySpawn <enemy_id, x, y>
     Note over C,S: (for every enemy in the room)
-    S->>C: BulletShoot <player_id, x, y, x_velocity, y_velocity>
+    S->>C: BulletShoot <bullet_id, x, y, x_velocity, y_velocity>
     Note over C,S: (for every bullet in the room)
 ```
 
@@ -148,7 +148,7 @@ sequenceDiagram
     C->>S: PlayerMovement <x_velocity, y_velocity, keys_pressed>
     S->>C: PlayerMovement <player_id, x, y>
     C->>S: PlayerShoot
-    S->>C: BulletShoot <player_id, x, y, x_velocity, y_velocity>
+    S->>C: BulletShoot <bullet_id, x, y, x_velocity, y_velocity>
     S->>C: BulletPosition <bullet_id, x, y>
     Note over C,S: (after first tick)
     S->>C: BulletHit <bullet_id, hit_id>

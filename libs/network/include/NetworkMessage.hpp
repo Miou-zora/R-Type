@@ -508,14 +508,14 @@ namespace rtype::network {
             };
 
             struct BulletShoot {
-                BulletShoot(u_int16_t _playerId, float _x, float _y, float _xVelocity, float _yVelocity, u_int8_t _team)
-                    : playerId(_playerId), x(_x), y(_y), xVelocity(_xVelocity), yVelocity(_yVelocity), team(_team)
+                BulletShoot(u_int16_t _bulletId, float _x, float _y, float _xVelocity, float _yVelocity, u_int8_t _team)
+                    : bulletId(_bulletId), x(_x), y(_y), xVelocity(_xVelocity), yVelocity(_yVelocity), team(_team)
                 {
                 }
 
                 static const u_int16_t type = 0x0030;
                 NetworkMessageHeader header;
-                u_int16_t playerId;
+                u_int16_t bulletId;
                 float x;
                 float y;
                 float xVelocity;

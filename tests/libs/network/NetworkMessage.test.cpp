@@ -211,7 +211,7 @@ TEST(NetworkMessage, serverCreateEventBulletShoot)
     rtype::network::message::server::BulletShoot msg = rtype::network::message::createEvent<rtype::network::message::server::BulletShoot>(42, 24, 42, 24, 42, 1);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0030);
-    ASSERT_EQ(msg.playerId, 42);
+    ASSERT_EQ(msg.bulletId, 42);
     ASSERT_EQ(msg.x, 24);
     ASSERT_EQ(msg.y, 42);
     ASSERT_EQ(msg.xVelocity, 24);

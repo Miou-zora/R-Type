@@ -309,7 +309,7 @@ private:
         network::message::server::BulletShoot bulletShoot = reinterpret_cast<network::message::server::BulletShoot&>(message[0]);
         {
             rtype::ecs::Entity bullet = prefabManager.instantiate("AllyProjectile", registry);
-            registry.getComponents<rtype::component::ServerID>()[bullet]->id = bulletShoot.playerId;
+            registry.getComponents<rtype::component::ServerID>()[bullet]->id = bulletShoot.bulletId;
             registry.getComponents<rtype::component::Transform>()[bullet]->position.x = bulletShoot.x;
             registry.getComponents<rtype::component::Transform>()[bullet]->position.y = bulletShoot.y;
         }
