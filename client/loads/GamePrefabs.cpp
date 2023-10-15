@@ -101,23 +101,23 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::AllyNumber>(3);
     prefabManagerInstance.createPrefab("gameBackground")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0, 0))
-        .addComponent<rtype::component::Drawable>("gameBackground", 6, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("gameBackground").width, assetsManagerInstance.getTexture("gameBackground").height), 0)
+        .addComponent<rtype::component::Drawable>("gameBackground", 7, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("gameBackground").width, assetsManagerInstance.getTexture("gameBackground").height), 0)
         .addComponent<rtype::component::Scrollable>(rtype::utils::Vector<float>(1, 0), 5);
     prefabManagerInstance.createPrefab("stars")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0, 0))
-        .addComponent<rtype::component::Drawable>("stars", 6, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("stars").width, assetsManagerInstance.getTexture("stars").height), 4)
+        .addComponent<rtype::component::Drawable>("stars", 7, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("stars").width, assetsManagerInstance.getTexture("stars").height), 4)
         .addComponent<rtype::component::Scrollable>(rtype::utils::Vector<float>(1, 0), 40);
     prefabManagerInstance.createPrefab("bigPlanet")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0, 0))
-        .addComponent<rtype::component::Drawable>("bigPlanet", 6, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("bigPlanet").width, assetsManagerInstance.getTexture("bigPlanet").height), 3)
+        .addComponent<rtype::component::Drawable>("bigPlanet", 7, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("bigPlanet").width, assetsManagerInstance.getTexture("bigPlanet").height), 3)
         .addComponent<rtype::component::Scrollable>(rtype::utils::Vector<float>(1, 0), 30);
     prefabManagerInstance.createPrefab("planetRing")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0, 0))
-        .addComponent<rtype::component::Drawable>("planetRing", 6, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("planetRing").width, assetsManagerInstance.getTexture("planetRing").height), 2)
+        .addComponent<rtype::component::Drawable>("planetRing", 7, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("planetRing").width, assetsManagerInstance.getTexture("planetRing").height), 2)
         .addComponent<rtype::component::Scrollable>(rtype::utils::Vector<float>(1, 0), 20);
     prefabManagerInstance.createPrefab("farPlanets")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0, 0))
-        .addComponent<rtype::component::Drawable>("farPlanets", 6, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("farPlanets").width, assetsManagerInstance.getTexture("farPlanets").height), 1)
+        .addComponent<rtype::component::Drawable>("farPlanets", 7, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("farPlanets").width, assetsManagerInstance.getTexture("farPlanets").height), 1)
         .addComponent<rtype::component::Scrollable>(rtype::utils::Vector<float>(1, 0), 10);
 
     rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
