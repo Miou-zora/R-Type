@@ -27,6 +27,7 @@ cmrc_add_resource_library(
     assets/textures/r-typesheet5.png
     assets/textures/r-typesheet43.png
     assets/textures/bullet.png
+    assets/textures/ally_bullets.png
 )
 
 set(SRC)

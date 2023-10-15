@@ -11,6 +11,7 @@
 #include "Controllable.hpp"
 #include "Drawable.hpp"
 #include "ECS.hpp"
+#include "InputShooter.hpp"
 #include "PrefabManager.hpp"
 #include "ServerID.hpp"
 #include "Speed.hpp"
@@ -59,12 +60,17 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
             []() { return raylib::IsKeyDown(raylib::KEY_DOWN); },
             []() { return raylib::IsKeyDown(raylib::KEY_LEFT); },
             []() { return raylib::IsKeyDown(raylib::KEY_RIGHT); })
+        .addComponent<rtype::component::InputShooter>(
+            []() { return raylib::IsKeyDown(raylib::KEY_SPACE); },
+            "AllyProjectile",
+            0.5,
+            0)
         .addComponent<rtype::component::Speed>(200)
         .addComponent<rtype::component::Velocity>()
         .addComponent<rtype::component::AllyNumber>(0);
     prefabManagerInstance.createPrefab("AllyProjectile")
         .addComponent<rtype::component::Transform>()
-        .addComponent<rtype::component::Drawable>("allyProjectileSheet", 1, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("allyProjectileSheet").width, assetsManagerInstance.getTexture("allyProjectileSheet").height), 1)
+        .addComponent<rtype::component::Drawable>("allyProjectileSheet", 5, rtype::utils::Rectangle(248, 88, 17, 6), 1)
         .addComponent<rtype::component::ServerID>();
     prefabManagerInstance.createPrefab("Ally1")
         .addComponent<rtype::component::Transform>()
