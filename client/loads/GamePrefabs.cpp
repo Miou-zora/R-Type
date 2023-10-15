@@ -42,7 +42,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::ServerID>();
     prefabManagerInstance.createPrefab("Player")
         .addComponent<rtype::component::Transform>()
-        .addComponent<rtype::component::Drawable>("ShipsSheet", 5, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 1)
+        .addComponent<rtype::component::Drawable>("ShipsSheet", 5, rtype::utils::Rectangle(1, 3, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 1)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::Controllable>(
             []() { return raylib::IsKeyDown(raylib::KEY_UP); },
@@ -58,17 +58,17 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::ServerID>();
     prefabManagerInstance.createPrefab("Ally1")
         .addComponent<rtype::component::Transform>()
-        .addComponent<rtype::component::Drawable>("ShipsSheet", 1, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("ShipsSheet").width, assetsManagerInstance.getTexture("ShipsSheet").height), 1)
+        .addComponent<rtype::component::Drawable>("ShipsSheet", 5, rtype::utils::Rectangle(1, 20, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 1)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::AllyNumber>(1);
     prefabManagerInstance.createPrefab("Ally2")
         .addComponent<rtype::component::Transform>()
-        .addComponent<rtype::component::Drawable>("ShipsSheet", 1, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("ShipsSheet").width, assetsManagerInstance.getTexture("ShipsSheet").height), 1)
+        .addComponent<rtype::component::Drawable>("ShipsSheet", 5, rtype::utils::Rectangle(1, 37, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 1)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::AllyNumber>(2);
     prefabManagerInstance.createPrefab("Ally3")
         .addComponent<rtype::component::Transform>()
-        .addComponent<rtype::component::Drawable>("ShipsSheet", 1, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("ShipsSheet").width, assetsManagerInstance.getTexture("ShipsSheet").height), 1)
+        .addComponent<rtype::component::Drawable>("ShipsSheet", 5, rtype::utils::Rectangle(1, 54, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 1)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::AllyNumber>(3);
 }
