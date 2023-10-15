@@ -44,6 +44,10 @@ void Client::disconnect()
         m_connected = false;
         m_ip = "";
         m_port = 0;
+        m_ioService = std::make_shared<boost::asio::io_service>();
+        m_resolver = std::make_shared<boost::asio::ip::udp::resolver>(*m_ioService);
+        m_socket = std::make_shared<boost::asio::ip::udp::socket>(*m_ioService);
+        m_endpoint = std::make_shared<boost::asio::ip::udp::endpoint>();
     }
 }
 
