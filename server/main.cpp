@@ -91,13 +91,17 @@ void addSystems(rtype::ecs::Registry& reg)
 int main(int ac, char* av[])
 {
     rtype::ecs::Registry reg;
-    rtype::ecs::Entity entity = reg.spawnEntity();
     int port = 12345;
     int tickRate = 64;
 
     if (ac > 1)
         port = std::stoi(av[1]);
-    rtype::network::NetworkServer::initInstance(port);
+    try {
+        rtype::network::NetworkServer::initInstance(port);
+    } catch (const std::exception& e) {
+        std::cerr << av[0] << ": cannot init network server: " << e.what() << std::endl;
+        return 84;
+    }
 
     registerComponents(reg);
     addSystems(reg);
