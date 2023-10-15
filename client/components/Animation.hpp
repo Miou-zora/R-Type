@@ -21,9 +21,10 @@ struct Animation {
     std::vector<rtype::utils::Vector<int>> framesPosition;
     std::vector<float> frameTimes;
     std::size_t currentFrame;
-    float time;
+    float time = 0;
     bool loop;
     bool finished;
+    bool killWhenFinished = false;
     bool playing;
 };
 }

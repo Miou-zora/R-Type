@@ -270,10 +270,14 @@ private:
      */
     void handleEnemyDeath(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& message) const
     {
+        rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
         network::message::server::EnemyDeath enemyDeath = reinterpret_cast<network::message::server::EnemyDeath&>(message[0]);
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
             if (registry.getComponents<rtype::component::ServerID>()[index]->id == enemyDeath.enemyId) {
                 registry.killEntity(registry.entityFromIndex(index));
+                rtype::ecs::Entity explosion = prefabManager.instantiate("EnemyExplosion", registry);
+                registry.getComponents<rtype::component::Transform>()[explosion]->position.x = registry.getComponents<rtype::component::Transform>()[index]->position.x;
+                registry.getComponents<rtype::component::Transform>()[explosion]->position.y = registry.getComponents<rtype::component::Transform>()[index]->position.y;
                 break;
             }
         }

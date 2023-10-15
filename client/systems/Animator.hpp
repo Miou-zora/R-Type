@@ -21,17 +21,18 @@ public:
         rtype::ecs::SparseArray<rtype::component::Animation>& animations,
         rtype::ecs::SparseArray<rtype::component::Drawable>& drawables) const
     {
-        for (auto&& [animation, drawable] : ecs::containers::Zipper(animations, drawables)) {
+        for (auto&& [index, animation, drawable] : ecs::containers::IndexedZipper(animations, drawables)) {
             if (!animation.value().playing)
                 continue;
-            updateAnimation(registry, animation.value(), drawable.value());
+            updateAnimation(registry, animation.value(), drawable.value(), index);
         }
     }
 
 private:
     void updateAnimation(rtype::ecs::Registry& registry,
         rtype::component::Animation& animation,
-        rtype::component::Drawable& drawable) const
+        rtype::component::Drawable& drawable,
+        std::size_t index) const
     {
         if (animation.frameTimes.size() <= animation.currentFrame) {
             if (!animation.loop) {
@@ -52,6 +53,8 @@ private:
                     animation.time = 0;
                     animation.playing = false;
                     animation.finished = true;
+                    if (animation.killWhenFinished)
+                        registry.killEntity(registry.entityFromIndex(index));
                     return;
                 }
             }

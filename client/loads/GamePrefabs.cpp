@@ -34,6 +34,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     std::string bigPlanet = "assets/textures/layers/parallax-space-big-planet.png";
     std::string planetRing = "assets/textures/layers/parallax-space-ring-planet.png";
     std::string farPlanets = "assets/textures/layers/parallax-space-far-planets.png";
+    std::string enemyExplosion = "assets/textures/r-typesheet44.png";
 
     assetsManagerInstance.loadTexture("ShipsSheet", ShipsSheet);
     assetsManagerInstance.loadTexture("enemySheet", enemySheet);
@@ -44,21 +45,36 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     assetsManagerInstance.loadTexture("bigPlanet", bigPlanet);
     assetsManagerInstance.loadTexture("planetRing", planetRing);
     assetsManagerInstance.loadTexture("farPlanets", farPlanets);
+    assetsManagerInstance.loadTexture("enemyExplosion", enemyExplosion);
 
     prefabManagerInstance.createPrefab("EnemyProjectile") // Can add animation component
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("enemyProjectileSheet", 4, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("enemyProjectileSheet").width, assetsManagerInstance.getTexture("enemyProjectileSheet").height), 5)
         .addComponent<rtype::component::ServerID>();
+
     rtype::component::Animation enemyAnimation;
     enemyAnimation.currentFrame = 0;
     enemyAnimation.finished = false;
     enemyAnimation.loop = true;
     enemyAnimation.playing = true;
+    enemyAnimation.time = 0;
     for (std::size_t frame = 0; frame < 8; frame++) {
         enemyAnimation.framesPosition.push_back(rtype::utils::Vector<int>(1 + frame * 33, 0));
         enemyAnimation.frameTimes.push_back(0.15);
     }
-    prefabManagerInstance.createPrefab("Enemy") // Can add animation component
+    rtype::component::Animation enemyExplosionAnimation;
+    enemyExplosionAnimation.currentFrame = 0;
+    enemyExplosionAnimation.finished = false;
+    enemyExplosionAnimation.loop = false;
+    enemyExplosionAnimation.playing = true;
+    enemyExplosionAnimation.time = 0;
+    enemyExplosionAnimation.killWhenFinished = true;
+    for (std::size_t frame = 0; frame < 6; frame++) {
+        enemyExplosionAnimation.framesPosition.push_back(rtype::utils::Vector<int>(129 + frame * 33, 1));
+        enemyExplosionAnimation.frameTimes.push_back(0.1);
+    }
+
+    prefabManagerInstance.createPrefab("Enemy")
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("enemySheet", 4, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("enemySheet").width / 16, assetsManagerInstance.getTexture("enemySheet").height), 5)
         .addComponent<rtype::component::Animation>(enemyAnimation)
@@ -119,6 +135,10 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0, 0))
         .addComponent<rtype::component::Drawable>("farPlanets", 7, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("farPlanets").width, assetsManagerInstance.getTexture("farPlanets").height), 1)
         .addComponent<rtype::component::Scrollable>(rtype::utils::Vector<float>(1, 0), 10);
+    prefabManagerInstance.createPrefab("EnemyExplosion")
+        .addComponent<rtype::component::Transform>()
+        .addComponent<rtype::component::Drawable>("enemyExplosion", 5, rtype::utils::Rectangle(129, 1, 32, 32), 5)
+        .addComponent<rtype::component::Animation>(enemyExplosionAnimation);
 
     rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
 
