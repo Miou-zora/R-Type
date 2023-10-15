@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <queue>
 
 #include "ECS.hpp"
@@ -20,6 +21,8 @@ struct NetworkPlayer {
             boost::array<char, rtype::network::message::MAX_PACKET_SIZE>,
             rtype::network::message::NetworkMessageHeaderEquality,
             rtype::network::message::NetworkMessageHeaderCompare>>();
+        criticalMessages = std::make_shared<std::map<u_int64_t, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>>>();
+        criticalMessagesTime = std::make_shared<std::map<u_int64_t, std::chrono::time_point<std::chrono::high_resolution_clock>>>();
     }
     ~NetworkPlayer() = default;
 
@@ -38,7 +41,7 @@ struct NetworkPlayer {
         rtype::network::message::NetworkMessageHeaderEquality,
         rtype::network::message::NetworkMessageHeaderCompare>>
         outbox;
-    std::unordered_map<u_int64_t, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>> criticalMessages;
-    std::unordered_map<u_int64_t, std::chrono::time_point<std::chrono::high_resolution_clock>> criticalMessagesTime;
+    std::shared_ptr<std::map<u_int64_t, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>>> criticalMessages;
+    std::shared_ptr<std::map<u_int64_t, std::chrono::time_point<std::chrono::high_resolution_clock>>> criticalMessagesTime;
 };
 }

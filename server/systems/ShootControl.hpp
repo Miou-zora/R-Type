@@ -66,7 +66,7 @@ private:
     void addToCriticalMessages(rtype::component::NetworkPlayer& player, const boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& msg) const
     {
         const auto& unpacked = reinterpret_cast<const rtype::network::message::NetworkMessageHeader*>(msg.data());
-        player.criticalMessages[unpacked->id] = msg;
+        (*player.criticalMessages)[unpacked->id] = msg;
     }
 };
 }

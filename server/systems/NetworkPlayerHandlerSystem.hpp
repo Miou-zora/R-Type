@@ -97,7 +97,7 @@ private:
         const boost::array<char, 512UL>& msg) const
     {
         auto connectAck = rtype::network::message::createEvent<rtype::network::message::server::ConnectAck>(networkPlayerEntity);
-        networkPlayer.criticalMessages[connectAck.header.id] = rtype::network::message::pack(connectAck);
+        (*networkPlayer.criticalMessages)[connectAck.header.id] = rtype::network::message::pack(connectAck);
         std::cout << "handleConnectCallback: info: Player " << networkPlayerEntity << " connected" << std::endl;
     }
 
@@ -119,7 +119,7 @@ private:
         registry.emplaceComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity), std::move(component));
         std::cout << "handleCreateRoomCallback: info: Player " << networkPlayerEntity << " created a room " << component.id << std::endl;
         auto roomInformation = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(component.id, rtype::utils::GameLogicManager::countPlayersInGameRoom(registry, component));
-        networkPlayer.criticalMessages[roomInformation.header.id] = rtype::network::message::pack(roomInformation);
+        (*networkPlayer.criticalMessages)[roomInformation.header.id] = rtype::network::message::pack(roomInformation);
     }
 
     /**
@@ -154,7 +154,7 @@ private:
                 continue;
             }
             auto roomInformation = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(component.id, rtype::utils::GameLogicManager::countPlayersInGameRoom(registry, component));
-            loopNetworkPlayer.criticalMessages[roomInformation.header.id] = rtype::network::message::pack(roomInformation);
+            (*loopNetworkPlayer.criticalMessages)[roomInformation.header.id] = rtype::network::message::pack(roomInformation);
         }
         std::cout << "handleChooseRoomCallback: info: Player " << networkPlayerEntity << " joined room " << component.id << std::endl;
     }
@@ -182,7 +182,7 @@ private:
                 continue;
             }
             auto roomInformation = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(playerRoom.id, rtype::utils::GameLogicManager::countPlayersInGameRoom(registry, playerRoom));
-            loopNetworkPlayer.criticalMessages[roomInformation.header.id] = rtype::network::message::pack(roomInformation);
+            (*loopNetworkPlayer.criticalMessages)[roomInformation.header.id] = rtype::network::message::pack(roomInformation);
         }
         std::cout << "handleLeaveRoomCallback: info: Player " << networkPlayerEntity << " leaved room " << playerRoom.id << std::endl;
     }
@@ -209,7 +209,7 @@ private:
         auto gameLevel = rtype::component::GameLevel(chooseLevel.levelId);
         registry.emplaceComponent<rtype::component::GameLevel>(registry.entityFromIndex(networkPlayerEntity), std::move(gameLevel));
         auto levelInformation = rtype::network::message::createEvent<rtype::network::message::server::LevelInformation>(gameLevel.level);
-        networkPlayer.criticalMessages[levelInformation.header.id] = rtype::network::message::pack(levelInformation);
+        (*networkPlayer.criticalMessages)[levelInformation.header.id] = rtype::network::message::pack(levelInformation);
         std::cout << "handleChooseLevelCallback: info: Player " << networkPlayerEntity << " chose level " << gameLevel.level << std::endl;
     }
 
@@ -291,8 +291,8 @@ private:
         const boost::array<char, 512UL>& msg) const
     {
         auto& ack = rtype::network::message::unpack<rtype::network::message::client::Ack>(msg);
-        if (networkPlayer.criticalMessages.find(ack.msgId) != networkPlayer.criticalMessages.end()) {
-            networkPlayer.criticalMessages.erase(ack.msgId);
+        if (networkPlayer.criticalMessages->find(ack.msgId) != networkPlayer.criticalMessages->end()) {
+            networkPlayer.criticalMessages->erase(ack.msgId);
         }
     }
 };

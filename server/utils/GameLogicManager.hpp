@@ -148,7 +148,7 @@ public:
                 continue;
             }
             auto startGameAck = rtype::network::message::createEvent<rtype::network::message::server::GameStarted>();
-            networkPlayer.criticalMessages[startGameAck.header.id] = rtype::network::message::pack(startGameAck);
+            (*networkPlayer.criticalMessages)[startGameAck.header.id] = rtype::network::message::pack(startGameAck);
             for (auto&& [pIndex, gameRoomOpt, networkPlayerOpt] : ecs::containers::IndexedZipper(registry.getComponents<rtype::component::GameRoom>(), registry.getComponents<rtype::component::NetworkPlayer>())) {
                 auto& gameRoom = gameRoomOpt.value();
                 if (gameRoom.id != playerGameRoom.id) {
@@ -156,7 +156,7 @@ public:
                 }
                 auto& playerTransform = registry.getComponents<rtype::component::Transform>()[pIndex].value();
                 auto playerSpawned = rtype::network::message::createEvent<rtype::network::message::server::PlayerSpawn>(pIndex, playerTransform.position.x, playerTransform.position.y);
-                networkPlayer.criticalMessages[playerSpawned.header.id] = rtype::network::message::pack(playerSpawned);
+                (*networkPlayer.criticalMessages)[playerSpawned.header.id] = rtype::network::message::pack(playerSpawned);
             }
         }
     }
