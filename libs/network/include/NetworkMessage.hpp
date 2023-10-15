@@ -494,7 +494,7 @@ namespace rtype::network {
             };
 
             struct EnemyMovement {
-                EnemyMovement(u_int16_t _enemyId, u_int16_t _x, u_int16_t _y)
+                EnemyMovement(u_int16_t _enemyId, float _x, float _y)
                     : enemyId(_enemyId), x(_x), y(_y)
                 {
                 }
