@@ -45,13 +45,16 @@ private:
         while (spawner.spawnList.size() != 0 && spawner.timer >= spawner.spawnList[0].spawnDelay) {
             spawner.timer -= spawner.spawnList[0].spawnDelay;
             auto entity = rtype::utils::PrefabManager::getInstance().instantiate(spawner.spawnList[0].entityName, registry);
-            if (registry.hasComponent<rtype::component::GameRoom>(entity)) {
-                registry.getComponents<rtype::component::GameRoom>()[entity].value().id = spawnerGameRoomId;
-                sendSpawnToNetworkPlayers(registry, entity);
-            }
             if (registry.hasComponent<rtype::component::Transform>(entity) && registry.hasComponent<rtype::component::Transform>(registry.entityFromIndex(index))) {
                 rtype::component::Transform& entityTransform = registry.getComponents<rtype::component::Transform>()[entity].value();
                 entityTransform.position += registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value().position;
+            }
+            if (registry.hasComponent<rtype::component::EnemyInformation>(entity)) {
+                onEnemySpawn(registry, entity);
+            }
+            if (registry.hasComponent<rtype::component::GameRoom>(entity)) {
+                registry.getComponents<rtype::component::GameRoom>()[entity].value().id = spawnerGameRoomId;
+                sendSpawnToNetworkPlayers(registry, entity);
             }
             if (spawner.looping) {
                 spawner.spawnList.push_back(spawner.spawnList[0]);
@@ -72,6 +75,15 @@ private:
                 addToCriticalMessages(networkPlayer.value(), msg.value());
             }
         }
+    }
+
+    void onEnemySpawn(rtype::ecs::Registry& registry, rtype::ecs::Entity entity) const
+    {
+        auto& path = registry.getComponents<rtype::component::Path>()[entity].value();
+        auto& transform = registry.getComponents<rtype::component::Transform>()[entity].value();
+        transform.position.x = 1600.0f;
+        transform.position.y = 128.0f + (static_cast<float>(std::rand() % (1024 - 128)));
+        path.addPoint(-50.0f, transform.position.y);
     }
 
     std::optional<boost::array<char, rtype::network::message::MAX_PACKET_SIZE>> getSpawnMessage(rtype::ecs::Registry& registry, std::size_t index) const

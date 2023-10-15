@@ -12,6 +12,8 @@
 #include "DamageInflictor.hpp"
 #include "ECS.hpp"
 #include "Enemy.hpp"
+#include "EnemyInformation.hpp"
+#include "EnemyShootControl.hpp"
 #include "GameLevel.hpp"
 #include "GameLogicManager.hpp"
 #include "GameRoom.hpp"
@@ -59,6 +61,7 @@ void registerComponents(rtype::ecs::Registry& reg)
     reg.registerComponent<rtype::component::Shooter>();
     reg.registerComponent<rtype::component::Path>();
     reg.registerComponent<rtype::component::BulletInformation>();
+    reg.registerComponent<rtype::component::EnemyInformation>();
 }
 
 void addSystems(rtype::ecs::Registry& reg)
@@ -69,6 +72,7 @@ void addSystems(rtype::ecs::Registry& reg)
     reg.addSystem<rtype::component::NetworkPlayerControl, rtype::component::Velocity, rtype::component::Speed>(rtype::system::Control());
     reg.addSystem<rtype::component::Transform, rtype::component::Velocity>(rtype::system::VelocityApplicator());
     reg.addSystem<rtype::component::NetworkPlayerControl, rtype::component::Shooter>(rtype::system::ShootControl());
+    reg.addSystem<rtype::component::Shooter>(rtype::system::EnemyShootControl());
     reg.addSystem<rtype::component::BulletInformation, rtype::component::Path>(rtype::system::BulletDestroyer());
     reg.addSystem<rtype::component::Collider, rtype::component::Transform>(rtype::system::Collision());
     reg.addSystem<rtype::component::Damage, rtype::component::Collider>(rtype::system::DamageInflictor());

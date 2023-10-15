@@ -7,6 +7,7 @@
 
 #include "BulletInformation.hpp"
 #include "ECS.hpp"
+#include "EnemyInformation.hpp"
 #include "GameRoom.hpp"
 #include "NetworkPlayer.hpp"
 #include "NetworkServer.hpp"
@@ -91,6 +92,7 @@ private:
             if (gameRoom.id != playerRoom.id) {
                 continue;
             }
+
             auto& transform = transformOpt.value();
             auto& bullet = bulletOpt.value();
             auto msg = rtype::network::message::createEvent<rtype::network::message::server::BulletPosition>(j, transform.position.x, transform.position.y);
@@ -111,10 +113,11 @@ private:
             return;
         auto& playerRoom = registry.getComponents<rtype::component::GameRoom>()[i].value();
 
-        for (auto&& [j, gameRoomOpt, transformOpt, enemyOpt] :
+        for (auto&& [j, gameRoomOpt, transformOpt, enemyOpt, enemyInformations] :
             ecs::containers::IndexedZipper(registry.getComponents<rtype::component::GameRoom>(),
                 registry.getComponents<rtype::component::Transform>(),
-                registry.getComponents<rtype::tag::Enemy>())) {
+                registry.getComponents<rtype::tag::Enemy>(),
+                registry.getComponents<rtype::component::EnemyInformation>())) {
             auto& gameRoom = gameRoomOpt.value();
             if (gameRoom.id != playerRoom.id) {
                 continue;

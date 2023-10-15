@@ -12,6 +12,7 @@
 #include "Damage.hpp"
 #include "ECS.hpp"
 #include "Enemy.hpp"
+#include "EnemyInformation.hpp"
 #include "GameRoom.hpp"
 #include "Health.hpp"
 #include "NetworkPlayer.hpp"
@@ -38,23 +39,31 @@ private:
     {
         addValue<int>("playerSpeed", 500);
         addValue<rtype::utils::Vector<float>>("defaultPlayerPosition", rtype::utils::Vector<float>(100, 100));
-        addValue<float>("playerShootCooldown", 0.5);
-        addValue<int>("playerHealth", 100);
+        addValue<float>("playerShootCooldown", 0.35);
+        addValue<int>("playerHealth", 10);
+        addValue<int>("playerHitboxDamage", 1);
         addValue<float>("playerHitboxWidth", 64);
         addValue<float>("playerHitboxHeight", 64);
         addValue<float>("enemySpawnerMovementSpeed", 200);
-        addValue<float>("enemySpawnCooldown", 4);
-        addValue<int>("enemySpeed", 1000);
+        addValue<float>("enemySpawnCooldown", 2.5);
+        addValue<std::size_t>("enemySpawnerCount", 2);
+        addValue<int>("enemySpeed", 300);
+        addValue<int>("enemyCollideDamage", 1);
         addValue<int>("enemyHealth", 1);
         addValue<float>("enemyHitboxWidth", 64);
         addValue<float>("enemyHitboxHeight", 64);
         addValue<rtype::utils::Vector<float>>("defaultEnemyPosition", rtype::utils::Vector<float>(500, 500));
-        addValue<float>("enemyShootCooldown", 2);
+        addValue<float>("enemyShootCooldown", 1);
         addValue<float>("bulletSpeed", 1500);
         addValue<float>("bulletHitboxWidth", 5);
         addValue<float>("bulletHitboxHeight", 5);
         addValue<int>("bulletDamage", 1);
         addValue<float>("bulletDistance", 1600);
+        addValue<float>("enemyBulletSpeed", 800);
+        addValue<float>("enemyBulletHitboxWidth", 5);
+        addValue<float>("enemyBulletHitboxHeight", 5);
+        addValue<int>("enemyBulletDamage", 1);
+        addValue<float>("enemyBulletDistance", 2000);
     }
 
 public:
@@ -123,6 +132,26 @@ public:
     }
 
     /**
+     * @brief Handle creation of a bullet when a enemy shoots
+     * @param registry ECS registry
+     * @param enemyIndex Player entity index
+     * @return The id of the bullet
+     */
+    std::size_t createEnemyShootedBullet(rtype::ecs::Registry& registry, size_t enemyIndex)
+    {
+        rtype::ecs::Entity bullet = rtype::utils::PrefabManager::getInstance().instantiate("enemyBullet", registry);
+        auto& enemyTransform = registry.getComponents<rtype::component::Transform>()[enemyIndex].value();
+        auto& bulletTransform = registry.getComponents<rtype::component::Transform>()[bullet].value();
+        bulletTransform.position = enemyTransform.position;
+        auto& path = registry.getComponents<rtype::component::Path>()[bullet].value();
+        path.addPoint(enemyTransform.position.x - getValue<float>("enemyBulletDistance"), enemyTransform.position.y);
+        auto& gameRoom = registry.getComponents<rtype::component::GameRoom>()[bullet].value();
+        auto& enemyGameRoom = registry.getComponents<rtype::component::GameRoom>()[enemyIndex].value();
+        gameRoom = enemyGameRoom;
+        return bullet;
+    }
+
+    /**
      * @brief Start game handler
      * @param registry ECS registry
      * @param playerIndex Player entity index
@@ -130,6 +159,7 @@ public:
     void startGame(rtype::ecs::Registry& registry, size_t playerIndex)
     {
         auto& playerGameRoom = registry.getComponents<rtype::component::GameRoom>()[playerIndex].value();
+        u_int16_t playerGameRoomId = playerGameRoom.id;
         for (auto&& [index, networkPlayerOpt, gameRoomOpt] : ecs::containers::IndexedZipper(registry.getComponents<rtype::component::NetworkPlayer>(), registry.getComponents<rtype::component::GameRoom>())) {
             auto& networkPlayer = networkPlayerOpt.value();
             auto& gameRoom = gameRoomOpt.value();
@@ -138,20 +168,20 @@ public:
             }
         }
         rtype::component::GameRoom gameRoom = playerGameRoom;
-        rtype::ecs::Entity spawner = rtype::utils::PrefabManager::getInstance().instantiate("enemySpawner", registry);
-        registry.getComponents<rtype::component::GameRoom>()[spawner].value() = gameRoom;
-        registry.getComponents<rtype::component::Spawner>()[spawner].value().addEntityToSpawnList("enemy", getValue<float>("enemySpawnCooldown"));
+        for (std::size_t i = 0; i < getValue<std::size_t>("enemySpawnerCount"); i++) {
+            rtype::ecs::Entity spawner = rtype::utils::PrefabManager::getInstance().instantiate("enemySpawner", registry);
+            registry.getComponents<rtype::component::GameRoom>()[spawner].value() = gameRoom;
+            registry.getComponents<rtype::component::Spawner>()[spawner].value().addEntityToSpawnList("enemy", getValue<float>("enemySpawnCooldown"));
+        }
         for (auto&& [gameRoomOpt, networkPlayerOpt] : ecs::containers::Zipper(registry.getComponents<rtype::component::GameRoom>(), registry.getComponents<rtype::component::NetworkPlayer>())) {
-            auto& gameRoom = gameRoomOpt.value();
             auto& networkPlayer = networkPlayerOpt.value();
-            if (gameRoom.id != playerGameRoom.id) {
+            if (gameRoomOpt.value().id != playerGameRoomId) {
                 continue;
             }
             auto startGameAck = rtype::network::message::createEvent<rtype::network::message::server::GameStarted>();
             (*networkPlayer.criticalMessages)[startGameAck.header.id] = rtype::network::message::pack(startGameAck);
             for (auto&& [pIndex, gameRoomOpt, networkPlayerOpt] : ecs::containers::IndexedZipper(registry.getComponents<rtype::component::GameRoom>(), registry.getComponents<rtype::component::NetworkPlayer>())) {
-                auto& gameRoom = gameRoomOpt.value();
-                if (gameRoom.id != playerGameRoom.id) {
+                if (gameRoomOpt.value().id != playerGameRoomId) {
                     continue;
                 }
                 auto& playerTransform = registry.getComponents<rtype::component::Transform>()[pIndex].value();
@@ -210,6 +240,7 @@ public:
         rtype::ecs::Prefab& player = manager.createPrefab("player");
         player.addComponent<rtype::component::Velocity>();
         player.addComponent<rtype::component::Health>(getValue<int>("playerHealth"));
+        player.addComponent<rtype::component::Damage>(getValue<int>("playerHitboxDamage"));
         player.addComponent<rtype::component::Collider>(getValue<float>("playerHitboxWidth"), getValue<float>("playerHitboxHeight"));
         player.addComponent<rtype::component::Speed>(getValue<int>("playerSpeed"));
         player.addComponent<rtype::tag::Ally>();
@@ -223,31 +254,39 @@ public:
         enemy.addComponent<rtype::component::Collider>(getValue<float>("enemyHitboxWidth"), getValue<float>("enemyHitboxHeight"));
         enemy.addComponent<rtype::component::GameRoom>();
         enemy.addComponent<rtype::component::Speed>(getValue<int>("enemySpeed"));
+        enemy.addComponent<rtype::component::Damage>(getValue<int>("enemyCollideDamage"));
         enemy.addComponent<rtype::tag::Enemy>();
+        enemy.addComponent<rtype::component::EnemyInformation>();
         enemy.addComponent<rtype::component::Shooter>("willCrash", getValue<float>("enemyShootCooldown"));
-        std::vector<rtype::component::Path::Point> enemyPath;
-        enemyPath.push_back(rtype::component::Path::Point(rtype::utils::Vector<float>(-50, 300), rtype::component::Path::Referential::World));
-        enemy.addComponent<rtype::component::Path>(getValue<float>("enemySpawnerMovementSpeed"), enemyPath);
+        enemy.addComponent<rtype::component::Path>(getValue<float>("enemySpawnerMovementSpeed"));
 
         rtype::ecs::Prefab& bullet = manager.createPrefab("bullet");
         bullet.addComponent<rtype::component::Transform>();
         bullet.addComponent<rtype::component::Velocity>();
         bullet.addComponent<rtype::component::Collider>(getValue<float>("bulletHitboxWidth"), getValue<float>("bulletHitboxHeight"));
         bullet.addComponent<rtype::component::Damage>(getValue<int>("bulletDamage"));
+        bullet.addComponent<rtype::component::Health>(getValue<int>("bulletDamage"));
         bullet.addComponent<rtype::component::GameRoom>();
         bullet.addComponent<rtype::component::BulletInformation>();
         bullet.addComponent<rtype::component::Path>(getValue<float>("bulletSpeed"));
         bullet.addComponent<rtype::tag::Ally>();
 
+        rtype::ecs::Prefab& enemyBullet = manager.createPrefab("enemyBullet");
+        enemyBullet.addComponent<rtype::component::Transform>();
+        enemyBullet.addComponent<rtype::component::Velocity>();
+        enemyBullet.addComponent<rtype::component::Collider>(getValue<float>("enemyBulletHitboxWidth"), getValue<float>("enemyBulletHitboxHeight"));
+        enemyBullet.addComponent<rtype::component::Damage>(getValue<int>("enemyBulletDamage"));
+        enemyBullet.addComponent<rtype::component::GameRoom>();
+        enemyBullet.addComponent<rtype::component::BulletInformation>();
+        enemyBullet.addComponent<rtype::component::Path>(getValue<float>("enemyBulletSpeed"));
+        enemyBullet.addComponent<rtype::tag::Enemy>();
+
         rtype::ecs::Prefab& enemySpawner = manager.createPrefab("enemySpawner");
-        enemySpawner.addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(1600.0f, static_cast<float>(std::rand() % 1024)));
+        enemySpawner.addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(1600.0f, 1024.0f / 2.0f));
         enemySpawner.addComponent<rtype::component::Spawner>(true);
         enemySpawner.addComponent<rtype::component::Velocity>();
         enemySpawner.addComponent<rtype::component::GameRoom>();
-        std::vector<rtype::component::Path::Point> enemySpawnerPath;
-        enemySpawnerPath.push_back(rtype::component::Path::Point(rtype::utils::Vector<float>(1600.0f, 0.0f), rtype::component::Path::Referential::World));
-        enemySpawnerPath.push_back(rtype::component::Path::Point(rtype::utils::Vector<float>(1600.0f, 1024.0f), rtype::component::Path::Referential::World));
-        enemySpawner.addComponent<rtype::component::Path>(getValue<float>("enemySpawnerMovementSpeed"), enemySpawnerPath, false, rtype::component::Path::Type::Loop);
+        enemySpawner.addComponent<rtype::component::Path>(getValue<float>("enemySpawnerMovementSpeed"));
     }
 
 private:

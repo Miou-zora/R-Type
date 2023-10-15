@@ -32,7 +32,11 @@ public:
         for (auto&& [index, health] : ecs::containers::IndexedZipper(health)) {
             if (health.value().value <= 0) {
                 sendEntityKill(registry, index);
-                registry.killEntity(registry.entityFromIndex(index));
+                if (registry.hasComponent<rtype::component::NetworkPlayer>(registry.entityFromIndex(index))) {
+                    registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value().position.y = -20000.0f;
+                } else {
+                    registry.killEntity(registry.entityFromIndex(index));
+                }
             }
         }
     }
@@ -67,8 +71,13 @@ private:
      */
     std::optional<boost::array<char, rtype::network::message::MAX_PACKET_SIZE>> buildPacket(ecs::Registry& registry, std::size_t index) const
     {
-        if (registry.hasComponent<rtype::tag::Enemy>(registry.entityFromIndex(index))) {
+        if (registry.hasComponent<rtype::tag::Enemy>(registry.entityFromIndex(index))
+            && registry.hasComponent<rtype::component::EnemyInformation>(registry.entityFromIndex(index))) {
             auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemyDeath>(index);
+            return std::make_optional<boost::array<char, rtype::network::message::MAX_PACKET_SIZE>>(rtype::network::message::pack(msg));
+        }
+        if (registry.hasComponent<rtype::component::BulletInformation>(registry.entityFromIndex(index))) {
+            auto msg = rtype::network::message::createEvent<rtype::network::message::server::BulletHit>(index, -1);
             return std::make_optional<boost::array<char, rtype::network::message::MAX_PACKET_SIZE>>(rtype::network::message::pack(msg));
         }
         return std::nullopt;
