@@ -265,7 +265,7 @@ TEST(NetworkMessage, MessagePacking)
 TEST(NetworkMessage, MessagePackingBoostArray)
 {
     rtype::network::message::client::Connect msg = rtype::network::message::createEvent<rtype::network::message::client::Connect>();
-    boost::array<char, rtype::network::message::MAX_PACKET_SIZE> buffer = rtype::network::message::pack(msg);
+    boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> buffer = rtype::network::message::pack(msg);
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(buffer.data()));
     ASSERT_TRUE(rtype::network::message::checkFooterMagic(buffer.data() + sizeof(msg) - sizeof(msg.footer)));
 }
@@ -298,7 +298,7 @@ TEST(NetworkMessage, MessagePackingDataCheckBoostArray)
     bool keys_pressed[4] = {true, false, true, false};
     rtype::network::message::client::PlayerMovement msg = 
     rtype::network::message::createEvent<rtype::network::message::client::PlayerMovement>(42, 24, keys_pressed);
-    boost::array<char, rtype::network::message::MAX_PACKET_SIZE> buffer = rtype::network::message::pack(msg);
+    boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> buffer = rtype::network::message::pack(msg);
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(buffer.data()));
     ASSERT_TRUE(rtype::network::message::checkFooterMagic(buffer.data() + sizeof(msg) - sizeof(msg.footer)));
     // not a real unpack here because we don't want to test the unpack function
@@ -356,7 +356,7 @@ TEST(NetworkMessage, ClientCheckIntegrity)
     rtype::network::message::pack(buffer, msg);
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(buffer));
     ASSERT_TRUE(rtype::network::message::checkFooterMagic(buffer + sizeof(msg) - sizeof(msg.footer)));
-    ASSERT_TRUE(rtype::network::message::client::checkMessageIntegrity(buffer, sizeof(msg)));
+    ASSERT_TRUE(rtype::network::message::client::checkMessageIntegrity(buffer));
 }
 
 TEST(NetworkMessage, ServerCheckIntegrity)
@@ -366,25 +366,25 @@ TEST(NetworkMessage, ServerCheckIntegrity)
     rtype::network::message::pack(buffer, msg);
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(buffer));
     ASSERT_TRUE(rtype::network::message::checkFooterMagic(buffer + sizeof(msg) - sizeof(msg.footer)));
-    ASSERT_TRUE(rtype::network::message::server::checkMessageIntegrity(buffer, sizeof(msg)));
+    ASSERT_TRUE(rtype::network::message::server::checkMessageIntegrity(buffer));
 }
 
 TEST(NetworkMessage, ClientCheckIntegrityBoostArray)
 {
     rtype::network::message::client::Connect msg = rtype::network::message::createEvent<rtype::network::message::client::Connect>();
-    boost::array<char, rtype::network::message::MAX_PACKET_SIZE> buffer = rtype::network::message::pack(msg);
+    boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> buffer = rtype::network::message::pack(msg);
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(buffer.data()));
     ASSERT_TRUE(rtype::network::message::checkFooterMagic(buffer.data() + sizeof(msg) - sizeof(msg.footer)));
-    ASSERT_TRUE(rtype::network::message::client::checkMessageIntegrity(buffer.data(), sizeof(msg)));
+    ASSERT_TRUE(rtype::network::message::client::checkMessageIntegrity(buffer.data()));
 }
 
 TEST(NetworkMessage, ServerCheckIntegrityBoostArray)
 {
     rtype::network::message::server::ConnectAck msg = rtype::network::message::createEvent<rtype::network::message::server::ConnectAck>(42);
-    boost::array<char, rtype::network::message::MAX_PACKET_SIZE> buffer = rtype::network::message::pack(msg);
+    boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> buffer = rtype::network::message::pack(msg);
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(buffer.data()));
     ASSERT_TRUE(rtype::network::message::checkFooterMagic(buffer.data() + sizeof(msg) - sizeof(msg.footer)));
-    ASSERT_TRUE(rtype::network::message::server::checkMessageIntegrity(buffer.data(), sizeof(msg)));
+    ASSERT_TRUE(rtype::network::message::server::checkMessageIntegrity(buffer.data()));
 }
 
 TEST(NetworkMessage, ClientCheckIntegrityFalse)
@@ -393,7 +393,7 @@ TEST(NetworkMessage, ClientCheckIntegrityFalse)
     char buffer[sizeof(msg)] = {0};
     rtype::network::message::pack(buffer, msg);
     buffer[0] = 'A';
-    ASSERT_FALSE(rtype::network::message::client::checkMessageIntegrity(buffer, sizeof(msg)));
+    ASSERT_FALSE(rtype::network::message::client::checkMessageIntegrity(buffer));
 }
 
 TEST(NetworkMessage, ServerCheckIntegrityFalse)
@@ -402,7 +402,7 @@ TEST(NetworkMessage, ServerCheckIntegrityFalse)
     char buffer[sizeof(msg)] = {0};
     rtype::network::message::pack(buffer, msg);
     buffer[0] = 'A';
-    ASSERT_FALSE(rtype::network::message::server::checkMessageIntegrity(buffer, sizeof(msg)));
+    ASSERT_FALSE(rtype::network::message::server::checkMessageIntegrity(buffer));
 }
 
 TEST(NetworkMessageSize, getNetworkMessageSizes)

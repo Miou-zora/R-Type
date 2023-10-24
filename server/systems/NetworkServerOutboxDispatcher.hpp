@@ -21,21 +21,35 @@ public:
     void operator()(ecs::Registry& registry,
         ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers) const
     {
-        auto& networkServer = rtype::network::NetworkServer::getInstance();
-        auto& recvMsgBuffer = networkServer.getRecvMsgBuffer();
+        auto& recvMsgBuffer = rtype::network::NetworkServer::getInstance().getRecvMsgBuffer();
         for (auto&& [i, networkPlayerOpt] : ecs::containers::IndexedZipper(networkPlayers)) {
+            boost::array<char, rtype::network::message::MAX_PACKET_SIZE> gBuffer;
+            std::size_t totalSize = 0;
             rtype::component::NetworkPlayer& networkPlayer = networkPlayerOpt.value();
             auto& outbox = networkPlayer.outbox;
             while (!outbox->empty()) {
                 const auto& msg = outbox->top();
+                auto header = reinterpret_cast<const rtype::network::message::NetworkMessageHeader *>(msg.data());
                 std::size_t size = rtype::network::message::server::getMessageSize(msg);
-                const auto bufferSized = boost::asio::buffer(msg, size);
-                networkServer.getSocket().async_send_to(bufferSized, networkPlayer.endpoint,
-                    boost::bind(&rtype::network::NetworkServer::handleSend, &networkServer,
-                        boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+                if (totalSize + size > rtype::network::message::MAX_PACKET_SIZE) {
+                    sendBuffers(registry, networkPlayer.endpoint, gBuffer, totalSize);
+                    totalSize = 0;
+                }
+                std::copy(msg.begin(), msg.begin() + size, gBuffer.begin() + totalSize);
+                totalSize += size;
                 outbox->pop();
             }
+            if (totalSize > 0) {
+                sendBuffers(registry, networkPlayer.endpoint, gBuffer, totalSize);
+            }
         }
+    }
+private:
+    void sendBuffers(ecs::Registry& registry, boost::asio::ip::udp::endpoint &endpoint, const boost::array<char, rtype::network::message::MAX_PACKET_SIZE> &buffer, std::size_t bufferSize) const
+    {
+        rtype::network::NetworkServer::getInstance().getSocket().async_send_to(boost::asio::buffer(buffer, bufferSize), endpoint,
+            boost::bind(&rtype::network::NetworkServer::handleSend, &rtype::network::NetworkServer::getInstance(),
+                boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
     }
 };
 }

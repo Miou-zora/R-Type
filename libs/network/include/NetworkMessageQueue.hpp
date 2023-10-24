@@ -41,7 +41,7 @@ namespace rtype::network {
                 return (this->operator()(*header_lhs, *header_rhs));
             }
 
-            bool operator()(const boost::array<char, MAX_PACKET_SIZE> &lhs, const boost::array<char, MAX_PACKET_SIZE> &rhs) const
+            bool operator()(const boost::array<char, MAX_MESSAGE_SIZE> &lhs, const boost::array<char, MAX_MESSAGE_SIZE> &rhs) const
             {
                 const NetworkMessageHeader *header_lhs = reinterpret_cast<const NetworkMessageHeader *>(lhs.data());
                 const NetworkMessageHeader *header_rhs = reinterpret_cast<const NetworkMessageHeader *>(rhs.data());
@@ -74,7 +74,7 @@ namespace rtype::network {
                 return (this->operator()(*header_lhs, *header_rhs));
             }
 
-            bool operator()(const boost::array<char, MAX_PACKET_SIZE> &lhs, const boost::array<char, MAX_PACKET_SIZE> &rhs) const
+            bool operator()(const boost::array<char, MAX_MESSAGE_SIZE> &lhs, const boost::array<char, MAX_MESSAGE_SIZE> &rhs) const
             {
                 const NetworkMessageHeader *header_lhs = reinterpret_cast<const NetworkMessageHeader *>(lhs.data());
                 const NetworkMessageHeader *header_rhs = reinterpret_cast<const NetworkMessageHeader *>(rhs.data());
@@ -107,7 +107,7 @@ namespace rtype::network {
         /**
          * @brief NetworkMessageQueue is a priority queue that can contain messages as boost arrays.
          */
-        template<typename Message = boost::array<char, MAX_PACKET_SIZE>, typename EqCompare = NetworkMessageHeaderEquality, typename LessCompare = NetworkMessageHeaderCompare>
+        template<typename Message = boost::array<char, MAX_MESSAGE_SIZE>, typename EqCompare = NetworkMessageHeaderEquality, typename LessCompare = NetworkMessageHeaderCompare>
         class NetworkMessageQueue {
         public:
             /**

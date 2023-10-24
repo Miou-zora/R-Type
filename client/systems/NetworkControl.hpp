@@ -40,7 +40,7 @@ public:
             if (!noKeysPressed) {
                 network::message::client::PlayerMovement message = network::message::createEvent<network::message::client::PlayerMovement>(
                     velocity.value().vector.x, velocity.value().vector.y, keys);
-                boost::array<char, rtype::network::message::MAX_PACKET_SIZE> packed = network::message::pack<network::message::client::PlayerMovement>(message);
+                boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> packed = network::message::pack<network::message::client::PlayerMovement>(message);
                 network::Client::getInstance().getOutbox()->push(packed);
             }
         }

@@ -48,7 +48,7 @@ void initStartGameButton(rtype::ecs::Registry& reg)
         .addComponent<rtype::component::Clickable>(
             [&]() {
                 rtype::network::message::client::StartGame startMessage = rtype::network::message::createEvent<rtype::network::message::client::StartGame>();
-                boost::array<char, rtype::network::message::MAX_PACKET_SIZE> startPacked = rtype::network::message::pack<rtype::network::message::client::StartGame>(startMessage);
+                boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> startPacked = rtype::network::message::pack<rtype::network::message::client::StartGame>(startMessage);
                 rtype::network::Client::getInstance().getOutbox()->push(startPacked);
             })
         .addComponent<rtype::component::Collider>(assetsManager.getTexture("start_game_button").width, assetsManager.getTexture("login_start_button").height)
@@ -90,7 +90,7 @@ void initBackRoomButton(rtype::ecs::Registry& reg)
         .addComponent<rtype::component::Clickable>(
             [&]() {
                 rtype::network::message::client::LeaveRoom leaveMessage = rtype::network::message::createEvent<rtype::network::message::client::LeaveRoom>();
-                boost::array<char, rtype::network::message::MAX_PACKET_SIZE> leavePacked = rtype::network::message::pack<rtype::network::message::client::LeaveRoom>(leaveMessage);
+                boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> leavePacked = rtype::network::message::pack<rtype::network::message::client::LeaveRoom>(leaveMessage);
                 rtype::network::Client::getInstance().getOutbox()->push(leavePacked);
                 rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
                 sceneManager.setNextScene(sceneManager.getPreviousScene());

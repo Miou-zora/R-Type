@@ -63,6 +63,7 @@ public:
             std::cerr << "Network error (handleReceive): " << error.message() << std::endl;
         } else {
             m_recvMsgBuffer->push_back(std::make_tuple(*m_endpoint, m_recvBuffer, bytes_transferred));
+            m_recvBuffer.fill(0);
         }
         m_socket->async_receive_from(boost::asio::buffer(m_recvBuffer), *m_endpoint, boost::bind(&NetworkServer::handleReceive, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
     }

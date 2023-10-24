@@ -80,8 +80,8 @@ TEST(UniqueVector, customCompare)
 TEST(NetworkMessageQueue, basicTests)
 {
     rtype::network::message::NetworkMessageQueue queue;
-    boost::array<char, rtype::network::message::MAX_PACKET_SIZE> msg1;
-    boost::array<char, rtype::network::message::MAX_PACKET_SIZE> msg2;
+    boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> msg1;
+    boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> msg2;
 
     std::copy("test", "test" + 4, msg1.begin());
     std::copy("test2", "test2" + 5, msg2.begin());
@@ -102,8 +102,8 @@ TEST(NetworkMessageQueue, identicalMessages)
 {
     rtype::network::message::NetworkMessageQueue queue;
     rtype::network::message::client::Connect msg = rtype::network::message::createEvent<rtype::network::message::client::Connect>();
-    boost::array<char, rtype::network::message::MAX_PACKET_SIZE> msg1 = rtype::network::message::pack(msg);
-    boost::array<char, rtype::network::message::MAX_PACKET_SIZE> msg2 = rtype::network::message::pack(msg);
+    boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> msg1 = rtype::network::message::pack(msg);
+    boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> msg2 = rtype::network::message::pack(msg);
 
     ASSERT_TRUE(queue.empty());
     queue.push(msg1);
@@ -119,9 +119,9 @@ TEST(NetworkMessageQueue, differentMessages)
 {
     rtype::network::message::NetworkMessageQueue queue;
     rtype::network::message::client::Connect msg = rtype::network::message::createEvent<rtype::network::message::client::Connect>();
-    boost::array<char, rtype::network::message::MAX_PACKET_SIZE> msg1 = rtype::network::message::pack(msg);
+    boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> msg1 = rtype::network::message::pack(msg);
     msg.header.id++;
-    boost::array<char, rtype::network::message::MAX_PACKET_SIZE> msg2 = rtype::network::message::pack(msg);
+    boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> msg2 = rtype::network::message::pack(msg);
 
     ASSERT_TRUE(queue.empty());
     queue.push(msg1);
@@ -138,7 +138,7 @@ TEST(NetworkMessageQueue, MessageTopGet)
 {
     rtype::network::message::NetworkMessageQueue queue;
     rtype::network::message::client::Connect msg = rtype::network::message::createEvent<rtype::network::message::client::Connect>();
-    boost::array<char, rtype::network::message::MAX_PACKET_SIZE> msg1 = rtype::network::message::pack(msg);
+    boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> msg1 = rtype::network::message::pack(msg);
 
     ASSERT_TRUE(queue.empty());
     queue.push(msg1);

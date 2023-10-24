@@ -48,7 +48,7 @@ private:
         ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers,
         rtype::component::NetworkPlayer& networkPlayer,
         size_t networkPlayerEntity,
-        const boost::array<char, 512UL>& msg) const
+        const boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& msg) const
     {
         auto msgHeader = reinterpret_cast<const rtype::network::message::NetworkMessageHeader*>(msg.data());
         switch (msgHeader->type) {
@@ -97,7 +97,7 @@ private:
         ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers,
         rtype::component::NetworkPlayer& networkPlayer,
         size_t networkPlayerEntity,
-        const boost::array<char, 512UL>& msg) const
+        const boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& msg) const
     {
         auto connectAck = rtype::network::message::createEvent<rtype::network::message::server::ConnectAck>(networkPlayerEntity);
         (*networkPlayer.criticalMessages)[connectAck.header.id] = rtype::network::message::pack(connectAck);
@@ -116,7 +116,7 @@ private:
         ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers,
         rtype::component::NetworkPlayer& networkPlayer,
         size_t networkPlayerEntity,
-        const boost::array<char, 512UL>& msg) const
+        const boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& msg) const
     {
         auto component = rtype::component::GameRoom();
         registry.emplaceComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity), std::move(component));
@@ -137,7 +137,7 @@ private:
         ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers,
         rtype::component::NetworkPlayer& networkPlayer,
         size_t networkPlayerEntity,
-        const boost::array<char, 512UL>& msg) const
+        const boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& msg) const
     {
         auto& chooseRoom = rtype::network::message::unpack<rtype::network::message::client::ChooseRoom>(msg);
         auto component = rtype::component::GameRoom(chooseRoom.roomId);
@@ -174,7 +174,7 @@ private:
         ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers,
         rtype::component::NetworkPlayer& networkPlayer,
         size_t networkPlayerEntity,
-        const boost::array<char, 512UL>& msg) const
+        const boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& msg) const
     {
         auto playerRoom = registry.getComponents<rtype::component::GameRoom>()[networkPlayerEntity].value();
         registry.removeComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity));
@@ -202,7 +202,7 @@ private:
         ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers,
         rtype::component::NetworkPlayer& networkPlayer,
         size_t networkPlayerEntity,
-        const boost::array<char, 512UL>& msg) const
+        const boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& msg) const
     {
         if (!registry.hasComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity))) {
             std::cerr << "handleChooseLevelCallback: warning: Player " << networkPlayerEntity << " tried to choose a level without being in a game room" << std::endl;
@@ -228,7 +228,7 @@ private:
         ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers,
         rtype::component::NetworkPlayer& networkPlayer,
         size_t networkPlayerEntity,
-        const boost::array<char, 512UL>& msg) const
+        const boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& msg) const
     {
         if (!registry.hasComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity))) {
             std::cerr << "handleStartGameCallback: warning: Player " << networkPlayerEntity << " tried to start a game without being in a game room" << std::endl;
@@ -250,7 +250,7 @@ private:
         ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers,
         rtype::component::NetworkPlayer& networkPlayer,
         size_t networkPlayerEntity,
-        const boost::array<char, 512UL>& msg) const
+        const boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& msg) const
     {
         if (!registry.hasComponent<rtype::component::NetworkPlayerControl>(registry.entityFromIndex(networkPlayerEntity))) {
             return;
@@ -276,7 +276,7 @@ private:
         ecs::SparseArray<rtype::component::NetworkPlayer>& networkPlayers,
         rtype::component::NetworkPlayer& networkPlayer,
         size_t networkPlayerEntity,
-        const boost::array<char, 512UL>& msg) const
+        const boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& msg) const
     {
         if (!registry.hasComponent<rtype::component::NetworkPlayerControl>(registry.entityFromIndex(networkPlayerEntity))) {
             return;
@@ -291,7 +291,7 @@ private:
      * @param msg Message
      */
     void handlePlayerAckCallback(rtype::component::NetworkPlayer& networkPlayer,
-        const boost::array<char, 512UL>& msg) const
+        const boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& msg) const
     {
         auto& ack = rtype::network::message::unpack<rtype::network::message::client::Ack>(msg);
         if (networkPlayer.criticalMessages->find(ack.msgId) != networkPlayer.criticalMessages->end()) {

@@ -31,7 +31,7 @@ public:
     {
         rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
         while (!network::Client::getInstance().getInbox()->empty()) {
-            boost::array<char, rtype::network::message::MAX_PACKET_SIZE> message = network::Client::getInstance().getInbox()->top();
+            boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> message = network::Client::getInstance().getInbox()->top();
             network::message::NetworkMessageHeader header = reinterpret_cast<network::message::NetworkMessageHeader&>(message[0]);
             switch (header.type) {
             case network::message::server::ConnectAck::type:
@@ -108,7 +108,7 @@ private:
      * @param registry
      * @param message the message received from the server
      */
-    void handleConnectAck(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& message) const
+    void handleConnectAck(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
     {
         rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
         network::message::server::ConnectAck connectAck = reinterpret_cast<network::message::server::ConnectAck&>(message[0]);
@@ -124,7 +124,7 @@ private:
      * @param registry
      * @param message the message received from tTexthe server
      */
-    void handleRoomInformation(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& message) const
+    void handleRoomInformation(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
     {
         rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
         network::message::server::RoomInformation roomInformation = reinterpret_cast<network::message::server::RoomInformation&>(message[0]);
@@ -144,7 +144,7 @@ private:
      * @param registry
      * @param message the message received from the server
      */
-    void handleLevelInformation(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& message) const
+    void handleLevelInformation(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
     {
         rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
         network::message::server::LevelInformation levelInformation = reinterpret_cast<network::message::server::LevelInformation&>(message[0]);
@@ -161,7 +161,7 @@ private:
      * @param registry
      * @param message the message received from the server
      */
-    void handleGameStarted(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& message) const
+    void handleGameStarted(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
     {
         rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
         network::message::server::GameStarted gameStarted = reinterpret_cast<network::message::server::GameStarted&>(message[0]);
@@ -174,7 +174,7 @@ private:
      * @param registry
      * @param message the message received from the server
      */
-    void handlePlayerSpawn(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& message) const
+    void handlePlayerSpawn(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
     {
         network::message::server::PlayerSpawn playerSpawn = reinterpret_cast<network::message::server::PlayerSpawn&>(message[0]);
         rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
@@ -203,7 +203,7 @@ private:
      * @param registry
      * @param message the message received from the server
      */
-    void handlePlayerDeath(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& message) const
+    void handlePlayerDeath(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
     {
         network::message::server::PlayerDeath playerDeath = reinterpret_cast<network::message::server::PlayerDeath&>(message[0]);
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
@@ -220,7 +220,7 @@ private:
      * @param registry
      * @param message the message received from the server
      */
-    void handlePlayerMovement(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& message) const
+    void handlePlayerMovement(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
     {
         network::message::server::PlayerMovement playerMovement = reinterpret_cast<network::message::server::PlayerMovement&>(message[0]);
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
@@ -238,7 +238,7 @@ private:
      * @param registry
      * @param message the message received from the server
      */
-    void handlePlayerWeaponSwitch(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& message) const
+    void handlePlayerWeaponSwitch(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
     {
         (void)registry;
         (void)message;
@@ -250,7 +250,7 @@ private:
      * @param registry
      * @param message the message received from the server
      */
-    void handleEnemySpawn(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& message) const
+    void handleEnemySpawn(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
     {
         rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
         network::message::server::EnemySpawn enemySpawn = reinterpret_cast<network::message::server::EnemySpawn&>(message[0]);
@@ -266,7 +266,7 @@ private:
      * @param registry
      * @param message the message received from the server
      */
-    void handleEnemyDeath(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& message) const
+    void handleEnemyDeath(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
     {
         rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
         network::message::server::EnemyDeath enemyDeath = reinterpret_cast<network::message::server::EnemyDeath&>(message[0]);
@@ -287,7 +287,7 @@ private:
      * @param registry
      * @param message the message received from the server
      */
-    void handleEnemyMovement(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& message) const
+    void handleEnemyMovement(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
     {
         network::message::server::EnemyMovement enemyMovement = reinterpret_cast<network::message::server::EnemyMovement&>(message[0]);
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
@@ -305,7 +305,7 @@ private:
      * @param registry
      * @param message the message received from the server
      */
-    void handleBulletShoot(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& message) const
+    void handleBulletShoot(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
     {
         rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
         network::message::server::BulletShoot bulletShoot = reinterpret_cast<network::message::server::BulletShoot&>(message[0]);
@@ -328,7 +328,7 @@ private:
      * @param registry
      * @param message the message received from the server
      */
-    void handleBulletPosition(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& message) const
+    void handleBulletPosition(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
     {
         network::message::server::BulletPosition bulletPosition = reinterpret_cast<network::message::server::BulletPosition&>(message[0]);
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
@@ -346,7 +346,7 @@ private:
      * @param registry
      * @param message the message received from the server
      */
-    void handleBulletHit(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& message) const
+    void handleBulletHit(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
     {
         network::message::server::BulletHit bulletHit = reinterpret_cast<network::message::server::BulletHit&>(message[0]);
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
@@ -363,7 +363,7 @@ private:
      * @param registry
      * @param message the message received from the server
      */
-    void handleBulletDespawn(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& message) const
+    void handleBulletDespawn(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
     {
         network::message::server::BulletDespawn bulletDespawn = reinterpret_cast<network::message::server::BulletDespawn&>(message[0]);
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
@@ -381,7 +381,7 @@ private:
     void sendAck(u_int64_t msgId) const
     {
         network::message::client::Ack ack = network::message::createEvent<network::message::client::Ack>(msgId);
-        boost::array<char, rtype::network::message::MAX_PACKET_SIZE> packed = network::message::pack<network::message::client::Ack>(ack);
+        boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> packed = network::message::pack<network::message::client::Ack>(ack);
         network::Client::getInstance().getOutbox()->push(packed);
     }
 };

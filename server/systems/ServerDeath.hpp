@@ -72,16 +72,16 @@ private:
      * @param index The index of the entity to kill
      * @return The packet to send to the client
      */
-    std::optional<boost::array<char, rtype::network::message::MAX_PACKET_SIZE>> buildPacket(ecs::Registry& registry, std::size_t index) const
+    std::optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>> buildPacket(ecs::Registry& registry, std::size_t index) const
     {
         if (registry.hasComponent<rtype::tag::Enemy>(registry.entityFromIndex(index))
             && registry.hasComponent<rtype::component::EnemyInformation>(registry.entityFromIndex(index))) {
             auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemyDeath>(index);
-            return std::make_optional<boost::array<char, rtype::network::message::MAX_PACKET_SIZE>>(rtype::network::message::pack(msg));
+            return std::make_optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>>(rtype::network::message::pack(msg));
         }
         if (registry.hasComponent<rtype::component::BulletInformation>(registry.entityFromIndex(index))) {
             auto msg = rtype::network::message::createEvent<rtype::network::message::server::BulletHit>(index, -1);
-            return std::make_optional<boost::array<char, rtype::network::message::MAX_PACKET_SIZE>>(rtype::network::message::pack(msg));
+            return std::make_optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>>(rtype::network::message::pack(msg));
         }
         return std::nullopt;
     }
@@ -91,7 +91,7 @@ private:
      * @param player Network player
      * @param msg Message
      */
-    void addToCriticalMessages(rtype::component::NetworkPlayer& player, const boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& msg) const
+    void addToCriticalMessages(rtype::component::NetworkPlayer& player, const boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& msg) const
     {
         const auto& unpacked = reinterpret_cast<const rtype::network::message::NetworkMessageHeader*>(msg.data());
         (*player.criticalMessages)[unpacked->id] = msg;

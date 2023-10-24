@@ -56,7 +56,7 @@ TEST(NetworkPlayer, inboxTests)
     rtype::component::NetworkPlayer networkPlayer(endpoint);
 
     ASSERT_EQ(networkPlayer.inbox->empty(), true);
-    networkPlayer.inbox->push(boost::array<char, 512UL>());
+    networkPlayer.inbox->push(boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>());
     ASSERT_EQ(networkPlayer.inbox->empty(), false);
     networkPlayer.inbox->pop();
     ASSERT_EQ(networkPlayer.inbox->empty(), true);
@@ -68,7 +68,7 @@ TEST(NetworkPlayer, outboxTests)
     rtype::component::NetworkPlayer networkPlayer(endpoint);
 
     ASSERT_EQ(networkPlayer.outbox->empty(), true);
-    networkPlayer.outbox->push(boost::array<char, 512UL>());
+    networkPlayer.outbox->push(boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>());
     ASSERT_EQ(networkPlayer.outbox->empty(), false);
     networkPlayer.outbox->pop();
     ASSERT_EQ(networkPlayer.outbox->empty(), true);

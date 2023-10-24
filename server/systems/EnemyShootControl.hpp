@@ -53,7 +53,7 @@ private:
         }
     }
 
-    boost::array<char, rtype::network::message::MAX_PACKET_SIZE> getShootMessage(rtype::ecs::Registry& registry, std::size_t index) const
+    boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> getShootMessage(rtype::ecs::Registry& registry, std::size_t index) const
     {
         const auto& transform = registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value();
         auto msg = rtype::network::message::createEvent<rtype::network::message::server::BulletShoot>(index, transform.position.x, transform.position.y, 0.0f, 0.0f, 0);
@@ -67,7 +67,7 @@ private:
      * @param player Network player
      * @param msg Message
      */
-    void addToCriticalMessages(rtype::component::NetworkPlayer& player, const boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& msg) const
+    void addToCriticalMessages(rtype::component::NetworkPlayer& player, const boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& msg) const
     {
         const auto& unpacked = reinterpret_cast<const rtype::network::message::NetworkMessageHeader*>(msg.data());
         (*player.criticalMessages)[unpacked->id] = msg;

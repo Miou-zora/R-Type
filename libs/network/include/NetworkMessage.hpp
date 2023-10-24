@@ -12,6 +12,7 @@
 #include <cstdint>
 #include <cstring>
 #include <stdexcept>
+#include <vector>
 
 #include <boost/array.hpp>
 
@@ -30,7 +31,8 @@
 
 namespace rtype::network {
     namespace message {
-        static const u_int32_t MAX_PACKET_SIZE = 512;
+        static const u_int32_t MAX_MESSAGE_SIZE = 128;
+        static const u_int32_t MAX_PACKET_SIZE = 1024;
         static const char HEADER_MAGIC[2] = {'R', 'T'};
         static const char FOOTER_MAGIC[2] = {'T', 'R'};
         static u_int64_t g_packetId = 0;
@@ -106,9 +108,9 @@ namespace rtype::network {
          * @return void
         */
         template<typename T>
-        boost::array<char, MAX_PACKET_SIZE> pack(T &message)
+        boost::array<char, MAX_MESSAGE_SIZE> pack(T &message)
         {
-            boost::array<char, MAX_PACKET_SIZE> buffer;
+            boost::array<char, MAX_MESSAGE_SIZE> buffer;
             std::memcpy(buffer.data(), &message, sizeof(T));
             return (buffer);
         }
@@ -144,43 +146,9 @@ namespace rtype::network {
          * @return T The unpacked message
         */
         template<typename T>
-        const T unpack(const boost::array<char, MAX_PACKET_SIZE> &buffer)
+        const T unpack(const boost::array<char, MAX_MESSAGE_SIZE> &buffer)
         {
             return (*reinterpret_cast<const T *>(buffer.data()));
-        }
-
-        /**
-         * @brief Check whole message integrity
-         * @param array The boost array
-         * @param size The size of the message
-         * @return true The message is correct
-        */
-        inline bool checkMessageIntegrity(const char *data, std::size_t size, const std::size_t lookup[][2])
-        {
-            if (size < sizeof(NetworkMessageHeader) + sizeof(NetworkMessageFooter))
-                return false;
-            auto *header = reinterpret_cast<const NetworkMessageHeader *>(data);
-            auto *footer = reinterpret_cast<const NetworkMessageFooter *>(data + size - sizeof(NetworkMessageFooter));
-            if (checkHeaderMagic(header->magic) == false)
-                return false;
-            if (checkFooterMagic(footer->magic) == false)
-                return false;
-            for (std::size_t i = 0; lookup[i][0] != 0xFFFF; i++) {
-                if (lookup[i][0] == header->type && lookup[i][1] != size)
-                    return false;
-            }
-            return true;
-        }
-
-        /**
-         * @brief Check whole message integrity
-         * @param array The boost array
-         * @param size The size of the message
-         * @return true The message is correct
-        */
-        inline bool checkMessageIntegrity(const boost::array<char, MAX_PACKET_SIZE> &array, std::size_t size, const std::size_t lookup[][2])
-        {
-            return checkMessageIntegrity(array.data(), size, lookup);
         }
 
         inline size_t getMessageSize(const char *data, const std::size_t lookup[][2])
@@ -194,9 +162,69 @@ namespace rtype::network {
             throw std::runtime_error("Unknown message type");
         }
 
-        inline size_t getMessageSize(const boost::array<char, MAX_PACKET_SIZE> &array, const std::size_t lookup[][2])
+        inline size_t getMessageSize(const boost::array<char, MAX_MESSAGE_SIZE> &array, const std::size_t lookup[][2])
         {
             return getMessageSize(array.data(), lookup);
+        }
+
+        /**
+         * @brief Check whole message integrity
+         * @param array The boost array
+         * @return true The message is correct
+        */
+        inline bool checkMessageIntegrity(const char *data, const std::size_t lookup[][2])
+        {
+            std::size_t size = getMessageSize(data, lookup);
+            auto *header = reinterpret_cast<const NetworkMessageHeader *>(data);
+            auto *footer = reinterpret_cast<const NetworkMessageFooter *>(data + size - sizeof(NetworkMessageFooter));
+            if (checkHeaderMagic(header->magic) == false)
+                return false;
+            if (checkFooterMagic(footer->magic) == false)
+                return false;
+            return true;
+        }
+
+        /**
+         * @brief Check whole message integrity
+         * @param array The boost array
+         * @param size The size of the message
+         * @return true The message is correct
+        */
+        inline bool checkMessageIntegrity(const boost::array<char, MAX_MESSAGE_SIZE> &array, const std::size_t lookup[][2])
+        {
+            return checkMessageIntegrity(array.data(), lookup);
+        }
+
+        /**
+         * @brief Split a packet in multiple messages
+         * @param array The array to split
+         * @param lookup The lookup table
+         * @return std::vector<boost::array<char, MAX_MESSAGE_SIZE>> The splitted messages
+        */
+        inline std::vector<boost::array<char, MAX_MESSAGE_SIZE>> splitPacketInMessages(const boost::array<char, MAX_PACKET_SIZE> &array, const std::size_t lookup[][2])
+        {
+            std::vector<boost::array<char, MAX_MESSAGE_SIZE>> messages;
+
+            for (std::size_t i = 0; i < array.size() - sizeof(NetworkMessageHeader) - sizeof(NetworkMessageFooter); i++) {
+                auto header = reinterpret_cast<const NetworkMessageHeader *>(&array[i]);
+                if (checkHeaderMagic(header->magic) == false)
+                    continue;
+                std::size_t estimatedMsgSize = 0;
+                try {
+                    estimatedMsgSize = getMessageSize(&array[i], lookup);
+                } catch (const std::runtime_error &e) {
+                    continue;
+                }
+                if (i + estimatedMsgSize > array.size())
+                    break;
+                auto footer = reinterpret_cast<const NetworkMessageFooter *>(&array[i + estimatedMsgSize - sizeof(NetworkMessageFooter)]);
+                if (checkFooterMagic(footer->magic) == false)
+                    continue;
+                messages.emplace_back();
+                std::memcpy(messages.back().data(), &array[i], estimatedMsgSize);
+                i += estimatedMsgSize - 1;
+            }
+            return (messages);
         }
 
         namespace client {
@@ -337,14 +365,14 @@ namespace rtype::network {
                 {0xFFFF, 0}
             };
 
-            inline bool checkMessageIntegrity(const char *data, std::size_t size)
+            inline bool checkMessageIntegrity(const char *data)
             {
-                return rtype::network::message::checkMessageIntegrity(data, size, g_sizeLookup);
+                return rtype::network::message::checkMessageIntegrity(data, g_sizeLookup);
             }
 
-            inline bool checkMessageIntegrity(const boost::array<char, MAX_PACKET_SIZE> &array, std::size_t size)
+            inline bool checkMessageIntegrity(const boost::array<char, MAX_MESSAGE_SIZE> &array)
             {
-                return rtype::network::message::checkMessageIntegrity(array, size, g_sizeLookup);
+                return rtype::network::message::checkMessageIntegrity(array, g_sizeLookup);
             }
 
             inline size_t getMessageSize(const char *data)
@@ -352,9 +380,14 @@ namespace rtype::network {
                 return rtype::network::message::getMessageSize(data, g_sizeLookup);
             }
 
-            inline size_t getMessageSize(const boost::array<char, MAX_PACKET_SIZE> &array)
+            inline size_t getMessageSize(const boost::array<char, MAX_MESSAGE_SIZE> &array)
             {
                 return rtype::network::message::getMessageSize(array, g_sizeLookup);
+            }
+
+            inline std::vector<boost::array<char, MAX_MESSAGE_SIZE>> splitPacketInMessages(const boost::array<char, MAX_PACKET_SIZE> &array)
+            {
+                return rtype::network::message::splitPacketInMessages(array, g_sizeLookup);
             }
         }
 
@@ -584,14 +617,14 @@ namespace rtype::network {
                 {0xFFFF, 0}
             };
 
-            inline bool checkMessageIntegrity(const char *data, std::size_t size)
+            inline bool checkMessageIntegrity(const char *data)
             {
-                return rtype::network::message::checkMessageIntegrity(data, size, g_sizeLookup);
+                return rtype::network::message::checkMessageIntegrity(data, g_sizeLookup);
             }
 
-            inline bool checkMessageIntegrity(const boost::array<char, MAX_PACKET_SIZE> &array, std::size_t size)
+            inline bool checkMessageIntegrity(const boost::array<char, MAX_MESSAGE_SIZE> &array)
             {
-                return rtype::network::message::checkMessageIntegrity(array, size, g_sizeLookup);
+                return rtype::network::message::checkMessageIntegrity(array, g_sizeLookup);
             }
 
             inline size_t getMessageSize(const char *data)
@@ -599,9 +632,14 @@ namespace rtype::network {
                 return rtype::network::message::getMessageSize(data, g_sizeLookup);
             }
 
-            inline size_t getMessageSize(const boost::array<char, MAX_PACKET_SIZE> &array)
+            inline size_t getMessageSize(const boost::array<char, MAX_MESSAGE_SIZE> &array)
             {
                 return rtype::network::message::getMessageSize(array, g_sizeLookup);
+            }
+
+            inline std::vector<boost::array<char, MAX_MESSAGE_SIZE>> splitPacketInMessages(const boost::array<char, MAX_PACKET_SIZE> &array)
+            {
+                return rtype::network::message::splitPacketInMessages(array, g_sizeLookup);
             }
         }
     }

@@ -26,14 +26,12 @@ public:
         auto& recvMsgBuffer = networkServer.getRecvMsgBuffer();
         while (!networkServer.getRecvMsgBuffer().empty()) {
             const auto& [endpoint, recvBuffer, size] = networkServer.getRecvMsgBuffer().back();
-            if (rtype::network::message::client::checkMessageIntegrity(recvBuffer, size) == false) {
-                std::cerr << "Network error (checkMessageIntegrity): malformed message for endpoint " << endpoint << std::endl;
-                networkServer.getRecvMsgBuffer().pop_back();
-                continue;
-            }
             auto networkPlayerEntity = getNetworkPlayerEntity(registry, endpoint);
             auto& networkPlayer = registry.getComponents<rtype::component::NetworkPlayer>()[networkPlayerEntity].value();
-            networkPlayer.inbox->push(recvBuffer);
+            auto msgs = rtype::network::message::client::splitPacketInMessages(recvBuffer);
+            for (auto &msg : msgs) {
+                networkPlayer.inbox->push(msg);
+            }
             networkPlayer.lastMessage = std::chrono::high_resolution_clock::now();
             networkServer.getRecvMsgBuffer().pop_back();
         }

@@ -17,14 +17,14 @@ struct NetworkPlayer {
         endpoint = _endpoint;
         lastMessage = std::chrono::high_resolution_clock::now();
         inbox = std::make_shared<rtype::network::message::NetworkMessageQueue<
-            boost::array<char, rtype::network::message::MAX_PACKET_SIZE>,
+            boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>,
             rtype::network::message::NetworkMessageHeaderEquality,
             rtype::network::message::NetworkMessageHeaderCompare>>();
         outbox = std::make_shared<rtype::network::message::NetworkMessageQueue<
-            boost::array<char, rtype::network::message::MAX_PACKET_SIZE>,
+            boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>,
             rtype::network::message::NetworkMessageHeaderEquality,
             rtype::network::message::NetworkMessageHeaderCompare>>();
-        criticalMessages = std::make_shared<std::map<u_int64_t, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>>>();
+        criticalMessages = std::make_shared<std::map<u_int64_t, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>>>();
         criticalMessagesTime = std::make_shared<std::map<u_int64_t, std::chrono::time_point<std::chrono::high_resolution_clock>>>();
     }
     ~NetworkPlayer() = default;
@@ -35,16 +35,16 @@ struct NetworkPlayer {
     boost::asio::ip::udp::endpoint endpoint;
     std::chrono::time_point<std::chrono::high_resolution_clock> lastMessage;
     std::shared_ptr<rtype::network::message::NetworkMessageQueue<
-        boost::array<char, rtype::network::message::MAX_PACKET_SIZE>,
+        boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>,
         rtype::network::message::NetworkMessageHeaderEquality,
         rtype::network::message::NetworkMessageHeaderCompare>>
         inbox;
     std::shared_ptr<rtype::network::message::NetworkMessageQueue<
-        boost::array<char, rtype::network::message::MAX_PACKET_SIZE>,
+        boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>,
         rtype::network::message::NetworkMessageHeaderEquality,
         rtype::network::message::NetworkMessageHeaderCompare>>
         outbox;
-    std::shared_ptr<std::map<u_int64_t, boost::array<char, rtype::network::message::MAX_PACKET_SIZE>>> criticalMessages;
+    std::shared_ptr<std::map<u_int64_t, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>>> criticalMessages;
     std::shared_ptr<std::map<u_int64_t, std::chrono::time_point<std::chrono::high_resolution_clock>>> criticalMessagesTime;
 };
 }

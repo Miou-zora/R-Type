@@ -34,7 +34,7 @@ void initJoinRoomButton(rtype::ecs::Registry& reg)
                     return;
                 }
                 rtype::network::message::client::ChooseRoom message = rtype::network::message::createEvent<rtype::network::message::client::ChooseRoom>(std::stoi(roomId));
-                boost::array<char, rtype::network::message::MAX_PACKET_SIZE> packed = rtype::network::message::pack<rtype::network::message::client::ChooseRoom>(message);
+                boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> packed = rtype::network::message::pack<rtype::network::message::client::ChooseRoom>(message);
                 rtype::network::Client::getInstance().getOutbox()->push(packed);
             })
         .addComponent<rtype::component::DebugColliderDisplay>(true)

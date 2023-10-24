@@ -32,7 +32,7 @@ public:
             if (shooter.value().canShoot()) {
                 shooter.value().timer = 0;
                 network::message::client::PlayerShoot message = network::message::createEvent<network::message::client::PlayerShoot>();
-                boost::array<char, rtype::network::message::MAX_PACKET_SIZE> packed = network::message::pack<network::message::client::PlayerShoot>(message);
+                boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> packed = network::message::pack<network::message::client::PlayerShoot>(message);
                 network::Client::getInstance().getOutbox()->push(packed);
             }
         }

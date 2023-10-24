@@ -86,12 +86,12 @@ private:
         path.addPoint(-200.0f, transform.position.y);
     }
 
-    std::optional<boost::array<char, rtype::network::message::MAX_PACKET_SIZE>> getSpawnMessage(rtype::ecs::Registry& registry, std::size_t index) const
+    std::optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>> getSpawnMessage(rtype::ecs::Registry& registry, std::size_t index) const
     {
         if (registry.hasComponent<rtype::tag::Enemy>(registry.entityFromIndex(index))) {
             const auto& transform = registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value();
             auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemySpawn>(index, transform.position.x, transform.position.y);
-            return std::make_optional<boost::array<char, rtype::network::message::MAX_PACKET_SIZE>>(rtype::network::message::pack(msg));
+            return std::make_optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>>(rtype::network::message::pack(msg));
         }
         return std::nullopt;
     }
@@ -101,7 +101,7 @@ private:
      * @param player Network player
      * @param msg Message
      */
-    void addToCriticalMessages(rtype::component::NetworkPlayer& player, const boost::array<char, rtype::network::message::MAX_PACKET_SIZE>& msg) const
+    void addToCriticalMessages(rtype::component::NetworkPlayer& player, const boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& msg) const
     {
         const auto& unpacked = reinterpret_cast<const rtype::network::message::NetworkMessageHeader*>(msg.data());
         (*player.criticalMessages)[unpacked->id] = msg;
