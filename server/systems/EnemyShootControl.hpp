@@ -13,6 +13,7 @@
 #include "PrefabManager.hpp"
 #include "Shooter.hpp"
 #include "Speed.hpp"
+#include "ServerID.hpp"
 #include "Transform.hpp"
 #include "Vector.hpp"
 #include "components/Path.hpp"
@@ -56,7 +57,8 @@ private:
     boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> getShootMessage(rtype::ecs::Registry& registry, std::size_t index) const
     {
         const auto& transform = registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value();
-        auto msg = rtype::network::message::createEvent<rtype::network::message::server::BulletShoot>(index, transform.position.x, transform.position.y, 0.0f, 0.0f, 0);
+        auto& bulletServerID = registry.getComponents<rtype::component::ServerID>()[index].value();
+        auto msg = rtype::network::message::createEvent<rtype::network::message::server::BulletShoot>(bulletServerID.uuid, transform.position.x, transform.position.y, 0.0f, 0.0f, 0);
         if (registry.hasComponent<rtype::tag::Enemy>(registry.entityFromIndex(index)))
             msg.team = 1;
         return rtype::network::message::pack(msg);

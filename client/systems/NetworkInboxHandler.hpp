@@ -114,7 +114,7 @@ private:
         network::message::server::ConnectAck connectAck = reinterpret_cast<network::message::server::ConnectAck&>(message[0]);
         network::Client& client = network::Client::getInstance();
         client.setConnected(true);
-        client.setClientId(connectAck.playerId);
+        client.setClientId(connectAck.playerUuid);
         sceneManager.setNextScene(rtype::utils::Scene::MENU);
     }
 
@@ -184,16 +184,16 @@ private:
                 existingPlayers = registry.getComponents<rtype::component::AllyNumber>()[index]->id;
             }
         }
-        if (playerSpawn.playerId == network::Client::getInstance().getClientId()) {
+        if (memcmp(playerSpawn.playerUuid, network::Client::getInstance().getClientId(), sizeof(playerSpawn.playerUuid)) == 0) {
             rtype::ecs::Entity newPlayer = prefabManager.instantiate("Player", registry);
             registry.getComponents<rtype::component::Transform>()[newPlayer]->position.x = playerSpawn.x;
             registry.getComponents<rtype::component::Transform>()[newPlayer]->position.y = playerSpawn.y;
-            registry.getComponents<rtype::component::ServerID>()[newPlayer]->id = playerSpawn.playerId;
+            std::copy_n(playerSpawn.playerUuid, 16, registry.getComponents<rtype::component::ServerID>()[newPlayer]->uuid);
         } else {
             rtype::ecs::Entity newAlly = prefabManager.instantiate("Ally" + std::to_string(existingPlayers + 1), registry);
             registry.getComponents<rtype::component::Transform>()[newAlly]->position.x = playerSpawn.x;
             registry.getComponents<rtype::component::Transform>()[newAlly]->position.y = playerSpawn.y;
-            registry.getComponents<rtype::component::ServerID>()[newAlly]->id = playerSpawn.playerId;
+            std::copy_n(playerSpawn.playerUuid, 16, registry.getComponents<rtype::component::ServerID>()[newAlly]->uuid);
         }
     }
 
@@ -207,7 +207,7 @@ private:
     {
         network::message::server::PlayerDeath playerDeath = reinterpret_cast<network::message::server::PlayerDeath&>(message[0]);
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
-            if (registry.getComponents<rtype::component::ServerID>()[index]->id == playerDeath.playerId) {
+            if (memcmp(registry.getComponents<rtype::component::ServerID>()[index]->uuid, playerDeath.playerUuid, sizeof(playerDeath.playerUuid)) == 0) {
                 registry.killEntity(registry.entityFromIndex(index));
                 break;
             }
@@ -224,7 +224,7 @@ private:
     {
         network::message::server::PlayerMovement playerMovement = reinterpret_cast<network::message::server::PlayerMovement&>(message[0]);
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
-            if (registry.getComponents<rtype::component::ServerID>()[index]->id == playerMovement.playerId) {
+            if (memcmp(registry.getComponents<rtype::component::ServerID>()[index]->uuid, playerMovement.playerUuid, sizeof(playerMovement.playerUuid)) == 0) {
                 registry.getComponents<rtype::component::Transform>()[index]->position.x = playerMovement.x;
                 registry.getComponents<rtype::component::Transform>()[index]->position.y = playerMovement.y;
                 break;
@@ -255,7 +255,7 @@ private:
         rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
         network::message::server::EnemySpawn enemySpawn = reinterpret_cast<network::message::server::EnemySpawn&>(message[0]);
         rtype::ecs::Entity enemy = prefabManager.instantiate("Enemy", registry);
-        registry.getComponents<rtype::component::ServerID>()[enemy]->id = enemySpawn.enemyId;
+        std::copy_n(enemySpawn.enemyUuid, 16, registry.getComponents<rtype::component::ServerID>()[enemy]->uuid);
         registry.getComponents<rtype::component::Transform>()[enemy]->position.x = enemySpawn.x;
         registry.getComponents<rtype::component::Transform>()[enemy]->position.y = enemySpawn.y;
     }
@@ -271,7 +271,7 @@ private:
         rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
         network::message::server::EnemyDeath enemyDeath = reinterpret_cast<network::message::server::EnemyDeath&>(message[0]);
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
-            if (registry.getComponents<rtype::component::ServerID>()[index]->id == enemyDeath.enemyId) {
+            if (memcmp(registry.getComponents<rtype::component::ServerID>()[index]->uuid, enemyDeath.enemyUuid, sizeof(enemyDeath.enemyUuid)) == 0) {
                 registry.killEntity(registry.entityFromIndex(index));
                 rtype::ecs::Entity explosion = prefabManager.instantiate("EnemyExplosion", registry);
                 registry.getComponents<rtype::component::Transform>()[explosion]->position.x = registry.getComponents<rtype::component::Transform>()[index]->position.x;
@@ -291,7 +291,7 @@ private:
     {
         network::message::server::EnemyMovement enemyMovement = reinterpret_cast<network::message::server::EnemyMovement&>(message[0]);
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
-            if (registry.getComponents<rtype::component::ServerID>()[index]->id == enemyMovement.enemyId) {
+            if (memcmp(registry.getComponents<rtype::component::ServerID>()[index]->uuid, enemyMovement.enemyUuid, sizeof(enemyMovement.enemyUuid)) == 0) {
                 registry.getComponents<rtype::component::Transform>()[index]->position.x = enemyMovement.x;
                 registry.getComponents<rtype::component::Transform>()[index]->position.y = enemyMovement.y;
                 break;
@@ -311,12 +311,12 @@ private:
         network::message::server::BulletShoot bulletShoot = reinterpret_cast<network::message::server::BulletShoot&>(message[0]);
         if (bulletShoot.team == 0) {
             rtype::ecs::Entity bullet = prefabManager.instantiate("AllyProjectile", registry);
-            registry.getComponents<rtype::component::ServerID>()[bullet]->id = bulletShoot.bulletId;
+            std::copy_n(bulletShoot.bulletUuid, 16, registry.getComponents<rtype::component::ServerID>()[bullet]->uuid);
             registry.getComponents<rtype::component::Transform>()[bullet]->position.x = bulletShoot.x;
             registry.getComponents<rtype::component::Transform>()[bullet]->position.y = bulletShoot.y;
         } else {
             rtype::ecs::Entity bullet = prefabManager.instantiate("EnemyProjectile", registry);
-            registry.getComponents<rtype::component::ServerID>()[bullet]->id = bulletShoot.bulletId;
+            std::copy_n(bulletShoot.bulletUuid, 16, registry.getComponents<rtype::component::ServerID>()[bullet]->uuid);
             registry.getComponents<rtype::component::Transform>()[bullet]->position.x = bulletShoot.x;
             registry.getComponents<rtype::component::Transform>()[bullet]->position.y = bulletShoot.y;
         }
@@ -332,7 +332,7 @@ private:
     {
         network::message::server::BulletPosition bulletPosition = reinterpret_cast<network::message::server::BulletPosition&>(message[0]);
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
-            if (registry.getComponents<rtype::component::ServerID>()[index]->id == bulletPosition.bulletId) {
+            if (memcmp(registry.getComponents<rtype::component::ServerID>()[index]->uuid, bulletPosition.bulletUuid, sizeof(bulletPosition.bulletUuid)) == 0) {
                 registry.getComponents<rtype::component::Transform>()[index]->position.x = bulletPosition.x;
                 registry.getComponents<rtype::component::Transform>()[index]->position.y = bulletPosition.y;
                 break;
@@ -350,7 +350,7 @@ private:
     {
         network::message::server::BulletHit bulletHit = reinterpret_cast<network::message::server::BulletHit&>(message[0]);
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
-            if (registry.getComponents<rtype::component::ServerID>()[index]->id == bulletHit.bulletId) {
+            if (memcmp(registry.getComponents<rtype::component::ServerID>()[index]->uuid, bulletHit.bulletUuid, sizeof(bulletHit.bulletUuid)) == 0) {
                 registry.killEntity(registry.entityFromIndex(index));
                 break;
             }
@@ -367,7 +367,7 @@ private:
     {
         network::message::server::BulletDespawn bulletDespawn = reinterpret_cast<network::message::server::BulletDespawn&>(message[0]);
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
-            if (registry.getComponents<rtype::component::ServerID>()[index]->id == bulletDespawn.bulletId) {
+            if (memcmp(registry.getComponents<rtype::component::ServerID>()[index]->uuid, bulletDespawn.bulletUuid, sizeof(bulletDespawn.bulletUuid)) == 0) {
                 registry.killEntity(registry.entityFromIndex(index));
                 break;
             }

@@ -12,6 +12,7 @@
 #include "NetworkPlayer.hpp"
 #include "NetworkPlayerControl.hpp"
 #include "NetworkServer.hpp"
+#include "ServerID.hpp"
 
 namespace rtype::system {
 /**
@@ -58,7 +59,8 @@ private:
     {
         for (auto&& i : toDelete) {
             auto& toDeleteGameRoom = registry.getComponents<rtype::component::GameRoom>()[i].value();
-            auto msg = rtype::network::message::createEvent<rtype::network::message::server::PlayerDeath>(i, true);
+            auto& toDeleteNetworkPlayerServerID = registry.getComponents<rtype::component::ServerID>()[i].value();
+            auto msg = rtype::network::message::createEvent<rtype::network::message::server::PlayerDeath>(toDeleteNetworkPlayerServerID.uuid, true);
             auto packed = rtype::network::message::pack<rtype::network::message::server::PlayerDeath>(msg);
             for (auto&& [pindex, networkPlayerOpt] : ecs::containers::IndexedZipper(networkPlayers)) {
                 auto& networkPlayer = networkPlayerOpt.value();

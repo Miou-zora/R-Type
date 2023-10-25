@@ -19,6 +19,7 @@
 #include "NetworkPlayerControl.hpp"
 #include "Path.hpp"
 #include "PrefabManager.hpp"
+#include "ServerID.hpp"
 #include "Shooter.hpp"
 #include "Spawner.hpp"
 #include "Speed.hpp"
@@ -108,6 +109,8 @@ public:
     {
         rtype::ecs::Entity entity = rtype::utils::PrefabManager::getInstance().instantiate("player", registry);
         registry.emplaceComponent<rtype::component::NetworkPlayer>(entity, endpoint);
+        boost::uuids::uuid uuid = boost::uuids::random_generator()();
+        registry.emplaceComponent<rtype::component::ServerID>(entity, uuid.data);
         return entity;
     }
 
@@ -128,6 +131,8 @@ public:
         auto& gameRoom = registry.getComponents<rtype::component::GameRoom>()[bullet].value();
         auto& playerGameRoom = registry.getComponents<rtype::component::GameRoom>()[playerIndex].value();
         gameRoom = playerGameRoom;
+        boost::uuids::uuid uuid = boost::uuids::random_generator()();
+        registry.emplaceComponent<rtype::component::ServerID>(bullet, uuid.data);
         return bullet;
     }
 
@@ -149,6 +154,8 @@ public:
         auto& gameRoom = registry.getComponents<rtype::component::GameRoom>()[bullet].value();
         auto& enemyGameRoom = registry.getComponents<rtype::component::GameRoom>()[enemyIndex].value();
         gameRoom = enemyGameRoom;
+        boost::uuids::uuid uuid = boost::uuids::random_generator()();
+        registry.emplaceComponent<rtype::component::ServerID>(bullet, uuid.data);
         return bullet;
     }
 
@@ -186,7 +193,8 @@ public:
                     continue;
                 }
                 auto& playerTransform = registry.getComponents<rtype::component::Transform>()[pIndex].value();
-                auto playerSpawned = rtype::network::message::createEvent<rtype::network::message::server::PlayerSpawn>(pIndex, playerTransform.position.x, playerTransform.position.y);
+                auto& playerServerID = registry.getComponents<rtype::component::ServerID>()[pIndex].value();
+                auto playerSpawned = rtype::network::message::createEvent<rtype::network::message::server::PlayerSpawn>(playerServerID.uuid, playerTransform.position.x, playerTransform.position.y);
                 (*networkPlayer.criticalMessages)[playerSpawned.header.id] = rtype::network::message::pack(playerSpawned);
             }
         }
@@ -247,6 +255,7 @@ public:
         player.addComponent<rtype::tag::Ally>();
         player.addComponent<rtype::component::NetworkPlayerControl>();
         player.addComponent<rtype::component::Shooter>("bullet", getValue<float>("playerShootCooldown"));
+        player.addComponent<rtype::component::ServerID>();
 
         rtype::ecs::Prefab& enemy = manager.createPrefab("enemy");
         enemy.addComponent<rtype::component::Transform>();
@@ -260,6 +269,7 @@ public:
         enemy.addComponent<rtype::component::EnemyInformation>();
         enemy.addComponent<rtype::component::Shooter>("willCrash", getValue<float>("enemyShootCooldown"));
         enemy.addComponent<rtype::component::Path>(getValue<float>("enemySpawnerMovementSpeed"));
+        enemy.addComponent<rtype::component::ServerID>();
 
         rtype::ecs::Prefab& bullet = manager.createPrefab("bullet");
         bullet.addComponent<rtype::component::Transform>();
@@ -271,6 +281,7 @@ public:
         bullet.addComponent<rtype::component::BulletInformation>();
         bullet.addComponent<rtype::component::Path>(getValue<float>("bulletSpeed"));
         bullet.addComponent<rtype::tag::Ally>();
+        bullet.addComponent<rtype::component::ServerID>();
 
         rtype::ecs::Prefab& enemyBullet = manager.createPrefab("enemyBullet");
         enemyBullet.addComponent<rtype::component::Transform>();
@@ -282,6 +293,7 @@ public:
         enemyBullet.addComponent<rtype::component::BulletInformation>();
         enemyBullet.addComponent<rtype::component::Path>(getValue<float>("enemyBulletSpeed"));
         enemyBullet.addComponent<rtype::tag::Enemy>();
+        enemyBullet.addComponent<rtype::component::ServerID>();
 
         rtype::ecs::Prefab& enemySpawner = manager.createPrefab("enemySpawner");
         enemySpawner.addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(1600.0f, 1024.0f / 2.0f));
@@ -289,6 +301,7 @@ public:
         enemySpawner.addComponent<rtype::component::Velocity>();
         enemySpawner.addComponent<rtype::component::GameRoom>();
         enemySpawner.addComponent<rtype::component::Path>(getValue<float>("enemySpawnerMovementSpeed"));
+        enemySpawner.addComponent<rtype::component::ServerID>();
     }
 
 private:

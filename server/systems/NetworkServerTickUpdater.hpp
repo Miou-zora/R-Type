@@ -69,7 +69,8 @@ private:
                 continue;
             }
             auto& transform = transformOpt.value();
-            auto msg = rtype::network::message::createEvent<rtype::network::message::server::PlayerMovement>(j, transform.position.x, transform.position.y);
+            auto& serverID = registry.getComponents<rtype::component::ServerID>()[j].value();
+            auto msg = rtype::network::message::createEvent<rtype::network::message::server::PlayerMovement>(serverID.uuid, transform.position.x, transform.position.y);
             outbox->push(rtype::network::message::pack(msg));
         }
     }
@@ -98,7 +99,8 @@ private:
 
             auto& transform = transformOpt.value();
             auto& bullet = bulletOpt.value();
-            auto msg = rtype::network::message::createEvent<rtype::network::message::server::BulletPosition>(j, transform.position.x, transform.position.y);
+            auto& serverID = registry.getComponents<rtype::component::ServerID>()[j].value();
+            auto msg = rtype::network::message::createEvent<rtype::network::message::server::BulletPosition>(serverID.uuid, transform.position.x, transform.position.y);
             outbox->push(rtype::network::message::pack(msg));
         }
     }
@@ -126,7 +128,8 @@ private:
                 continue;
             }
             auto& transform = transformOpt.value();
-            auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemyMovement>(j, transform.position.x, transform.position.y);
+            auto& serverID = registry.getComponents<rtype::component::ServerID>()[j].value();
+            auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemyMovement>(serverID.uuid, transform.position.x, transform.position.y);
             outbox->push(rtype::network::message::pack(msg));
         }
     }

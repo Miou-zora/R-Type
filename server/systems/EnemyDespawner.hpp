@@ -4,6 +4,7 @@
 #include "EnemyInformation.hpp"
 #include "GameRoom.hpp"
 #include "NetworkPlayer.hpp"
+#include "ServerID.hpp"
 #include "components/Path.hpp"
 
 namespace rtype::system {
@@ -41,7 +42,8 @@ private:
     {
         auto& gameRooms = registry.getComponents<rtype::component::GameRoom>();
         auto& networkPlayers = registry.getComponents<rtype::component::NetworkPlayer>();
-        auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemyDeath>(enemyId);
+        auto& despawnedPlayerID = registry.getComponents<rtype::component::ServerID>()[enemyId].value();
+        auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemyDeath>(despawnedPlayerID.uuid);
         auto packedMsg = rtype::network::message::pack(msg);
 
         for (auto&& [index, gameRoom, networkPlayer] : ecs::containers::IndexedZipper(gameRooms, networkPlayers)) {

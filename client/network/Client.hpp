@@ -129,14 +129,14 @@ public:
     /**
      * @brief Set the Client Id object
      *
-     * @param id
+     * @param id as uint8_t*
      */
-    void setClientId(size_t id);
+    void setClientId(uint8_t id[16]);
     /**
      * @brief   Get the Client Id object
-     * @return  size_t
+     * @return  uint8_t*
      */
-    size_t getClientId() const;
+    uint8_t* getClientId() const;
 
 private:
     std::string m_ip;
@@ -151,7 +151,7 @@ private:
     std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_MESSAGE_SIZE>, network::message::NetworkMessageHeaderEquality, network::message::NetworkMessageHeaderCompare>> m_inbox;
     std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_MESSAGE_SIZE>, network::message::NetworkMessageHeaderEquality, network::message::NetworkMessageHeaderCompare>> m_outbox;
     bool m_connected;
-    size_t m_clientId;
+    uint8_t m_clientId[16];
 };
 
 inline Client* Client::m_instance = nullptr;

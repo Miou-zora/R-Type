@@ -33,6 +33,7 @@
 #include "PrefabManager.hpp"
 #include "RoomCleanup.hpp"
 #include "ServerDeath.hpp"
+#include "ServerID.hpp"
 #include "ServerSpawner.hpp"
 #include "ShootControl.hpp"
 #include "Shooter.hpp"
@@ -64,6 +65,7 @@ void registerComponents(rtype::ecs::Registry& reg)
     reg.registerComponent<rtype::component::Path>();
     reg.registerComponent<rtype::component::BulletInformation>();
     reg.registerComponent<rtype::component::EnemyInformation>();
+    reg.registerComponent<rtype::component::ServerID>();
 }
 
 void addSystems(rtype::ecs::Registry& reg)

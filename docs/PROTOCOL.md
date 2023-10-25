@@ -99,17 +99,17 @@ This section describes the messages sent by the server to the client.
 | 0x0002 | `network::message::server::LevelInformation` | `u_int16_t level_id;` | Used to tell the client which level they are in |
 | 0x0003 | `network::message::server::GameStarted` | ` ` | Used to tell the client that the game has started |
 | 0x0004 | `network::message::server::GameEnded` | ` ` | Used to tell the client that the game has ended |
-| 0x0010 | `network::message::server::PlayerSpawn` | `u_int16_t player_id;` <br> `float x;` <br> `float y;` | Used to indicate that a player spawned |
-| 0x0011 | `network::message::server::PlayerDeath` | `u_int16_t player_id;` <br> `bool crashed;` | Used to indicate that a player died |
-| 0x0012 | `network::message::server::PlayerMovement` | `u_int16_t player_id;` <br> `float x;` <br> `float y;` | Used to indicate that a player moved |
-| 0x0013 | `network::message::server::PlayerWeaponSwitch` | `u_int16_t player_id;` <br> `int16_t weapon_type;` | Used to indicate that a player switched weapon |
-| 0x0020 | `network::message::server::EnemySpawn` | `u_int16_t enemy_id;` <br> `float x;` <br> `float y;` | Used to indicate that an enemy spawned |
-| 0x0021 | `network::message::server::EnemyDeath` | `u_int16_t enemy_id;` | Used to indicate that an enemy died |
-| 0x0022 | `network::message::server::EnemyMovement` | `u_int16_t enemy_id;` <br> `float x;` <br> `float y;` | Used to indicate that an enemy moved |
-| 0x0030 | `network::message::server::BulletShoot` | `u_int16_t bullet_id;` <br> `float x;` <br> `float y;` <br> `float x_velocity;` <br> `float y_velocity;` <br> `u_int8_t team` | Used to indicate that a bullet was shot |
-| 0x0031 | `network::message::server::BulletPosition` | `u_int16_t bullet_id;` <br> `float x;` <br> `float y;` | Used to indicate that a bullet moved |
-| 0x0032 | `network::message::server::BulletHit` | `u_int16_t bullet_id;` <br> `u_int16_t hit_id;` | Used to indicate that a bullet hit something (id is the entity that got hit, either player or enemy) |
-| 0x0033 | `network::message::server::BulletDespawn` | `u_int16_t bullet_id;` | Used to indicate that a bullet despawned |
+| 0x0010 | `network::message::server::PlayerSpawn` | `u_int8_t[16] player_id;` <br> `float x;` <br> `float y;` | Used to indicate that a player spawned |
+| 0x0011 | `network::message::server::PlayerDeath` | `u_int8_t[16] player_id;` <br> `bool crashed;` | Used to indicate that a player died |
+| 0x0012 | `network::message::server::PlayerMovement` | `u_int8_t[16] player_id;` <br> `float x;` <br> `float y;` | Used to indicate that a player moved |
+| 0x0013 | `network::message::server::PlayerWeaponSwitch` | `u_int8_t[16] player_id;` <br> `int16_t weapon_type;` | Used to indicate that a player switched weapon |
+| 0x0020 | `network::message::server::EnemySpawn` | `u_int8_t[16] enemy_id;` <br> `float x;` <br> `float y;` | Used to indicate that an enemy spawned |
+| 0x0021 | `network::message::server::EnemyDeath` | `u_int8_t[16] enemy_id;` | Used to indicate that an enemy died |
+| 0x0022 | `network::message::server::EnemyMovement` | `u_int8_t[16] enemy_id;` <br> `float x;` <br> `float y;` | Used to indicate that an enemy moved |
+| 0x0030 | `network::message::server::BulletShoot` | `u_int8_t[16] bullet_id;` <br> `float x;` <br> `float y;` <br> `float x_velocity;` <br> `float y_velocity;` <br> `u_int8_t team` | Used to indicate that a bullet was shot |
+| 0x0031 | `network::message::server::BulletPosition` | `u_int8_t[16] bullet_id;` <br> `float x;` <br> `float y;` | Used to indicate that a bullet moved |
+| 0x0032 | `network::message::server::BulletHit` | `u_int8_t[16] bullet_id;` <br> `u_int16_t hit_id;` | Used to indicate that a bullet hit something (id is the entity that got hit, either player or enemy) |
+| 0x0033 | `network::message::server::BulletDespawn` | `u_int8_t[16] bullet_id;` | Used to indicate that a bullet despawned |
 
 ## 4. Communication diagrams
 

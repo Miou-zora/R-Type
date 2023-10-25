@@ -3,6 +3,7 @@
 #include "BulletInformation.hpp"
 #include "ECS.hpp"
 #include "GameRoom.hpp"
+#include "ServerID.hpp"
 #include "NetworkPlayer.hpp"
 #include "components/Path.hpp"
 
@@ -41,7 +42,8 @@ private:
     {
         auto& gameRooms = registry.getComponents<rtype::component::GameRoom>();
         auto& networkPlayers = registry.getComponents<rtype::component::NetworkPlayer>();
-        auto msg = rtype::network::message::createEvent<rtype::network::message::server::BulletDespawn>(bulletId);
+        auto& bulletServerId = registry.getComponents<rtype::component::ServerID>()[bulletId].value();
+        auto msg = rtype::network::message::createEvent<rtype::network::message::server::BulletDespawn>(bulletServerId.uuid);
         auto packedMsg = rtype::network::message::pack(msg);
 
         for (auto&& [index, gameRoom, networkPlayer] : ecs::containers::IndexedZipper(gameRooms, networkPlayers)) {

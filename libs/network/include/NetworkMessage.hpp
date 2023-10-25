@@ -14,6 +14,8 @@
 #include <stdexcept>
 #include <vector>
 
+#include <boost/uuid/uuid.hpp>
+
 #include <boost/array.hpp>
 
 #ifdef _WIN32
@@ -394,14 +396,14 @@ namespace rtype::network {
         namespace server {
             #pragma pack(push, 1)
             struct ConnectAck {
-                ConnectAck(size_t _playerId)
-                    : playerId(_playerId)
+                ConnectAck(uint8_t playerUuid_[16])
                 {
+                    std::copy_n(playerUuid_, 16, playerUuid);
                 }
 
                 static const u_int16_t type = 0x0000;
                 NetworkMessageHeader header;
-                size_t playerId;
+                uint8_t playerUuid[16];
                 NetworkMessageFooter footer;
             };
 
@@ -447,108 +449,115 @@ namespace rtype::network {
             };
 
             struct PlayerSpawn {
-                PlayerSpawn(u_int16_t _playerId, float _x, float _y)
-                    : playerId(_playerId), x(_x), y(_y)
+                PlayerSpawn(uint8_t _playerUuid[16], float _x, float _y)
+                    : x(_x), y(_y)
                 {
+                    std::copy_n(_playerUuid, 16, playerUuid);
                 }
 
                 static const u_int16_t type = 0x0010;
                 NetworkMessageHeader header;
-                u_int16_t playerId;
+                uint8_t playerUuid[16];
                 float x;
                 float y;
                 NetworkMessageFooter footer;
             };
 
             struct PlayerDeath {
-                PlayerDeath(u_int16_t _playerId, bool _crashed)
-                    : playerId(_playerId), crashed(_crashed)
+                PlayerDeath(uint8_t _playerUuid[16], bool _crashed)
+                    : crashed(_crashed)
                 {
+                    std::copy_n(_playerUuid, 16, playerUuid);
                 }
 
                 static const u_int16_t type = 0x0011;
                 NetworkMessageHeader header;
-                u_int16_t playerId;
+                uint8_t playerUuid[16];
                 bool crashed;
                 NetworkMessageFooter footer;
             };
 
             struct PlayerMovement {
-                PlayerMovement(u_int16_t _playerId, float _x, float _y)
-                    : playerId(_playerId), x(_x), y(_y)
+                PlayerMovement(uint8_t _playerUuid[16], float _x, float _y)
+                    : x(_x), y(_y)
                 {
+                    std::copy_n(_playerUuid, 16, playerUuid);
                 }
 
                 static const u_int16_t type = 0x0012;
                 NetworkMessageHeader header;
-                u_int16_t playerId;
+                uint8_t playerUuid[16];
                 float x;
                 float y;
                 NetworkMessageFooter footer;
             };
 
             struct PlayerWeaponSwitch {
-                PlayerWeaponSwitch(u_int16_t _playerId, int16_t _weaponType)
-                    : playerId(_playerId), weaponType(_weaponType)
+                PlayerWeaponSwitch(uint8_t _playerUuid[16], int16_t _weaponType)
+                    : weaponType(_weaponType)
                 {
+                    std::copy_n(_playerUuid, 16, playerUuid);
                 }
 
                 static const u_int16_t type = 0x0013;
                 NetworkMessageHeader header;
-                u_int16_t playerId;
+                uint8_t playerUuid[16];
                 int16_t weaponType;
                 NetworkMessageFooter footer;
             };
 
             struct EnemySpawn {
-                EnemySpawn(u_int16_t _enemyId, float _x, float _y)
-                    : enemyId(_enemyId), x(_x), y(_y)
+                EnemySpawn(uint8_t _enemyUuid[16], float _x, float _y)
+                    : x(_x), y(_y)
                 {
+                    std::copy_n(_enemyUuid, 16, enemyUuid);
                 }
 
                 static const u_int16_t type = 0x0020;
                 NetworkMessageHeader header;
-                u_int16_t enemyId;
+                uint8_t enemyUuid[16];
                 float x;
                 float y;
                 NetworkMessageFooter footer;
             };
 
             struct EnemyDeath {
-                EnemyDeath(u_int16_t _enemyId)
-                    : enemyId(_enemyId)
+                EnemyDeath(uint8_t _enemyUuid[16])
                 {
+                    std::copy_n(_enemyUuid, 16, enemyUuid);
                 }
 
                 static const u_int16_t type = 0x0021;
                 NetworkMessageHeader header;
-                u_int16_t enemyId;
+                uint8_t enemyUuid[16];
                 NetworkMessageFooter footer;
             };
 
             struct EnemyMovement {
-                EnemyMovement(u_int16_t _enemyId, float _x, float _y)
-                    : enemyId(_enemyId), x(_x), y(_y)
+                EnemyMovement(uint8_t _enemyUuid[16], float _x, float _y)
+                    : x(_x), y(_y)
                 {
+                    std::copy_n(_enemyUuid, 16, enemyUuid);
                 }
 
                 static const u_int16_t type = 0x0022;
                 NetworkMessageHeader header;
-                u_int16_t enemyId;
+                uint8_t enemyUuid[16];
                 float x;
                 float y;
                 NetworkMessageFooter footer;
             };
 
             struct BulletShoot {
-                BulletShoot(u_int16_t _bulletId, float _x, float _y, float _xVelocity, float _yVelocity, u_int8_t _team)
-                    : bulletId(_bulletId), x(_x), y(_y), xVelocity(_xVelocity), yVelocity(_yVelocity), team(_team)
+                BulletShoot(uint8_t _bulletUuid[16], float _x, float _y, float _xVelocity, float _yVelocity, u_int8_t _team)
+                    : x(_x), y(_y), xVelocity(_xVelocity), yVelocity(_yVelocity), team(_team)
                 {
+                    std::copy_n(_bulletUuid, 16, bulletUuid);
                 }
 
                 static const u_int16_t type = 0x0030;
                 NetworkMessageHeader header;
-                u_int16_t bulletId;
+                uint8_t bulletUuid[16];
                 float x;
                 float y;
                 float xVelocity;
@@ -558,41 +567,43 @@ namespace rtype::network {
             };
 
             struct BulletPosition {
-                BulletPosition(u_int16_t _bulletId, float _x, float _y)
-                    : bulletId(_bulletId), x(_x), y(_y)
+                BulletPosition(uint8_t _bulletUuid[16], float _x, float _y)
+                    : x(_x), y(_y)
                 {
+                    std::copy_n(_bulletUuid, 16, bulletUuid);
                 }
 
                 static const u_int16_t type = 0x0031;
                 NetworkMessageHeader header;
-                u_int16_t bulletId;
+                uint8_t bulletUuid[16];
                 float x;
                 float y;
                 NetworkMessageFooter footer;
             };
 
             struct BulletHit {
-                BulletHit(u_int16_t _bulletId, u_int16_t _hitId)
-                    : bulletId(_bulletId), hitId(_hitId)
+                BulletHit(uint8_t _bulletUuid[16], uint8_t _hitUuid[16])
                 {
+                    std::copy_n(_hitUuid, 16, hitUuid);
+                    std::copy_n(_bulletUuid, 16, bulletUuid);
                 }
 
                 static const u_int16_t type = 0x0032;
                 NetworkMessageHeader header;
-                u_int16_t bulletId;
-                u_int16_t hitId;
+                uint8_t bulletUuid[16];
+                uint8_t hitUuid[16];
                 NetworkMessageFooter footer;
             };
 
             struct BulletDespawn {
-                BulletDespawn(u_int16_t _bulletId)
-                    : bulletId(_bulletId)
+                BulletDespawn(uint8_t _bulletUuid[16])
                 {
+                    std::copy_n(_bulletUuid, 16, bulletUuid);
                 }
 
                 static const u_int16_t type = 0x0033;
                 NetworkMessageHeader header;
-                u_int16_t bulletId;
+                uint8_t bulletUuid[16];
                 NetworkMessageFooter footer;
             };
             #pragma pack(pop)

@@ -99,7 +99,8 @@ private:
         size_t networkPlayerEntity,
         const boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& msg) const
     {
-        auto connectAck = rtype::network::message::createEvent<rtype::network::message::server::ConnectAck>(networkPlayerEntity);
+        auto& playerServerID = registry.getComponents<rtype::component::ServerID>()[networkPlayerEntity].value();
+        auto connectAck = rtype::network::message::createEvent<rtype::network::message::server::ConnectAck>(playerServerID.uuid);
         (*networkPlayer.criticalMessages)[connectAck.header.id] = rtype::network::message::pack(connectAck);
         std::cout << "handleConnectCallback: info: Player " << networkPlayerEntity << " connected" << std::endl;
     }

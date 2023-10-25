@@ -74,13 +74,17 @@ private:
      */
     std::optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>> buildPacket(ecs::Registry& registry, std::size_t index) const
     {
+        if (!registry.hasComponent<rtype::component::ServerID>(registry.entityFromIndex(index)))
+            return std::nullopt;
+        auto& serverID = registry.getComponents<rtype::component::ServerID>()[index].value();
         if (registry.hasComponent<rtype::tag::Enemy>(registry.entityFromIndex(index))
             && registry.hasComponent<rtype::component::EnemyInformation>(registry.entityFromIndex(index))) {
-            auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemyDeath>(index);
+            auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemyDeath>(serverID.uuid);
             return std::make_optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>>(rtype::network::message::pack(msg));
         }
         if (registry.hasComponent<rtype::component::BulletInformation>(registry.entityFromIndex(index))) {
-            auto msg = rtype::network::message::createEvent<rtype::network::message::server::BulletHit>(index, -1);
+            uint8_t hitId[16] = {0}; // TODO: change with real hit UUID
+            auto msg = rtype::network::message::createEvent<rtype::network::message::server::BulletHit>(serverID.uuid, hitId);
             return std::make_optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>>(rtype::network::message::pack(msg));
         }
         return std::nullopt;

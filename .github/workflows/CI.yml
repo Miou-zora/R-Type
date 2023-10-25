@@ -31,7 +31,7 @@ jobs:
         name: Store VCPKG folder in cache
         with:
           path: ./vcpkg
-          key: ${{ runner.os }}-vcpkg-raylib_gtest_boost-core_boost-asio_boost-thread_boost-system_boost-filesystem_cmakerc
+          key: ${{ runner.os }}-vcpkg-raylib_gtest_boost-core_boost-asio_boost-thread_boost-system_boost-uuid_boost-filesystem_cmakerc
           restore-keys: |
             ${{ runner.os }}-vcpkg-
 
@@ -91,7 +91,7 @@ jobs:
         name: Store VCPKG folder in cache
         with:
           path: ./vcpkg
-          key: ${{ runner.os }}-vcpkg-raylib_gtest_boost-core_boost-asio_boost-thread_boost-system_boost-filesystem_cmakerc
+          key: ${{ runner.os }}-vcpkg-raylib_gtest_boost-core_boost-asio_boost-thread_boost-system_boost-uuid_boost-filesystem_cmakerc
           restore-keys: |
             ${{ runner.os }}-vcpkg-
 

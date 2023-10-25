@@ -16,7 +16,7 @@ if exist %VCPKG_PATH% (
     echo VCPKG found, building
     rem Use fetched vcpkg to install needed packages
     echo "Installing packages"
-    %VCPKG_EXE% install --triplet %VCPKG_TRIPLET% --feature-flags=manifests raylib boost-core boost-asio boost-thread boost-system boost-filesystem gtest cmakerc
+    %VCPKG_EXE% install --triplet %VCPKG_TRIPLET% --feature-flags=manifests raylib boost-core boost-asio boost-thread boost-uuid boost-system boost-filesystem gtest cmakerc
 
     rem Build the project using cmake
     cmake -S . -B %BUILD_DIR% -DCMAKE_TOOLCHAIN_FILE=%VCPKG_TOOLCHAIN% -DVCPKG_TARGET_TRIPLET=%VCPKG_TRIPLET% -DCMAKE_BUILD_TYPE=Release
@@ -52,7 +52,7 @@ if exist %VCPKG_PATH% (
         echo VCPKG installation successful
         rem Use fetched vcpkg to install needed packages
         echo "Installing packages"
-        %VCPKG_EXE% install --triplet %VCPKG_TRIPLET% --feature-flags=manifests raylib boost-core boost-asio boost-thread boost-system boost-filesystem gtest cmakerc
+        %VCPKG_EXE% install --triplet %VCPKG_TRIPLET% --feature-flags=manifests raylib boost-core boost-asio boost-thread boost-uuid boost-system boost-filesystem gtest cmakerc
 
         rem Build the project using cmake
         cmake -S . -B %BUILD_DIR% -DCMAKE_TOOLCHAIN_FILE=%VCPKG_TOOLCHAIN% -DVCPKG_TARGET_TRIPLET=%VCPKG_TRIPLET% -DCMAKE_BUILD_TYPE=Release

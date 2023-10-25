@@ -9,6 +9,9 @@
 
 #include <gtest/gtest.h>
 
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+
 #define CHECK_MAGICS(msg) ASSERT_EQ(msg.header.magic[0], 'R'); \
                         ASSERT_EQ(msg.header.magic[1], 'T'); \
                         ASSERT_EQ(msg.footer.magic[0], 'T'); \
@@ -103,10 +106,12 @@ TEST(NetworkMessage, createEventAck)
 
 TEST(NetworkMessage, serverCreateEventConnectAck)
 {
-    rtype::network::message::server::ConnectAck msg = rtype::network::message::createEvent<rtype::network::message::server::ConnectAck>(42);
-    CHECK_MAGICS(msg)
+    boost::uuids::uuid uuid = boost::uuids::random_generator()();
+
+    rtype::network::message::server::ConnectAck msg = rtype::network::message::createEvent<rtype::network::message::server::ConnectAck>(uuid.data);
+    CHECK_MAGICS(msg);
     ASSERT_EQ(msg.header.type, 0x0000);
-    ASSERT_EQ(msg.playerId, 42);
+    ASSERT_EQ(std::memcmp(uuid.data, msg.playerUuid, 16), 0);
 }
 
 TEST(NetworkMessage, serverCreateEventRoomInformation)
@@ -142,76 +147,86 @@ TEST(NetworkMessage, serverCreateEventGameEnded)
 
 TEST(NetworkMessage, serverCreateEventPlayerSpawn)
 {
-    rtype::network::message::server::PlayerSpawn msg = rtype::network::message::createEvent<rtype::network::message::server::PlayerSpawn>(42, 24, 42);
+    boost::uuids::uuid uuid = boost::uuids::random_generator()();
+    rtype::network::message::server::PlayerSpawn msg = rtype::network::message::createEvent<rtype::network::message::server::PlayerSpawn>(uuid.data, 24, 42);
+
+
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0010);
-    ASSERT_EQ(msg.playerId, 42);
+    ASSERT_EQ(std::memcmp(uuid.data, msg.playerUuid, 16), 0);
     ASSERT_EQ(msg.x, 24);
     ASSERT_EQ(msg.y, 42);
 }
 
 TEST(NetworkMessage, serverCreateEventPlayerDeath)
 {
-    rtype::network::message::server::PlayerDeath msg = rtype::network::message::createEvent<rtype::network::message::server::PlayerDeath>(42, true);
+    boost::uuids::uuid uuid = boost::uuids::random_generator()();
+    rtype::network::message::server::PlayerDeath msg = rtype::network::message::createEvent<rtype::network::message::server::PlayerDeath>(uuid.data, true);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0011);
-    ASSERT_EQ(msg.playerId, 42);
+    ASSERT_EQ(std::memcmp(uuid.data, msg.playerUuid, 16), 0);
     ASSERT_EQ(msg.crashed, true);
 }
 
 TEST(NetworkMessage, serverCreateEventPlayerMovement)
 {
-    rtype::network::message::server::PlayerMovement msg = rtype::network::message::createEvent<rtype::network::message::server::PlayerMovement>(42, 24, 42);
+    boost::uuids::uuid uuid = boost::uuids::random_generator()();
+    rtype::network::message::server::PlayerMovement msg = rtype::network::message::createEvent<rtype::network::message::server::PlayerMovement>(uuid.data, 24, 42);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0012);
-    ASSERT_EQ(msg.playerId, 42);
+    ASSERT_EQ(std::memcmp(uuid.data, msg.playerUuid, 16), 0);
     ASSERT_EQ(msg.x, 24);
     ASSERT_EQ(msg.y, 42);
 }
 
 TEST(NetworkMessage, serverCreateEventPlayerWeaponSwitch)
 {
-    rtype::network::message::server::PlayerWeaponSwitch msg = rtype::network::message::createEvent<rtype::network::message::server::PlayerWeaponSwitch>(42, 667);
+    boost::uuids::uuid uuid = boost::uuids::random_generator()();
+    rtype::network::message::server::PlayerWeaponSwitch msg = rtype::network::message::createEvent<rtype::network::message::server::PlayerWeaponSwitch>(uuid.data, 667);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0013);
-    ASSERT_EQ(msg.playerId, 42);
+    ASSERT_EQ(std::memcmp(uuid.data, msg.playerUuid, 16), 0);
     ASSERT_EQ(msg.weaponType, 667);
 }
 
 TEST(NetworkMessage, serverCreateEventEnemySpawn)
 {
-    rtype::network::message::server::EnemySpawn msg = rtype::network::message::createEvent<rtype::network::message::server::EnemySpawn>(42, 24, 42);
+    boost::uuids::uuid uuid = boost::uuids::random_generator()();
+    rtype::network::message::server::EnemySpawn msg = rtype::network::message::createEvent<rtype::network::message::server::EnemySpawn>(uuid.data, 24, 42);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0020);
-    ASSERT_EQ(msg.enemyId, 42);
+    ASSERT_EQ(std::memcmp(uuid.data, msg.enemyUuid, 16), 0);
     ASSERT_EQ(msg.x, 24);
     ASSERT_EQ(msg.y, 42);
 }
 
 TEST(NetworkMessage, serverCreateEventEnemyDeath)
 {
-    rtype::network::message::server::EnemyDeath msg = rtype::network::message::createEvent<rtype::network::message::server::EnemyDeath>(42);
+    boost::uuids::uuid uuid = boost::uuids::random_generator()();
+    rtype::network::message::server::EnemyDeath msg = rtype::network::message::createEvent<rtype::network::message::server::EnemyDeath>(uuid.data);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0021);
-    ASSERT_EQ(msg.enemyId, 42);
+    ASSERT_EQ(std::memcmp(uuid.data, msg.enemyUuid, 16), 0);
 }
 
 TEST(NetworkMessage, serverCreateEventEnemyMovement)
 {
-    rtype::network::message::server::EnemyMovement msg = rtype::network::message::createEvent<rtype::network::message::server::EnemyMovement>(42, 24, 42);
+    boost::uuids::uuid uuid = boost::uuids::random_generator()();
+    rtype::network::message::server::EnemyMovement msg = rtype::network::message::createEvent<rtype::network::message::server::EnemyMovement>(uuid.data, 24, 42);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0022);
-    ASSERT_EQ(msg.enemyId, 42);
+    ASSERT_EQ(std::memcmp(uuid.data, msg.enemyUuid, 16), 0);
     ASSERT_EQ(msg.x, 24);
     ASSERT_EQ(msg.y, 42);
 }
 
 TEST(NetworkMessage, serverCreateEventBulletShoot)
 {
-    rtype::network::message::server::BulletShoot msg = rtype::network::message::createEvent<rtype::network::message::server::BulletShoot>(42, 24, 42, 24, 42, 1);
+    boost::uuids::uuid uuid = boost::uuids::random_generator()();
+    rtype::network::message::server::BulletShoot msg = rtype::network::message::createEvent<rtype::network::message::server::BulletShoot>(uuid.data, 24, 42, 24, 42, 1);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0030);
-    ASSERT_EQ(msg.bulletId, 42);
+    ASSERT_EQ(std::memcmp(uuid.data, msg.bulletUuid, 16), 0);
     ASSERT_EQ(msg.x, 24);
     ASSERT_EQ(msg.y, 42);
     ASSERT_EQ(msg.xVelocity, 24);
@@ -221,29 +236,34 @@ TEST(NetworkMessage, serverCreateEventBulletShoot)
 
 TEST(NetworkMessage, serverCreateEventBulletPosition)
 {
-    rtype::network::message::server::BulletPosition msg = rtype::network::message::createEvent<rtype::network::message::server::BulletPosition>(42, 24, 42);
+    boost::uuids::uuid uuid = boost::uuids::random_generator()();
+    rtype::network::message::server::BulletPosition msg = rtype::network::message::createEvent<rtype::network::message::server::BulletPosition>(uuid.data, 24, 42);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0031);
-    ASSERT_EQ(msg.bulletId, 42);
+    ASSERT_EQ(std::memcmp(uuid.data, msg.bulletUuid, 16), 0);
     ASSERT_EQ(msg.x, 24);
     ASSERT_EQ(msg.y, 42);
 }
 
 TEST(NetworkMessage, serverCreateEventBulletHit)
 {
-    rtype::network::message::server::BulletHit msg = rtype::network::message::createEvent<rtype::network::message::server::BulletHit>(42, 24);
+    boost::uuids::uuid uuid = boost::uuids::random_generator()();
+    boost::uuids::uuid uuid1 = boost::uuids::random_generator()();
+
+    rtype::network::message::server::BulletHit msg = rtype::network::message::createEvent<rtype::network::message::server::BulletHit>(uuid.data, uuid1.data);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0032);
-    ASSERT_EQ(msg.bulletId, 42);
-    ASSERT_EQ(msg.hitId, 24);
+    ASSERT_EQ(std::memcmp(uuid.data, msg.bulletUuid, 16), 0);
+    ASSERT_EQ(std::memcmp(uuid1.data, msg.hitUuid, 16), 0);
 }
 
 TEST(NetworkMessage, serverCreateEventBulletDespawn)
 {
-    rtype::network::message::server::BulletDespawn msg = rtype::network::message::createEvent<rtype::network::message::server::BulletDespawn>(42);
+    boost::uuids::uuid uuid = boost::uuids::random_generator()();
+    rtype::network::message::server::BulletDespawn msg = rtype::network::message::createEvent<rtype::network::message::server::BulletDespawn>(uuid.data);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0033);
-    ASSERT_EQ(msg.bulletId, 42);
+    ASSERT_EQ(std::memcmp(uuid.data, msg.bulletUuid, 16), 0);
 }
 
 TEST(NetworkMessage, checkMagics)
@@ -361,7 +381,8 @@ TEST(NetworkMessage, ClientCheckIntegrity)
 
 TEST(NetworkMessage, ServerCheckIntegrity)
 {
-    rtype::network::message::server::ConnectAck msg = rtype::network::message::createEvent<rtype::network::message::server::ConnectAck>(42);
+    boost::uuids::uuid uuid = boost::uuids::random_generator()();
+    rtype::network::message::server::ConnectAck msg = rtype::network::message::createEvent<rtype::network::message::server::ConnectAck>(uuid.data);
     char buffer[sizeof(msg)] = {0};
     rtype::network::message::pack(buffer, msg);
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(buffer));
@@ -380,7 +401,8 @@ TEST(NetworkMessage, ClientCheckIntegrityBoostArray)
 
 TEST(NetworkMessage, ServerCheckIntegrityBoostArray)
 {
-    rtype::network::message::server::ConnectAck msg = rtype::network::message::createEvent<rtype::network::message::server::ConnectAck>(42);
+    boost::uuids::uuid uuid = boost::uuids::random_generator()();
+    rtype::network::message::server::ConnectAck msg = rtype::network::message::createEvent<rtype::network::message::server::ConnectAck>(uuid.data);
     boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> buffer = rtype::network::message::pack(msg);
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(buffer.data()));
     ASSERT_TRUE(rtype::network::message::checkFooterMagic(buffer.data() + sizeof(msg) - sizeof(msg.footer)));
@@ -398,7 +420,8 @@ TEST(NetworkMessage, ClientCheckIntegrityFalse)
 
 TEST(NetworkMessage, ServerCheckIntegrityFalse)
 {
-    rtype::network::message::server::ConnectAck msg = rtype::network::message::createEvent<rtype::network::message::server::ConnectAck>(42);
+    boost::uuids::uuid uuid = boost::uuids::random_generator()();
+    rtype::network::message::server::ConnectAck msg = rtype::network::message::createEvent<rtype::network::message::server::ConnectAck>(uuid.data);
     char buffer[sizeof(msg)] = {0};
     rtype::network::message::pack(buffer, msg);
     buffer[0] = 'A';

@@ -84,13 +84,19 @@ private:
         transform.position.x = 1600.0f;
         transform.position.y = 128.0f + (static_cast<float>(std::rand() % (1024 - 128)));
         path.addPoint(-200.0f, transform.position.y);
+        auto& serverID = registry.getComponents<rtype::component::ServerID>()[entity].value();
+        boost::uuids::uuid uuid = boost::uuids::random_generator()();
+        std::copy_n(uuid.data, 16, serverID.uuid);
     }
 
     std::optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>> getSpawnMessage(rtype::ecs::Registry& registry, std::size_t index) const
     {
+        if (!registry.hasComponent<rtype::component::ServerID>(registry.entityFromIndex(index)))
+            return std::nullopt;
+        auto& serverID = registry.getComponents<rtype::component::ServerID>()[index].value();
         if (registry.hasComponent<rtype::tag::Enemy>(registry.entityFromIndex(index))) {
             const auto& transform = registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value();
-            auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemySpawn>(index, transform.position.x, transform.position.y);
+            auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemySpawn>(serverID.uuid, transform.position.x, transform.position.y);
             return std::make_optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>>(rtype::network::message::pack(msg));
         }
         return std::nullopt;
