@@ -506,6 +506,20 @@ namespace rtype::network {
                 NetworkMessageFooter footer;
             };
 
+            struct PlayerLife {
+                PlayerLife(uint8_t _playerUuid[16], u_int16_t _life)
+                    : life(_life)
+                {
+                    std::copy_n(_playerUuid, 16, playerUuid);
+                }
+
+                static const u_int16_t type = 0x0014;
+                NetworkMessageHeader header;
+                uint8_t playerUuid[16];
+                u_int16_t life;
+                NetworkMessageFooter footer;
+            };
+
             struct EnemySpawn {
                 EnemySpawn(uint8_t _enemyUuid[16], float _x, float _y)
                     : x(_x), y(_y)
@@ -618,6 +632,7 @@ namespace rtype::network {
                 {PlayerDeath::type, sizeof(PlayerDeath)},
                 {PlayerMovement::type, sizeof(PlayerMovement)},
                 {PlayerWeaponSwitch::type, sizeof(PlayerWeaponSwitch)},
+                {PlayerLife::type, sizeof(PlayerLife)},
                 {EnemySpawn::type, sizeof(EnemySpawn)},
                 {EnemyDeath::type, sizeof(EnemyDeath)},
                 {EnemyMovement::type, sizeof(EnemyMovement)},

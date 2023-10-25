@@ -103,6 +103,7 @@ This section describes the messages sent by the server to the client.
 | 0x0011 | `network::message::server::PlayerDeath` | `u_int8_t[16] player_id;` <br> `bool crashed;` | Used to indicate that a player died |
 | 0x0012 | `network::message::server::PlayerMovement` | `u_int8_t[16] player_id;` <br> `float x;` <br> `float y;` | Used to indicate that a player moved |
 | 0x0013 | `network::message::server::PlayerWeaponSwitch` | `u_int8_t[16] player_id;` <br> `int16_t weapon_type;` | Used to indicate that a player switched weapon |
+| 0x0014 | `network::message::server::PlayerLife` | `u_int8_t[16] player_id;` <br> `int16_t life;` | Used to indicate that a player's life is updated |
 | 0x0020 | `network::message::server::EnemySpawn` | `u_int8_t[16] enemy_id;` <br> `float x;` <br> `float y;` | Used to indicate that an enemy spawned |
 | 0x0021 | `network::message::server::EnemyDeath` | `u_int8_t[16] enemy_id;` | Used to indicate that an enemy died |
 | 0x0022 | `network::message::server::EnemyMovement` | `u_int8_t[16] enemy_id;` <br> `float x;` <br> `float y;` | Used to indicate that an enemy moved |
@@ -157,6 +158,7 @@ sequenceDiagram
     C->>S: PlayerSwitchWeapon <weapon_type>
     S->>C: PlayerWeaponSwitch <player_id, weapon_type>
     S->>C: PlayerDeath <player_id, crashed>
+    S->>C: PlayerLife <player_id, life>
     Note over C,S: (after player died)
     S->>C: EnemySpawn <enemy_id, x, y>
     Note over C,S: (after enemy spawned)

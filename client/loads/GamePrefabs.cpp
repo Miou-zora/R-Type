@@ -19,6 +19,9 @@
 #include "Speed.hpp"
 #include "Transform.hpp"
 #include "Velocity.hpp"
+#include "Health.hpp"
+#include "Text.hpp"
+#include "Nameable.hpp"
 
 void initGamePrefabs(rtype::ecs::Registry& registry)
 {
@@ -94,6 +97,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
             0.5,
             0)
         .addComponent<rtype::component::Speed>(200)
+        .addComponent<rtype::component::Health>(10)
         .addComponent<rtype::component::Velocity>()
         .addComponent<rtype::component::AllyNumber>(0);
     prefabManagerInstance.createPrefab("AllyProjectile")
@@ -139,6 +143,14 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("enemyExplosion", 5, rtype::utils::Rectangle(129, 1, 32, 32), 5)
         .addComponent<rtype::component::Animation>(enemyExplosionAnimation);
+    prefabManagerInstance.createPrefab("playerLifeText")
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(10, 1000))
+        .addComponent<rtype::component::Text>("Life:", rtype::component::Text::DEFAULT_FONT, 20, 3.f, raylib::WHITE)
+        .addComponent<rtype::component::Nameable>("playerLifeText");
+    prefabManagerInstance.createPrefab("playerLifeVariable")
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(60, 1000))
+        .addComponent<rtype::component::Text>("10", rtype::component::Text::DEFAULT_FONT, 20, 3.f, raylib::WHITE)
+        .addComponent<rtype::component::Nameable>("playerLifeVariable");
 
     rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
 
@@ -147,4 +159,6 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     sceneManager.addPrefabToScene("bigPlanet", rtype::utils::Scene::GAME);
     sceneManager.addPrefabToScene("planetRing", rtype::utils::Scene::GAME);
     sceneManager.addPrefabToScene("farPlanets", rtype::utils::Scene::GAME);
+    sceneManager.addPrefabToScene("playerLifeText", rtype::utils::Scene::GAME);
+    sceneManager.addPrefabToScene("playerLifeVariable", rtype::utils::Scene::GAME);
 }

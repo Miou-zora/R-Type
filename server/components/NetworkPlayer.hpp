@@ -6,6 +6,7 @@
 #include "ECS.hpp"
 #include "NetworkMessage.hpp"
 #include "NetworkMessageQueue.hpp"
+#include <boost/asio.hpp>
 
 namespace rtype::component {
 /**

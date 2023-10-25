@@ -44,7 +44,6 @@ int main(int ac, char* av[])
     reg.addSystem<>(rtype::system::Draw());
     reg.addSystem<rtype::component::Selectable, rtype::component::Transform, rtype::component::Collider>(rtype::system::Selection());
     reg.addSystem<rtype::component::Selectable, rtype::component::TextInputable, rtype::component::Text>(rtype::system::TextInput());
-    reg.addSystem<rtype::component::DebugColliderDisplay, rtype::component::Transform, rtype::component::Collider>(rtype::system::DebugColliderDisplayer());
     reg.addSystem<rtype::component::Clickable, rtype::component::Transform, rtype::component::Collider>(rtype::system::Click());
     reg.addSystem<rtype::component::Drawable, rtype::component::Scrollable>(rtype::system::Scroll());
     reg.addSystem<>(rtype::system::NetworkOutboxHandler());
@@ -75,6 +74,7 @@ int main(int ac, char* av[])
     reg.registerComponent<rtype::component::Speed>();
     reg.registerComponent<rtype::component::InputShooter>();
     reg.registerComponent<rtype::component::Animation>();
+    reg.registerComponent<rtype::component::Health>();
 
     rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
 

@@ -17,6 +17,7 @@
 #include "ServerID.hpp"
 #include "Text.hpp"
 #include "Transform.hpp"
+#include "Health.hpp"
 
 namespace rtype::system {
 /**
@@ -92,6 +93,10 @@ public:
                 break;
             case network::message::server::BulletDespawn::type:
                 handleBulletDespawn(registry, message);
+                sendAck(header.id);
+                break;
+            case network::message::server::PlayerLife::type:
+                handlePlayerLife(registry, message);
                 sendAck(header.id);
                 break;
             default:
@@ -370,6 +375,29 @@ private:
             if (memcmp(registry.getComponents<rtype::component::ServerID>()[index]->uuid, bulletDespawn.bulletUuid, sizeof(bulletDespawn.bulletUuid)) == 0) {
                 registry.killEntity(registry.entityFromIndex(index));
                 break;
+            }
+        }
+    }
+
+    /**
+     * @brief Handles the player life message when a player loses life
+     *
+     * @param registry
+     * @param message the message received from the server
+     */
+    void handlePlayerLife(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
+    {
+        network::message::server::PlayerLife playerLife = reinterpret_cast<network::message::server::PlayerLife&>(message[0]);
+        for (auto&& [index, health, serverId] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::Health>(), registry.getComponents<rtype::component::ServerID>())) {
+            if (std::memcmp(serverId.value().uuid, playerLife.playerUuid, 16) == 0) {
+                health.value().value = playerLife.life;
+                // This part shouldn't be here, but I don't know how to do it properly for now
+                for (auto&& [text, name]: rtype::ecs::containers::Zipper(registry.getComponents<rtype::component::Text>(), registry.getComponents<rtype::component::Nameable>()))
+                {
+                    if (name.value().name == "playerLifeVariable") {
+                        text.value().text = std::to_string(playerLife.life);
+                    }
+                }
             }
         }
     }

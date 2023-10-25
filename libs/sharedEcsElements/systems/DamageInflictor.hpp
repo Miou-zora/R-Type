@@ -13,6 +13,12 @@
 #include "Health.hpp"
 #include "Ally.hpp"
 #include "Enemy.hpp"
+#include "NetworkPlayer.hpp"
+#include "GameRoom.hpp"
+#include "EnemyInformation.hpp"
+#include "SingletonWrapper.hpp"
+#include "EventManager.hpp"
+#include "DamageInfliction.hpp"
 
 namespace rtype::system
 {
@@ -46,6 +52,7 @@ namespace rtype::system
                             (registry.hasComponent<rtype::tag::Enemy>(entity) && registry.hasComponent<rtype::tag::Enemy>(registry.entityFromIndex(index))))
                             ) {
                             registry.getComponents<rtype::component::Health>()[entity].value().value -= damager.value().value;
+                            rtype::utils::SingletonWrapper<rtype::utils::EventManager>::getInstance().addEvent<rtype::event::DamageInfliction>({entity, damager.value().value, registry.getComponents<rtype::component::Health>()[entity].value().value});
                         }
                     }
                 }

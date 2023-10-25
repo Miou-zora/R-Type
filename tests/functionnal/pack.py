@@ -43,6 +43,7 @@ class Server(Packer):
         0x0011: _HEADER_FOOTER_FORMAT.format(data='H?'),
         0x0012: _HEADER_FOOTER_FORMAT.format(data='Hff'),
         0x0013: _HEADER_FOOTER_FORMAT.format(data='Hh'),
+        0x0014: _HEADER_FOOTER_FORMAT.format(data='HH'),
         0x0020: _HEADER_FOOTER_FORMAT.format(data='Hff'),
         0x0021: _HEADER_FOOTER_FORMAT.format(data='H'),
         0x0022: _HEADER_FOOTER_FORMAT.format(data='Hff'),
@@ -60,6 +61,7 @@ class Server(Packer):
     PlayerDeath: int = 0x0011
     PlayerMovement: int = 0x0012
     PlayerWeaponSwitch: int = 0x0013
+    PlayerLife: int = 0x0014
     EnemySpawn: int = 0x0020
     EnemyDeath: int = 0x0021
     EnemyMovement: int = 0x0022

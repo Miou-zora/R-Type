@@ -41,6 +41,8 @@
 #include "Transform.hpp"
 #include "Velocity.hpp"
 #include "VelocityApplicator.hpp"
+#include "ClearEvents.hpp"
+#include "NetworkEventDamageInfliction.hpp"
 
 #include "components/Path.hpp"
 #include "components/Spawner.hpp"
@@ -81,6 +83,7 @@ void addSystems(rtype::ecs::Registry& reg)
     reg.addSystem<rtype::component::EnemyInformation, rtype::component::Path>(rtype::system::EnemyDespawner());
     reg.addSystem<rtype::component::Collider, rtype::component::Transform>(rtype::system::GameRoomCollision());
     reg.addSystem<rtype::component::Damage, rtype::component::Collider>(rtype::system::DamageInflictor());
+    reg.addSystem(rtype::system::NetworkEventDamageInfliction());
     reg.addSystem<rtype::component::Transform, rtype::component::Velocity, rtype::component::Path>(rtype::system::Path());
     reg.addSystem<rtype::component::Spawner>(rtype::system::ServerSpawner());
     reg.addSystem<rtype::component::GameRoom>(rtype::system::RoomCleanup());
@@ -88,6 +91,7 @@ void addSystems(rtype::ecs::Registry& reg)
     reg.addSystem<rtype::component::NetworkPlayer>(rtype::system::NetworkServerTickUpdater());
     reg.addSystem<rtype::component::Health>(rtype::system::ServerDeath());
     reg.addSystem<rtype::component::NetworkPlayer, rtype::component::GameRoom>(rtype::system::NetworkPlayerDisconnection(std::chrono::milliseconds(10000)));
+    reg.addSystem(rtype::system::ClearEvents());
 }
 
 int main(int ac, char* av[])
