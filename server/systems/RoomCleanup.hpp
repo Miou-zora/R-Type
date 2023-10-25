@@ -4,6 +4,8 @@
 #include "GameRoom.hpp"
 #include "NetworkPlayer.hpp"
 
+#include <set>
+
 namespace rtype::system {
 /**
  * @brief RoomCleanup system used to clean up empty game rooms
@@ -16,10 +18,17 @@ public:
     void operator()(ecs::Registry& registry,
         ecs::SparseArray<rtype::component::GameRoom>& gameRooms) const
     {
+        std::set<u_int16_t> gameRoomsToKill = {};
+
         for (auto&& [index, gameRoom] : ecs::containers::IndexedZipper(gameRooms)) {
             if (isGameRoomEmpty(registry, gameRoom.value())) {
-                deleteEntitiesWithSameGameRoomId(registry, gameRoom.value());
+                gameRoomsToKill.emplace(gameRoom.value().id);
             }
+        }
+        for (auto&& gameRoomId : gameRoomsToKill) {
+            rtype::component::GameRoom gameRoom(gameRoomId);
+            std::cerr << "RoomCleanup: deleting empty room " << gameRoom.id << std::endl;
+            deleteEntitiesWithSameGameRoomId(registry, gameRoom);
         }
     }
 
