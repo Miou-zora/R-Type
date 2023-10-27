@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <iostream>
+
 #include "Client.hpp"
 #include "ECS.hpp"
 
@@ -27,7 +29,7 @@ public:
             boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> message = network::Client::getInstance().getOutbox()->top();
             std::size_t msgSize = rtype::network::message::client::getMessageSize(message);
             if (packetSize + msgSize > rtype::network::message::MAX_PACKET_SIZE) {
-                sendBuffers(*network::Client::getInstance().getEndpoint(), packet, packetSize);
+                sendClientBuffers(*network::Client::getInstance().getEndpoint(), packet, packetSize);
                 packetSize = 0;
                 packet.fill(0);
             }
@@ -36,17 +38,22 @@ public:
             network::Client::getInstance().getOutbox()->pop();
         }
         if (packetSize > 0) {
-            sendBuffers(*network::Client::getInstance().getEndpoint(), packet, packetSize);
+            sendClientBuffers(*network::Client::getInstance().getEndpoint(), packet, packetSize);
         }
     }
 
 private:
-    void sendBuffers(boost::asio::ip::udp::endpoint &endpoint, const boost::array<char, rtype::network::message::MAX_PACKET_SIZE> &buffer, std::size_t bufferSize) const
+    void sendClientBuffers(boost::asio::ip::udp::endpoint &endpoint, const boost::array<char, rtype::network::message::MAX_PACKET_SIZE> &buffer, std::size_t bufferSize) const
     {
-        network::Client::getInstance().getSocket()->async_send_to(boost::asio::buffer(buffer, bufferSize),
-        *network::Client::getInstance().getEndpoint(),
-            boost::bind(&network::Client::handleSend, &network::Client::getInstance(), boost::asio::placeholders::error,
-                boost::asio::placeholders::bytes_transferred));
+        try {
+            boost::array<char, rtype::network::message::MAX_PACKET_SIZE> compressedBuffer;
+            std::size_t compressedSize = rtype::network::message::compressBuffer(buffer, compressedBuffer, bufferSize);
+            network::Client::getInstance().getSocket()->async_send_to(boost::asio::buffer(compressedBuffer, compressedSize), endpoint,
+                boost::bind(&network::Client::handleSend, &network::Client::getInstance(), boost::asio::placeholders::error,
+                    boost::asio::placeholders::bytes_transferred));
+        } catch (const std::exception &e) {
+            std::cerr << "NetworkOutboxHandler: " << e.what() << std::endl;
+        }
     }
 };
 }

@@ -67,9 +67,11 @@ void Client::handleReceive(const boost::system::error_code& error, std::size_t b
 void Client::handleConnect(const boost::system::error_code& error)
 {
     if (!error) {
-        network::message::client::Connect message = network::message::createEvent<network::message::client::Connect>();
-        boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> packed = network::message::pack<network::message::client::Connect>(message);
-        m_socket->async_send_to(boost::asio::buffer(packed, sizeof(network::message::client::Connect)), *m_endpoint,
+        auto message = network::message::createEvent<network::message::client::Connect>();
+        const auto packed = network::message::pack<network::message::client::Connect>(message);
+        boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> compressedBuffer;
+        std::size_t compressedSize = rtype::network::message::compressBuffer<rtype::network::message::MAX_MESSAGE_SIZE>(packed, compressedBuffer, sizeof(network::message::client::Disconnect));
+        m_socket->async_send_to(boost::asio::buffer(compressedBuffer, compressedSize), *m_endpoint,
             boost::bind(&Client::handleHello, this, boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
     } else {
@@ -80,9 +82,11 @@ void Client::handleConnect(const boost::system::error_code& error)
 void Client::handleDisconnect(const boost::system::error_code& error)
 {
     if (!error) {
-        network::message::client::Disconnect message = network::message::createEvent<network::message::client::Disconnect>();
-        boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> packed = network::message::pack<network::message::client::Disconnect>(message);
-        m_socket->async_send_to(boost::asio::buffer(packed, sizeof(network::message::client::Disconnect)), *m_endpoint,
+        auto message = network::message::createEvent<network::message::client::Disconnect>();
+        const auto packed = network::message::pack<network::message::client::Disconnect>(message);
+        boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> compressedBuffer;
+        std::size_t compressedSize = rtype::network::message::compressBuffer<rtype::network::message::MAX_MESSAGE_SIZE>(packed, compressedBuffer, sizeof(network::message::client::Disconnect));
+        m_socket->async_send_to(boost::asio::buffer(compressedBuffer, compressedSize), *m_endpoint,
             boost::bind(&Client::handleSend, this, boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
     } else {

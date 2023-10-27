@@ -17,6 +17,10 @@
 #include <boost/uuid/uuid.hpp>
 
 #include <boost/array.hpp>
+#include <boost/crc.hpp>
+namespace zstd {
+    #include <zstd.h>
+}
 
 #ifdef _WIN32
     typedef uint8_t u_int8_t;
@@ -45,10 +49,6 @@ namespace rtype::network {
             u_int16_t type;
             u_int64_t id;
         };
-
-        struct NetworkMessageFooter {
-            char magic[2];
-        };
         #pragma pack(pop)
 
         /**
@@ -65,7 +65,6 @@ namespace rtype::network {
             std::memcpy(message.header.magic, HEADER_MAGIC, sizeof(HEADER_MAGIC));
             message.header.type = T::type;
             message.header.id = g_packetId++;
-            std::memcpy(message.footer.magic, FOOTER_MAGIC, sizeof(FOOTER_MAGIC));
             return (message);
         }
 
@@ -77,16 +76,6 @@ namespace rtype::network {
         inline bool checkHeaderMagic(const char *buffer)
         {
             return std::memcmp(buffer, HEADER_MAGIC, sizeof(HEADER_MAGIC)) == 0;
-        }
-
-        /**
-         * @brief Check if the footer magic is correct from a raw byte buffer
-         * @param buffer The raw byte buffer
-         * @return true The footer magic is correct
-        */
-        inline bool checkFooterMagic(const char *buffer)
-        {
-            return std::memcmp(buffer, FOOTER_MAGIC, sizeof(FOOTER_MAGIC)) == 0;
         }
 
         /**
@@ -178,10 +167,7 @@ namespace rtype::network {
         {
             std::size_t size = getMessageSize(data, lookup);
             auto *header = reinterpret_cast<const NetworkMessageHeader *>(data);
-            auto *footer = reinterpret_cast<const NetworkMessageFooter *>(data + size - sizeof(NetworkMessageFooter));
             if (checkHeaderMagic(header->magic) == false)
-                return false;
-            if (checkFooterMagic(footer->magic) == false)
                 return false;
             return true;
         }
@@ -207,7 +193,7 @@ namespace rtype::network {
         {
             std::vector<boost::array<char, MAX_MESSAGE_SIZE>> messages;
 
-            for (std::size_t i = 0; i < array.size() - sizeof(NetworkMessageHeader) - sizeof(NetworkMessageFooter); i++) {
+            for (std::size_t i = 0; i < array.size() - sizeof(NetworkMessageHeader); i++) {
                 auto header = reinterpret_cast<const NetworkMessageHeader *>(&array[i]);
                 if (checkHeaderMagic(header->magic) == false)
                     continue;
@@ -219,14 +205,47 @@ namespace rtype::network {
                 }
                 if (i + estimatedMsgSize > array.size())
                     break;
-                auto footer = reinterpret_cast<const NetworkMessageFooter *>(&array[i + estimatedMsgSize - sizeof(NetworkMessageFooter)]);
-                if (checkFooterMagic(footer->magic) == false)
-                    continue;
                 messages.emplace_back();
                 std::memcpy(messages.back().data(), &array[i], estimatedMsgSize);
                 i += estimatedMsgSize - 1;
             }
             return (messages);
+        }
+
+        /**
+         * @brief Compress a message
+         * @param buffer The buffer to compress
+         * @param compressedBuffer The compressed buffer
+         * @param bufferSize The size of the buffer
+         * @return std::size_t The size of the compressed buffer
+         * @throw std::runtime_error If the compression failed
+        */
+        template<std::size_t N = MAX_PACKET_SIZE>
+        std::size_t compressBuffer(const boost::array<char, N> &buffer, boost::array<char, N> &compressedBuffer, std::size_t bufferSize)
+        {
+            std::size_t compressedSize = zstd::ZSTD_compress(compressedBuffer.data(), N, buffer.data(), bufferSize, 1);
+            if (zstd::ZSTD_isError(compressedSize)) {
+                throw std::runtime_error(zstd::ZSTD_getErrorName(compressedSize));
+            }
+            return compressedSize;
+        }
+
+        /** 
+         * @brief Decompress a message
+         * @param buffer The buffer to decompress
+         * @param decompressedBuffer The decompressed buffer
+         * @param bufferSize The size of the buffer
+         * @return std::size_t The size of the decompressed buffer
+         * @throw std::runtime_error If the decompression failed
+        */
+        template<std::size_t N = MAX_PACKET_SIZE>
+        std::size_t decompressBuffer(const boost::array<char, N> &buffer, boost::array<char, N> &decompressedBuffer, std::size_t bufferSize)
+        {
+            std::size_t decompressedSize = zstd::ZSTD_decompress(decompressedBuffer.data(), N, buffer.data(), bufferSize);
+            if (zstd::ZSTD_isError(decompressedSize)) {
+                throw std::runtime_error(zstd::ZSTD_getErrorName(decompressedSize));
+            }
+            return decompressedSize;
         }
 
         namespace client {
@@ -236,7 +255,6 @@ namespace rtype::network {
 
                 static const u_int16_t type = 0x0000;
                 NetworkMessageHeader header;
-                NetworkMessageFooter footer;
             };
 
             struct Disconnect {
@@ -244,7 +262,6 @@ namespace rtype::network {
 
                 static const u_int16_t type = 0x0001;
                 NetworkMessageHeader header;
-                NetworkMessageFooter footer;
             };
 
             struct ChooseRoom {
@@ -256,7 +273,6 @@ namespace rtype::network {
                 static const u_int16_t type = 0x0002;
                 NetworkMessageHeader header;
                 u_int16_t roomId;
-                NetworkMessageFooter footer;
             };
 
             struct ChooseLevel {
@@ -268,7 +284,6 @@ namespace rtype::network {
                 static const u_int16_t type = 0x0003;
                 NetworkMessageHeader header;
                 u_int16_t levelId;
-                NetworkMessageFooter footer;
             };
 
             struct StartGame {
@@ -276,7 +291,7 @@ namespace rtype::network {
 
                 static const u_int16_t type = 0x0004;
                 NetworkMessageHeader header;
-                NetworkMessageFooter footer;
+                
             };
 
             struct CreateRoom {
@@ -284,7 +299,6 @@ namespace rtype::network {
 
                 static const u_int16_t type = 0x0005;
                 NetworkMessageHeader header;
-                NetworkMessageFooter footer;
             };
 
             struct LeaveRoom {
@@ -292,7 +306,7 @@ namespace rtype::network {
 
                 static const u_int16_t type = 0x0006;
                 NetworkMessageHeader header;
-                NetworkMessageFooter footer;
+                
             };
 
             struct PlayerMovement {
@@ -307,7 +321,6 @@ namespace rtype::network {
                 float x;
                 float y;
                 bool keys_pressed[4];
-                NetworkMessageFooter footer;
             };
 
             struct PlayerShoot {
@@ -315,7 +328,6 @@ namespace rtype::network {
 
                 static const u_int16_t type = 0x0011;
                 NetworkMessageHeader header;
-                NetworkMessageFooter footer;
             };
 
             struct PlayerReload {
@@ -323,7 +335,6 @@ namespace rtype::network {
 
                 static const u_int16_t type = 0x0012;
                 NetworkMessageHeader header;
-                NetworkMessageFooter footer;
             };
 
             struct PlayerSwitchWeapon {
@@ -335,7 +346,6 @@ namespace rtype::network {
                 static const u_int16_t type = 0x0013;
                 NetworkMessageHeader header;
                 int16_t weaponType;
-                NetworkMessageFooter footer;
             };
 
             struct Ack {
@@ -347,7 +357,6 @@ namespace rtype::network {
                 static const u_int16_t type = 0xFF00;
                 NetworkMessageHeader header;
                 u_int64_t msgId;
-                NetworkMessageFooter footer;
             };
             #pragma pack(pop)
 
@@ -404,7 +413,6 @@ namespace rtype::network {
                 static const u_int16_t type = 0x0000;
                 NetworkMessageHeader header;
                 uint8_t playerUuid[16];
-                NetworkMessageFooter footer;
             };
 
             struct RoomInformation {
@@ -417,7 +425,6 @@ namespace rtype::network {
                 NetworkMessageHeader header;
                 u_int16_t roomId;
                 u_int16_t playersCount;
-                NetworkMessageFooter footer;
             };
 
             struct LevelInformation {
@@ -429,7 +436,6 @@ namespace rtype::network {
                 static const u_int16_t type = 0x0002;
                 NetworkMessageHeader header;
                 u_int16_t levelId;
-                NetworkMessageFooter footer;
             };
 
             struct GameStarted {
@@ -437,7 +443,6 @@ namespace rtype::network {
 
                 static const u_int16_t type = 0x0003;
                 NetworkMessageHeader header;
-                NetworkMessageFooter footer;
             };
 
             struct GameEnded {
@@ -445,7 +450,6 @@ namespace rtype::network {
 
                 static const u_int16_t type = 0x0004;
                 NetworkMessageHeader header;
-                NetworkMessageFooter footer;
             };
 
             struct PlayerSpawn {
@@ -460,7 +464,6 @@ namespace rtype::network {
                 uint8_t playerUuid[16];
                 float x;
                 float y;
-                NetworkMessageFooter footer;
             };
 
             struct PlayerDeath {
@@ -474,7 +477,6 @@ namespace rtype::network {
                 NetworkMessageHeader header;
                 uint8_t playerUuid[16];
                 bool crashed;
-                NetworkMessageFooter footer;
             };
 
             struct PlayerMovement {
@@ -489,7 +491,6 @@ namespace rtype::network {
                 uint8_t playerUuid[16];
                 float x;
                 float y;
-                NetworkMessageFooter footer;
             };
 
             struct PlayerWeaponSwitch {
@@ -503,7 +504,6 @@ namespace rtype::network {
                 NetworkMessageHeader header;
                 uint8_t playerUuid[16];
                 int16_t weaponType;
-                NetworkMessageFooter footer;
             };
 
             struct PlayerLife {
@@ -517,7 +517,6 @@ namespace rtype::network {
                 NetworkMessageHeader header;
                 uint8_t playerUuid[16];
                 u_int16_t life;
-                NetworkMessageFooter footer;
             };
 
             struct EnemySpawn {
@@ -532,7 +531,6 @@ namespace rtype::network {
                 uint8_t enemyUuid[16];
                 float x;
                 float y;
-                NetworkMessageFooter footer;
             };
 
             struct EnemyDeath {
@@ -544,7 +542,6 @@ namespace rtype::network {
                 static const u_int16_t type = 0x0021;
                 NetworkMessageHeader header;
                 uint8_t enemyUuid[16];
-                NetworkMessageFooter footer;
             };
 
             struct EnemyMovement {
@@ -559,7 +556,6 @@ namespace rtype::network {
                 uint8_t enemyUuid[16];
                 float x;
                 float y;
-                NetworkMessageFooter footer;
             };
 
             struct BulletShoot {
@@ -577,7 +573,6 @@ namespace rtype::network {
                 float xVelocity;
                 float yVelocity;
                 u_int8_t team;
-                NetworkMessageFooter footer;
             };
 
             struct BulletPosition {
@@ -592,7 +587,6 @@ namespace rtype::network {
                 uint8_t bulletUuid[16];
                 float x;
                 float y;
-                NetworkMessageFooter footer;
             };
 
             struct BulletHit {
@@ -606,7 +600,6 @@ namespace rtype::network {
                 NetworkMessageHeader header;
                 uint8_t bulletUuid[16];
                 uint8_t hitUuid[16];
-                NetworkMessageFooter footer;
             };
 
             struct BulletDespawn {
@@ -618,7 +611,6 @@ namespace rtype::network {
                 static const u_int16_t type = 0x0033;
                 NetworkMessageHeader header;
                 uint8_t bulletUuid[16];
-                NetworkMessageFooter footer;
             };
             #pragma pack(pop)
 

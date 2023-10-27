@@ -66,6 +66,7 @@ target_link_libraries(${EXECUTABLE_NAME} PRIVATE assets::rc)
 if (WIN32)
     target_link_libraries(${EXECUTABLE_NAME} PRIVATE winmm)
 endif (WIN32)
+target_link_libraries(${EXECUTABLE_NAME} PRIVATE $<IF:$<TARGET_EXISTS:zstd::libzstd_shared>,zstd::libzstd_shared,zstd::libzstd_static>)
 
 target_include_directories(${EXECUTABLE_NAME} PRIVATE include)
 

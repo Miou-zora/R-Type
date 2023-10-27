@@ -13,9 +13,7 @@
 #include <boost/uuid/uuid_generators.hpp>
 
 #define CHECK_MAGICS(msg) ASSERT_EQ(msg.header.magic[0], 'R'); \
-                        ASSERT_EQ(msg.header.magic[1], 'T'); \
-                        ASSERT_EQ(msg.footer.magic[0], 'T'); \
-                        ASSERT_EQ(msg.footer.magic[1], 'R');
+                        ASSERT_EQ(msg.header.magic[1], 'T');
 
 TEST(NetworkMessage, createEventConnect)
 {
@@ -270,7 +268,6 @@ TEST(NetworkMessage, checkMagics)
 {
     rtype::network::message::client::Connect msg = rtype::network::message::createEvent<rtype::network::message::client::Connect>();
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(reinterpret_cast<char *>(&msg.header)));
-    ASSERT_TRUE(rtype::network::message::checkFooterMagic(reinterpret_cast<char *>(&msg.footer)));
 }
 
 TEST(NetworkMessage, MessagePacking)
@@ -279,7 +276,6 @@ TEST(NetworkMessage, MessagePacking)
     char buffer[sizeof(msg)] = {0};
     rtype::network::message::pack(buffer, msg);
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(buffer));
-    ASSERT_TRUE(rtype::network::message::checkFooterMagic(buffer + sizeof(msg) - sizeof(msg.footer)));
 }
 
 TEST(NetworkMessage, MessagePackingBoostArray)
@@ -287,7 +283,6 @@ TEST(NetworkMessage, MessagePackingBoostArray)
     rtype::network::message::client::Connect msg = rtype::network::message::createEvent<rtype::network::message::client::Connect>();
     boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> buffer = rtype::network::message::pack(msg);
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(buffer.data()));
-    ASSERT_TRUE(rtype::network::message::checkFooterMagic(buffer.data() + sizeof(msg) - sizeof(msg.footer)));
 }
 
 TEST(NetworkMessage, MessagePackingDataCheck)
@@ -298,7 +293,6 @@ TEST(NetworkMessage, MessagePackingDataCheck)
     char buffer[sizeof(msg)] = {0};
     rtype::network::message::pack(buffer, msg);
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(buffer));
-    ASSERT_TRUE(rtype::network::message::checkFooterMagic(buffer + sizeof(msg) - sizeof(msg.footer)));
     // not a real unpack here because we don't want to test the unpack function
     rtype::network::message::client::PlayerMovement *unpackLike 
     = reinterpret_cast<rtype::network::message::client::PlayerMovement *>(buffer);
@@ -320,7 +314,6 @@ TEST(NetworkMessage, MessagePackingDataCheckBoostArray)
     rtype::network::message::createEvent<rtype::network::message::client::PlayerMovement>(42, 24, keys_pressed);
     boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> buffer = rtype::network::message::pack(msg);
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(buffer.data()));
-    ASSERT_TRUE(rtype::network::message::checkFooterMagic(buffer.data() + sizeof(msg) - sizeof(msg.footer)));
     // not a real unpack here because we don't want to test the unpack function
     rtype::network::message::client::PlayerMovement *unpackLike 
     = reinterpret_cast<rtype::network::message::client::PlayerMovement *>(buffer.data());
@@ -341,7 +334,6 @@ TEST(NetworkMessage, MessagePackUnpackSimple)
     char buffer[sizeof(msg)] = {0};
     rtype::network::message::pack(buffer, msg);
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(buffer));
-    ASSERT_TRUE(rtype::network::message::checkFooterMagic(buffer + sizeof(msg) - sizeof(msg.footer)));
     rtype::network::message::client::Connect unpacked = rtype::network::message::unpack<rtype::network::message::client::Connect>(buffer);
     ASSERT_EQ(unpacked.header.magic[0], 'R');
     ASSERT_EQ(unpacked.header.magic[1], 'T');
@@ -356,7 +348,6 @@ TEST(NetworkMessage, MessagePackUnpackData)
     char buffer[sizeof(msg)] = {0};
     rtype::network::message::pack(buffer, msg);
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(buffer));
-    ASSERT_TRUE(rtype::network::message::checkFooterMagic(buffer + sizeof(msg) - sizeof(msg.footer)));
     rtype::network::message::client::PlayerMovement unpacked = rtype::network::message::unpack<rtype::network::message::client::PlayerMovement>(buffer);
     ASSERT_EQ(unpacked.header.magic[0], 'R');
     ASSERT_EQ(unpacked.header.magic[1], 'T');
@@ -375,7 +366,6 @@ TEST(NetworkMessage, ClientCheckIntegrity)
     char buffer[sizeof(msg)] = {0};
     rtype::network::message::pack(buffer, msg);
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(buffer));
-    ASSERT_TRUE(rtype::network::message::checkFooterMagic(buffer + sizeof(msg) - sizeof(msg.footer)));
     ASSERT_TRUE(rtype::network::message::client::checkMessageIntegrity(buffer));
 }
 
@@ -386,7 +376,6 @@ TEST(NetworkMessage, ServerCheckIntegrity)
     char buffer[sizeof(msg)] = {0};
     rtype::network::message::pack(buffer, msg);
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(buffer));
-    ASSERT_TRUE(rtype::network::message::checkFooterMagic(buffer + sizeof(msg) - sizeof(msg.footer)));
     ASSERT_TRUE(rtype::network::message::server::checkMessageIntegrity(buffer));
 }
 
@@ -395,7 +384,6 @@ TEST(NetworkMessage, ClientCheckIntegrityBoostArray)
     rtype::network::message::client::Connect msg = rtype::network::message::createEvent<rtype::network::message::client::Connect>();
     boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> buffer = rtype::network::message::pack(msg);
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(buffer.data()));
-    ASSERT_TRUE(rtype::network::message::checkFooterMagic(buffer.data() + sizeof(msg) - sizeof(msg.footer)));
     ASSERT_TRUE(rtype::network::message::client::checkMessageIntegrity(buffer.data()));
 }
 
@@ -405,7 +393,6 @@ TEST(NetworkMessage, ServerCheckIntegrityBoostArray)
     rtype::network::message::server::ConnectAck msg = rtype::network::message::createEvent<rtype::network::message::server::ConnectAck>(uuid.data);
     boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> buffer = rtype::network::message::pack(msg);
     ASSERT_TRUE(rtype::network::message::checkHeaderMagic(buffer.data()));
-    ASSERT_TRUE(rtype::network::message::checkFooterMagic(buffer.data() + sizeof(msg) - sizeof(msg.footer)));
     ASSERT_TRUE(rtype::network::message::server::checkMessageIntegrity(buffer.data()));
 }
 

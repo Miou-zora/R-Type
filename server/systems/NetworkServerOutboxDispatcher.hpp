@@ -47,9 +47,16 @@ public:
 private:
     void sendBuffers(ecs::Registry& registry, boost::asio::ip::udp::endpoint &endpoint, const boost::array<char, rtype::network::message::MAX_PACKET_SIZE> &buffer, std::size_t bufferSize) const
     {
-        rtype::network::NetworkServer::getInstance().getSocket().async_send_to(boost::asio::buffer(buffer, bufferSize), endpoint,
+        try {
+            boost::array<char, rtype::network::message::MAX_PACKET_SIZE> compressedBuffer;
+            compressedBuffer.fill(0);
+            std::size_t compressedSize = rtype::network::message::compressBuffer(buffer, compressedBuffer, bufferSize);
+            rtype::network::NetworkServer::getInstance().getSocket().async_send_to(boost::asio::buffer(compressedBuffer, compressedSize), endpoint,
             boost::bind(&rtype::network::NetworkServer::handleSend, &rtype::network::NetworkServer::getInstance(),
                 boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+        } catch (const std::exception& e) {
+            std::cerr << "NetworkServerOutboxDispatcher: " << e.what() << std::endl;
+        }
     }
 };
 }
