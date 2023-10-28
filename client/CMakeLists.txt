@@ -34,6 +34,7 @@ cmrc_add_resource_library(
     assets/textures/layers/parallax-space-ring-planet.png
     assets/textures/ally_bullets.png
     assets/textures/r-typesheet44.png
+    assets/textures/r-typesheet14.png
 )
 
 set(SRC)

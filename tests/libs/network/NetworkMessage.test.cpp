@@ -190,12 +190,13 @@ TEST(NetworkMessage, serverCreateEventPlayerWeaponSwitch)
 TEST(NetworkMessage, serverCreateEventEnemySpawn)
 {
     boost::uuids::uuid uuid = boost::uuids::random_generator()();
-    rtype::network::message::server::EnemySpawn msg = rtype::network::message::createEvent<rtype::network::message::server::EnemySpawn>(uuid.data, 24, 42);
+    rtype::network::message::server::EnemySpawn msg = rtype::network::message::createEvent<rtype::network::message::server::EnemySpawn>(uuid.data, 24, 42, 84);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0020);
     ASSERT_EQ(std::memcmp(uuid.data, msg.enemyUuid, 16), 0);
     ASSERT_EQ(msg.x, 24);
     ASSERT_EQ(msg.y, 42);
+    ASSERT_EQ(msg.enemytype, 84);
 }
 
 TEST(NetworkMessage, serverCreateEventEnemyDeath)

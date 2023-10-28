@@ -520,8 +520,8 @@ namespace rtype::network {
             };
 
             struct EnemySpawn {
-                EnemySpawn(uint8_t _enemyUuid[16], float _x, float _y)
-                    : x(_x), y(_y)
+                EnemySpawn(uint8_t _enemyUuid[16], float _x, float _y, u_int8_t _enemytype)
+                    : x(_x), y(_y), enemytype(_enemytype)
                 {
                     std::copy_n(_enemyUuid, 16, enemyUuid);
                 }
@@ -531,6 +531,7 @@ namespace rtype::network {
                 uint8_t enemyUuid[16];
                 float x;
                 float y;
+                u_int8_t enemytype;
             };
 
             struct EnemyDeath {

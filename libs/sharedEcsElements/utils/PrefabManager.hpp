@@ -46,14 +46,14 @@ namespace rtype::utils
         ecs::Prefab &addComponent(const std::string &name, Args... args)
         {
             if (m_prefabs.find(name) == m_prefabs.end())
-                throw ecs::OutOfRange("Prefab not found");
+                throw ecs::OutOfRange("Prefab not found: " + name);
             return (m_prefabs.at(name)->addComponent<Component>(args...));
         }
 
         ecs::Entity instantiate(const std::string &name, ecs::Registry &registry) const
         {
             if (m_prefabs.find(name) == m_prefabs.end())
-                throw ecs::OutOfRange("Prefab not found");
+                throw ecs::OutOfRange("Prefab not found: " + name);
             return (m_prefabs.at(name)->instantiate(registry));
         }
 

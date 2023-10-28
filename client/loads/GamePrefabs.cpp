@@ -22,6 +22,7 @@
 #include "Health.hpp"
 #include "Text.hpp"
 #include "Nameable.hpp"
+#include "PrefabsMapping.hpp"
 
 void initGamePrefabs(rtype::ecs::Registry& registry)
 {
@@ -38,6 +39,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     std::string planetRing = "assets/textures/layers/parallax-space-ring-planet.png";
     std::string farPlanets = "assets/textures/layers/parallax-space-far-planets.png";
     std::string enemyExplosion = "assets/textures/r-typesheet44.png";
+    std::string enemy2 = "assets/textures/r-typesheet14.png";
 
     assetsManagerInstance.loadTexture("ShipsSheet", ShipsSheet);
     assetsManagerInstance.loadTexture("enemySheet", enemySheet);
@@ -49,6 +51,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     assetsManagerInstance.loadTexture("planetRing", planetRing);
     assetsManagerInstance.loadTexture("farPlanets", farPlanets);
     assetsManagerInstance.loadTexture("enemyExplosion", enemyExplosion);
+    assetsManagerInstance.loadTexture("enemy2", enemy2);
 
     prefabManagerInstance.createPrefab("EnemyProjectile") // Can add animation component
         .addComponent<rtype::component::Transform>()
@@ -77,11 +80,17 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         enemyExplosionAnimation.frameTimes.push_back(0.1);
     }
 
-    prefabManagerInstance.createPrefab("Enemy")
+    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::enemiesPrefabsMapping.at(rtype::utils::PrefabsMapping::enemiesPrefabs::PATA_PATA))
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("enemySheet", 4, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("enemySheet").width / 16, assetsManagerInstance.getTexture("enemySheet").height), 5)
         .addComponent<rtype::component::Animation>(enemyAnimation)
         .addComponent<rtype::component::ServerID>();
+
+    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::enemiesPrefabsMapping.at(rtype::utils::PrefabsMapping::enemiesPrefabs::SCANT))
+        .addComponent<rtype::component::Transform>()
+        .addComponent<rtype::component::Drawable>("enemy2", 3, rtype::utils::Rectangle(138, 52, 60, 47), 5)
+        .addComponent<rtype::component::ServerID>();
+
     prefabManagerInstance.createPrefab("Player")
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("ShipsSheet", 4, rtype::utils::Rectangle(1, 3, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 5)

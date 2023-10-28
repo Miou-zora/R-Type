@@ -79,11 +79,9 @@ private:
 
     void onEnemySpawn(rtype::ecs::Registry& registry, rtype::ecs::Entity entity) const
     {
-        auto& path = registry.getComponents<rtype::component::Path>()[entity].value();
         auto& transform = registry.getComponents<rtype::component::Transform>()[entity].value();
         transform.position.x = 1600.0f;
         transform.position.y = 128.0f + (static_cast<float>(std::rand() % (1024 - 128)));
-        path.addPoint(-200.0f, transform.position.y);
         auto& serverID = registry.getComponents<rtype::component::ServerID>()[entity].value();
         boost::uuids::uuid uuid = boost::uuids::random_generator()();
         std::copy_n(uuid.data, 16, serverID.uuid);
@@ -96,8 +94,13 @@ private:
         auto& serverID = registry.getComponents<rtype::component::ServerID>()[index].value();
         if (registry.hasComponent<rtype::tag::Enemy>(registry.entityFromIndex(index))) {
             const auto& transform = registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value();
-            auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemySpawn>(serverID.uuid, transform.position.x, transform.position.y);
-            return std::make_optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>>(rtype::network::message::pack(msg));
+            if (registry.hasComponent<rtype::component::EnemyInformation>(registry.entityFromIndex(index))) {
+                auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemySpawn>(serverID.uuid, transform.position.x, transform.position.y, registry.getComponents<rtype::component::EnemyInformation>()[registry.entityFromIndex(index)].value().type);
+                return std::make_optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>>(rtype::network::message::pack(msg));
+            } else {
+                auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemySpawn>(serverID.uuid, transform.position.x, transform.position.y, 0);
+                return std::make_optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>>(rtype::network::message::pack(msg));
+            }
         }
         return std::nullopt;
     }
