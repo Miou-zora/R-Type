@@ -62,6 +62,7 @@ void registerComponents(rtype::ecs::Registry& reg)
     reg.registerComponent<rtype::component::Collider>();
     reg.registerComponent<rtype::tag::Ally>();
     reg.registerComponent<rtype::tag::Enemy>();
+    reg.registerComponent<rtype::tag::Boss>();
     reg.registerComponent<rtype::component::Spawner>();
     reg.registerComponent<rtype::component::Shooter>();
     reg.registerComponent<rtype::component::Path>();

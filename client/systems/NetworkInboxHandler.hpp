@@ -260,10 +260,15 @@ private:
     {
         rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
         network::message::server::EnemySpawn enemySpawn = reinterpret_cast<network::message::server::EnemySpawn&>(message[0]);
-        rtype::ecs::Entity enemy = prefabManager.instantiate(rtype::utils::PrefabsMapping::enemiesPrefabsMapping.at(static_cast<rtype::utils::PrefabsMapping::enemiesPrefabs>(enemySpawn.enemytype)), registry);
-        std::copy_n(enemySpawn.enemyUuid, 16, registry.getComponents<rtype::component::ServerID>()[enemy]->uuid);
-        registry.getComponents<rtype::component::Transform>()[enemy]->position.x = enemySpawn.x;
-        registry.getComponents<rtype::component::Transform>()[enemy]->position.y = enemySpawn.y;
+        try {
+            rtype::ecs::Entity enemy = prefabManager.instantiate(rtype::utils::PrefabsMapping::enemiesPrefabsMapping.at(static_cast<rtype::utils::PrefabsMapping::enemiesPrefabs>(enemySpawn.enemytype)), registry);
+            std::copy_n(enemySpawn.enemyUuid, 16, registry.getComponents<rtype::component::ServerID>()[enemy]->uuid);
+            registry.getComponents<rtype::component::Transform>()[enemy]->position.x = enemySpawn.x;
+            registry.getComponents<rtype::component::Transform>()[enemy]->position.y = enemySpawn.y;
+        } catch (ecs::OutOfRange &error) {
+            std::cerr << "handleEnemySpawn::NotImplemented: " << error.what() << std::endl;
+            return;
+        }
     }
 
     /**

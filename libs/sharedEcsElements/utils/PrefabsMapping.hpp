@@ -25,7 +25,8 @@ namespace rtype::utils
         */
         enum class enemiesPrefabs {
             PATA_PATA,
-            SCANT
+            SCANT,
+            ZOYDO
         };
         /**
          * @brief map that contains all the prefabs names and their corresponding enum
@@ -37,6 +38,7 @@ namespace rtype::utils
     */
     inline const std::unordered_map<PrefabsMapping::enemiesPrefabs, std::string> PrefabsMapping::enemiesPrefabsMapping = {
         {enemiesPrefabs::PATA_PATA, "Pata-Pata"},
-        {enemiesPrefabs::SCANT, "Scant"}
+        {enemiesPrefabs::SCANT, "Scant"},
+        {enemiesPrefabs::ZOYDO, "Zoydo"}
     };
 }

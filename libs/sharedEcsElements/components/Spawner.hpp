@@ -38,7 +38,7 @@ namespace rtype::component
         Spawner(const Spawner &other) = default;
         Spawner &operator=(const Spawner &other) = default;
 
-        void addEntityToSpawnList(std::string entityName, float spawnDelay, Context context = Context::Global)
+        Spawner &addEntityToSpawnList(std::string entityName, float spawnDelay, Context context = Context::Global)
         {
             if (context == Context::Global) {
                 if (spawnList.size() == 0)
@@ -48,6 +48,7 @@ namespace rtype::component
                 }
             } else
                 spawnList.push_back({entityName, spawnDelay});
+            return (*this);
         }
 
         private:

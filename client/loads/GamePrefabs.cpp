@@ -52,6 +52,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     assetsManagerInstance.loadTexture("farPlanets", farPlanets);
     assetsManagerInstance.loadTexture("enemyExplosion", enemyExplosion);
     assetsManagerInstance.loadTexture("enemy2", enemy2);
+    assetsManagerInstance.loadTexture(rtype::utils::PrefabsMapping::enemiesPrefabsMapping.at(rtype::utils::PrefabsMapping::enemiesPrefabs::ZOYDO), "assets/textures/r-typesheet18.png");
 
     prefabManagerInstance.createPrefab("EnemyProjectile") // Can add animation component
         .addComponent<rtype::component::Transform>()
@@ -79,6 +80,20 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         enemyExplosionAnimation.framesPosition.push_back(rtype::utils::Vector<int>(129 + frame * 33, 1));
         enemyExplosionAnimation.frameTimes.push_back(0.1);
     }
+    rtype::component::Animation zoydoAnimation;
+    zoydoAnimation.currentFrame = 0;
+    zoydoAnimation.finished = false;
+    zoydoAnimation.loop = true;
+    zoydoAnimation.playing = true;
+    zoydoAnimation.time = 0;
+    zoydoAnimation.framesPosition.push_back(rtype::utils::Vector<int>(1, 67));
+    zoydoAnimation.frameTimes.push_back(0.15);
+    zoydoAnimation.framesPosition.push_back(rtype::utils::Vector<int>(34, 67));
+    zoydoAnimation.frameTimes.push_back(0.15);
+    zoydoAnimation.framesPosition.push_back(rtype::utils::Vector<int>(67, 67));
+    zoydoAnimation.frameTimes.push_back(0.15);
+    zoydoAnimation.framesPosition.push_back(rtype::utils::Vector<int>(100, 67));
+    zoydoAnimation.frameTimes.push_back(0.15);
 
     prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::enemiesPrefabsMapping.at(rtype::utils::PrefabsMapping::enemiesPrefabs::PATA_PATA))
         .addComponent<rtype::component::Transform>()
@@ -90,6 +105,12 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("enemy2", 3, rtype::utils::Rectangle(138, 52, 60, 47), 5)
         .addComponent<rtype::component::ServerID>();
+
+    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::enemiesPrefabsMapping.at(rtype::utils::PrefabsMapping::enemiesPrefabs::ZOYDO))
+        .addComponent<rtype::component::Transform>()
+        .addComponent<rtype::component::Drawable>(rtype::utils::PrefabsMapping::enemiesPrefabsMapping.at(rtype::utils::PrefabsMapping::enemiesPrefabs::ZOYDO), 4, rtype::utils::Rectangle(1, 67, 32, 32), 5)
+        .addComponent<rtype::component::ServerID>()
+        .addComponent<rtype::component::Animation>(zoydoAnimation);
 
     prefabManagerInstance.createPrefab("Player")
         .addComponent<rtype::component::Transform>()

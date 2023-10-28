@@ -23,7 +23,7 @@ public:
         for (auto&& [index, enemyInfo, path] : ecs::containers::IndexedZipper(enemyInfos, paths)) {
             if (!registry.hasComponent<rtype::component::GameRoom>(registry.entityFromIndex(index)))
                 continue;
-            if (path.value().listOfPoints.empty()) {
+            if (path.value().listOfPoints.empty() && path.value().destroyAtEnd) {
                 auto& enemyGameRoom = registry.getComponents<rtype::component::GameRoom>()[index].value();
                 registry.killEntity(registry.entityFromIndex(index));
                 sendEnemyDespawn(registry, enemyGameRoom.id, index);

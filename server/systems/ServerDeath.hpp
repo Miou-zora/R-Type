@@ -13,6 +13,7 @@
 #include "GameRoom.hpp"
 #include "Health.hpp"
 #include "NetworkPlayer.hpp"
+#include "Communication.hpp"
 
 namespace rtype::system {
 /**
@@ -35,6 +36,8 @@ public:
         for (auto&& [index, health] : ecs::containers::IndexedZipper(health)) {
             if (health.value().value <= 0) {
                 sendEntityKill(registry, index);
+                if (registry.hasComponent<rtype::tag::Boss>(registry.entityFromIndex(index)) && registry.hasComponent<rtype::component::GameRoom>(registry.entityFromIndex(index)))
+                    rtype::utils::Communication::sendToPlayerInSameRoom<rtype::network::message::server::GameEnded>(registry, rtype::utils::Communication::CommunicationType::CRITICAL, registry.getComponents<rtype::component::GameRoom>()[registry.entityFromIndex(index)].value().id);
                 if (registry.hasComponent<rtype::component::NetworkPlayer>(registry.entityFromIndex(index))) {
                     registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value().position.y = -20000.0f;
                 } else {

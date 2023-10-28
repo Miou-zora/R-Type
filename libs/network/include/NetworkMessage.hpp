@@ -446,7 +446,7 @@ namespace rtype::network {
             };
 
             struct GameEnded {
-                GameEnded() = default;
+                GameEnded(void) = default;
 
                 static const u_int16_t type = 0x0004;
                 NetworkMessageHeader header;
