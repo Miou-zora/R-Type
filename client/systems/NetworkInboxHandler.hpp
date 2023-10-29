@@ -53,6 +53,7 @@ public:
                 sendAck(header.id);
                 break;
             case network::message::server::GameEnded::type:
+                handleGameEnded(registry, message);
                 sendAck(header.id);
                 break;
             case network::message::server::PlayerSpawn::type:
@@ -172,6 +173,24 @@ private:
         rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
         network::message::server::GameStarted gameStarted = reinterpret_cast<network::message::server::GameStarted&>(message[0]);
         sceneManager.setNextScene(rtype::utils::Scene::GAME);
+    }
+
+    /**
+     * @brief Handles the game ended message when the game ends
+     *
+     * @param registry
+     * @param message the message received from the server
+     */
+    void handleGameEnded(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
+    {
+        rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
+        network::message::server::GameEnded gameEnded = reinterpret_cast<network::message::server::GameEnded&>(message[0]);
+
+        if (gameEnded.win) {
+            sceneManager.setNextScene(rtype::utils::Scene::WIN);
+        } else {
+            sceneManager.setNextScene(rtype::utils::Scene::LOSE);
+        }
     }
 
     /**

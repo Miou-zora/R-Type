@@ -16,6 +16,8 @@ namespace rtype::utils
         JOIN,
         OPTIONS,
         GAME,
+        WIN,
+        LOSE,
         NONE
     };
 }

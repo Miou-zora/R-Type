@@ -56,3 +56,9 @@ void initRoom(rtype::ecs::Registry& reg);
  * @param reg The ECS registry
  */
 void initGamePrefabs(rtype::ecs::Registry& reg);
+
+/**
+ * @brief Init the End scene (prefabs)
+ * @param reg The ECS registry
+ */
+void initEnd(rtype::ecs::Registry& reg);

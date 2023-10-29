@@ -18,7 +18,7 @@ void initJoinRoomButton(rtype::ecs::Registry& reg)
         .addComponent<rtype::component::Clickable>(
             [&]() {
                 std::string roomId = "";
-                std::size_t error = -1;
+                int error = -1;
                 for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(reg.getComponents<rtype::component::Nameable>())) {
                     if (name->name == "ROOM_ID")
                         roomId = reg.getComponents<rtype::component::Text>()[index]->text;

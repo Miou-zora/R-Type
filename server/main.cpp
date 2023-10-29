@@ -43,6 +43,7 @@
 #include "VelocityApplicator.hpp"
 #include "ClearEvents.hpp"
 #include "NetworkEventDamageInfliction.hpp"
+#include "LooseEvent.hpp"
 
 #include "components/Path.hpp"
 #include "components/Spawner.hpp"
@@ -92,6 +93,7 @@ void addSystems(rtype::ecs::Registry& reg)
     reg.addSystem<rtype::component::NetworkPlayer>(rtype::system::NetworkServerTickUpdater());
     reg.addSystem<rtype::component::Health>(rtype::system::ServerDeath());
     reg.addSystem<rtype::component::NetworkPlayer, rtype::component::GameRoom>(rtype::system::NetworkPlayerDisconnection(std::chrono::milliseconds(10000)));
+    reg.addSystem<rtype::component::GameRoom, rtype::component::NetworkPlayer, rtype::component::Health>(rtype::system::LooseEvent());
     reg.addSystem(rtype::system::ClearEvents());
 }
 

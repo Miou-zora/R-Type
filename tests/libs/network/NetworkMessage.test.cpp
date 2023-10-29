@@ -138,9 +138,10 @@ TEST(NetworkMessage, serverCreateEventGameStarted)
 
 TEST(NetworkMessage, serverCreateEventGameEnded)
 {
-    rtype::network::message::server::GameEnded msg = rtype::network::message::createEvent<rtype::network::message::server::GameEnded>();
+    rtype::network::message::server::GameEnded msg = rtype::network::message::createEvent<rtype::network::message::server::GameEnded>(true);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0004);
+    ASSERT_EQ(msg.win, true);
 }
 
 TEST(NetworkMessage, serverCreateEventPlayerSpawn)

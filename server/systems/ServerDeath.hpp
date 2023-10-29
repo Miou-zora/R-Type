@@ -36,10 +36,19 @@ public:
         for (auto&& [index, health] : ecs::containers::IndexedZipper(health)) {
             if (health.value().value <= 0) {
                 sendEntityKill(registry, index);
-                if (registry.hasComponent<rtype::tag::Boss>(registry.entityFromIndex(index)) && registry.hasComponent<rtype::component::GameRoom>(registry.entityFromIndex(index)))
-                    rtype::utils::Communication::sendToPlayerInSameRoom<rtype::network::message::server::GameEnded>(registry, rtype::utils::Communication::CommunicationType::CRITICAL, registry.getComponents<rtype::component::GameRoom>()[registry.entityFromIndex(index)].value().id);
+                if (registry.hasComponent<rtype::tag::Boss>(registry.entityFromIndex(index)) && registry.hasComponent<rtype::component::GameRoom>(registry.entityFromIndex(index))) {
+                    rtype::utils::Communication::sendToPlayerInSameRoom<rtype::network::message::server::GameEnded>(registry, rtype::utils::Communication::CommunicationType::CRITICAL, registry.getComponents<rtype::component::GameRoom>()[registry.entityFromIndex(index)].value().id, true);
+                    for (auto&& [index_player, networkPlayerOpt, gameRoomOpt] : ecs::containers::IndexedZipper(registry.getComponents<rtype::component::NetworkPlayer>(), registry.getComponents<rtype::component::GameRoom>())) {
+                        if (registry.getComponents<rtype::component::GameRoom>()[registry.entityFromIndex(index)].value().id == gameRoomOpt.value().id) {
+                            registry.removeComponent<rtype::component::GameRoom>(registry.entityFromIndex(index_player));
+                            registry.removeComponent<rtype::component::Transform>(registry.entityFromIndex(index_player));
+                            registry.emplaceComponent<rtype::component::Health>(registry.entityFromIndex(index_player), 10);
+                        }
+                    }
+                }
                 if (registry.hasComponent<rtype::component::NetworkPlayer>(registry.entityFromIndex(index))) {
-                    registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value().position.y = -20000.0f;
+                    if (registry.hasComponent<rtype::component::Transform>(registry.entityFromIndex(index)))
+                        registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value().position.y = -20000.0f;
                 } else {
                     registry.killEntity(registry.entityFromIndex(index));
                 }
@@ -86,8 +95,8 @@ private:
             return std::make_optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>>(rtype::network::message::pack(msg));
         }
         if (registry.hasComponent<rtype::component::BulletInformation>(registry.entityFromIndex(index))) {
-            uint8_t hitId[16] = {0}; // TODO: change with real hit UUID
-            auto msg = rtype::network::message::createEvent<rtype::network::message::server::BulletHit>(serverID.uuid, hitId);
+            boost::uuids::uuid id = boost::uuids::nil_uuid();
+            auto msg = rtype::network::message::createEvent<rtype::network::message::server::BulletHit>(serverID.uuid, id.data);
             return std::make_optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>>(rtype::network::message::pack(msg));
         }
         return std::nullopt;

@@ -55,6 +55,12 @@ public:
      */
     bool loadScene(Scene scene, ecs::Registry& registry);
 
+    /**
+     * @brief Add a prefab to a scene
+     *
+     * @param prefabName The name of the prefab to add
+     * @param scene The scene to add the prefab to
+     */
     void addPrefabToScene(std::string prefabName, Scene scene) {
         m_scenes[scene].push_back(prefabName);
     }
@@ -81,6 +87,8 @@ private:
         {Scene::JOIN, {}},
         {Scene::OPTIONS, {}},
         {Scene::GAME, {}},
+        {Scene::WIN, {}},
+        {Scene::LOSE, {}},
         {Scene::NONE, {}}
     };
     std::vector<ecs::Entity> m_entities;

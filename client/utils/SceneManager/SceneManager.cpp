@@ -6,6 +6,8 @@
 */
 
 #include "SceneManager.hpp"
+#include "Ally.hpp"
+#include "Enemy.hpp"
 
 void rtype::utils::SceneManager::unloadCurrentScene(rtype::ecs::Registry &registry)
 {
@@ -16,6 +18,17 @@ void rtype::utils::SceneManager::unloadCurrentScene(rtype::ecs::Registry &regist
     for (auto &entity : m_entities) {
         registry.killEntity(entity);
     }
+    for (auto&& [index, enemy] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::tag::Enemy>())) {
+        if (m_currentScene == Scene::GAME) {
+            registry.killEntity(registry.entityFromIndex(index));
+        }
+    }
+    for (auto&& [index, ally] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::tag::Ally>())) {
+        if (m_currentScene == Scene::GAME) {
+            registry.killEntity(registry.entityFromIndex(index));
+        }
+    }
+
     m_entities.clear();
     m_currentScene = Scene::NONE;
 }
@@ -26,7 +39,8 @@ bool rtype::utils::SceneManager::loadScene(rtype::utils::Scene scene, rtype::ecs
     unloadCurrentScene(registry);
     m_currentScene = scene;
     for (auto &prefab : m_scenes[scene]) {
-        m_entities.push_back(rtype::utils::PrefabManager::getInstance().instantiate(prefab, registry));
+        rtype::ecs::Entity entity = rtype::utils::PrefabManager::getInstance().instantiate(prefab, registry);
+        m_entities.push_back(entity);
     }
     return true;
 }

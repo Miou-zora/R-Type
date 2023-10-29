@@ -28,6 +28,8 @@
 #include <ctime>
 #include <iostream>
 #include <string>
+#include "Ally.hpp"
+#include "Enemy.hpp"
 namespace raylib {
 #include <raylib.h>
 }
@@ -75,6 +77,8 @@ int main(int ac, char* av[])
     reg.registerComponent<rtype::component::InputShooter>();
     reg.registerComponent<rtype::component::Animation>();
     reg.registerComponent<rtype::component::Health>();
+    reg.registerComponent<rtype::tag::Ally>();
+    reg.registerComponent<rtype::tag::Enemy>();
 
     rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
 
@@ -83,6 +87,7 @@ int main(int ac, char* av[])
     initJoin(reg);
     initRoom(reg);
     initGamePrefabs(reg);
+    initEnd(reg);
 
     // remember to load the first scene LOGIN
     sceneManager.setNextScene(rtype::utils::Scene::LOGIN);

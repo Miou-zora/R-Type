@@ -45,6 +45,7 @@ set(INCLUDE
     "${CMAKE_SOURCE_DIR}/libs/sharedEcsElements/components/"
     "${CMAKE_SOURCE_DIR}/libs/sharedEcsElements/systems/"
     "${CMAKE_SOURCE_DIR}/libs/sharedEcsElements/utils/"
+    "${CMAKE_SOURCE_DIR}/libs/sharedEcsElements/tags/"
     "${CMAKE_SOURCE_DIR}/libs/network/"
     "${CMAKE_SOURCE_DIR}/libs/network/include"
 )

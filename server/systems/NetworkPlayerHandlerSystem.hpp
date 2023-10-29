@@ -11,6 +11,7 @@
 #include "NetworkPlayer.hpp"
 #include "NetworkPlayerControl.hpp"
 #include "NetworkServer.hpp"
+#include "Health.hpp"
 
 namespace rtype::system {
 /**

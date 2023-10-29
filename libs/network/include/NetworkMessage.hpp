@@ -446,10 +446,14 @@ namespace rtype::network {
             };
 
             struct GameEnded {
-                GameEnded(void) = default;
+                GameEnded(bool _win)
+                    : win(_win)
+                {
+                }
 
                 static const u_int16_t type = 0x0004;
                 NetworkMessageHeader header;
+                bool win;
             };
 
             struct PlayerSpawn {

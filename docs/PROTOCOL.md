@@ -98,7 +98,7 @@ This section describes the messages sent by the server to the client.
 | 0x0001 | `network::message::server::RoomInformation` | `u_int16_t room_id;` <br> `u_int16_t player_count` | Used to tell the client which room they are in and with how many players |
 | 0x0002 | `network::message::server::LevelInformation` | `u_int16_t level_id;` | Used to tell the client which level they are in |
 | 0x0003 | `network::message::server::GameStarted` | ` ` | Used to tell the client that the game has started |
-| 0x0004 | `network::message::server::GameEnded` | ` ` | Used to tell the client that the game has ended |
+| 0x0004 | `network::message::server::GameEnded` | `bool win;` | Used to tell the client that the game has ended |
 | 0x0010 | `network::message::server::PlayerSpawn` | `u_int8_t[16] player_id;` <br> `float x;` <br> `float y;` | Used to indicate that a player spawned |
 | 0x0011 | `network::message::server::PlayerDeath` | `u_int8_t[16] player_id;` <br> `bool crashed;` | Used to indicate that a player died |
 | 0x0012 | `network::message::server::PlayerMovement` | `u_int8_t[16] player_id;` <br> `float x;` <br> `float y;` | Used to indicate that a player moved |

@@ -9,6 +9,8 @@
 #include "Transform.hpp"
 #include "PrefabManager.hpp"
 #include "SceneManager.hpp"
+#include "Ally.hpp"
+#include "Enemy.hpp"
 
 #include <gtest/gtest.h>
 
@@ -25,6 +27,8 @@ TEST(SceneManager, unloadCurrentScene)
     rtype::ecs::Entity entity = reg.spawnEntity();
 
     reg.registerComponent<rtype::component::Transform>();
+    reg.registerComponent<rtype::tag::Enemy>();
+    reg.registerComponent<rtype::tag::Ally>();
 
     rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
     rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
@@ -49,6 +53,8 @@ TEST(SceneManager, loadScene)
     rtype::ecs::Entity entity = reg.spawnEntity();
 
     reg.registerComponent<rtype::component::Transform>();
+    reg.registerComponent<rtype::tag::Enemy>();
+    reg.registerComponent<rtype::tag::Ally>();
 
     rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
 

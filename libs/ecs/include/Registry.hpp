@@ -285,8 +285,8 @@ namespace rtype::ecs
             for (auto &system : m_systems)
             {
                 system(*this);
+                _killEntityPostUpdate();
             }
-            _killEntityPostUpdate();
         }
 
         /**
