@@ -23,22 +23,28 @@ namespace rtype::utils
         /**
          * @brief enum of all enemy's prefabs
         */
-        enum class enemiesPrefabs {
+        enum class prefabs {
+            // Enemies
             PATA_PATA,
             SCANT,
-            ZOYDO
+            ZOYDO,
+            // Misc
+            TOP_WALL,
+            BOTTOM_WALL
         };
         /**
          * @brief map that contains all the prefabs names and their corresponding enum
         */
-        static const std::unordered_map<enemiesPrefabs, std::string> enemiesPrefabsMapping;
+        static const std::unordered_map<prefabs, std::string> prefabsMapping;
     };
     /**
      * @brief instantiation of the map that contains all the prefabs names and their corresponding enum
     */
-    inline const std::unordered_map<PrefabsMapping::enemiesPrefabs, std::string> PrefabsMapping::enemiesPrefabsMapping = {
-        {enemiesPrefabs::PATA_PATA, "Pata-Pata"},
-        {enemiesPrefabs::SCANT, "Scant"},
-        {enemiesPrefabs::ZOYDO, "Zoydo"}
+    inline const std::unordered_map<PrefabsMapping::prefabs, std::string> PrefabsMapping::prefabsMapping = {
+        {prefabs::PATA_PATA, "Pata-Pata"},
+        {prefabs::SCANT, "Scant"},
+        {prefabs::ZOYDO, "Zoydo"},
+        {prefabs::TOP_WALL, "TopWall"},
+        {prefabs::BOTTOM_WALL, "BottomWall"}
     };
 }

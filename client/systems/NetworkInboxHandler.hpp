@@ -280,7 +280,7 @@ private:
         rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
         network::message::server::EnemySpawn enemySpawn = reinterpret_cast<network::message::server::EnemySpawn&>(message[0]);
         try {
-            rtype::ecs::Entity enemy = prefabManager.instantiate(rtype::utils::PrefabsMapping::enemiesPrefabsMapping.at(static_cast<rtype::utils::PrefabsMapping::enemiesPrefabs>(enemySpawn.enemytype)), registry);
+            rtype::ecs::Entity enemy = prefabManager.instantiate(rtype::utils::PrefabsMapping::prefabsMapping.at(static_cast<rtype::utils::PrefabsMapping::prefabs>(enemySpawn.enemytype)), registry);
             std::copy_n(enemySpawn.enemyUuid, 16, registry.getComponents<rtype::component::ServerID>()[enemy]->uuid);
             registry.getComponents<rtype::component::Transform>()[enemy]->position.x = enemySpawn.x;
             registry.getComponents<rtype::component::Transform>()[enemy]->position.y = enemySpawn.y;
@@ -420,7 +420,7 @@ private:
                 for (auto&& [text, name]: rtype::ecs::containers::Zipper(registry.getComponents<rtype::component::Text>(), registry.getComponents<rtype::component::Nameable>()))
                 {
                     if (name.value().name == "playerLifeVariable") {
-                        text.value().text = std::to_string(playerLife.life);
+                        text.value().text = std::to_string(std::max(0, health.value().value));
                     }
                 }
             }

@@ -36,6 +36,8 @@ cmrc_add_resource_library(
     assets/textures/r-typesheet44.png
     assets/textures/r-typesheet14.png
     assets/textures/r-typesheet18.png
+    assets/textures/Top_wall.png
+    assets/textures/Bot_wall.png
 )
 
 set(SRC)

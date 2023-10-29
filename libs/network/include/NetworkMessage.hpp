@@ -511,7 +511,7 @@ namespace rtype::network {
             };
 
             struct PlayerLife {
-                PlayerLife(uint8_t _playerUuid[16], u_int16_t _life)
+                PlayerLife(uint8_t _playerUuid[16], u_int32_t _life)
                     : life(_life)
                 {
                     std::copy_n(_playerUuid, 16, playerUuid);
@@ -520,7 +520,7 @@ namespace rtype::network {
                 static const u_int16_t type = 0x0014;
                 NetworkMessageHeader header;
                 uint8_t playerUuid[16];
-                u_int16_t life;
+                u_int32_t life;
             };
 
             struct EnemySpawn {

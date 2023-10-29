@@ -64,19 +64,19 @@ TEST(DamageInflictor, collisionAllyEnemy)
     auto entity1 = registry.spawnEntity();
     auto entity2 = registry.spawnEntity();
 
-    registry.addComponent<rtype::component::Damage>(entity1, 10);
+    registry.addComponent<rtype::component::Damage>(entity1, 100);
     registry.addComponent<rtype::component::Collider>(entity1, rtype::utils::Vector<float>(10, 10));
     registry.addComponent<rtype::component::Transform>(entity1, rtype::utils::Vector<float>(0, 0));
     registry.emplaceComponent<rtype::tag::Ally>(entity1);
 
-    registry.addComponent<rtype::component::Health>(entity2, 100);
+    registry.addComponent<rtype::component::Health>(entity2, 10);
     registry.addComponent<rtype::component::Collider>(entity2, rtype::utils::Vector<float>(10, 10));
     registry.addComponent<rtype::component::Transform>(entity2, rtype::utils::Vector<float>(0, 0));
     registry.emplaceComponent<rtype::tag::Enemy>(entity2);
 
     registry.runSystems();
 
-    ASSERT_EQ(registry.getComponents<rtype::component::Health>()[entity2].value().value, 90);
+    ASSERT_EQ(registry.getComponents<rtype::component::Health>()[entity2].value().value, -90);
 }
 
 TEST(DamageInflictor, noCollision)
