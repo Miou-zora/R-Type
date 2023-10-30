@@ -151,7 +151,8 @@ public:
         std::set<std::size_t> targets;
         const rtype::component::GameRoom &gameRoom = registry.getComponents<rtype::component::GameRoom>()[bullet].value();
         // add player of same room
-        for (auto&& [index, networkPlayerOpt, gameRoomOpt] : ecs::containers::IndexedZipper(registry.getComponents<rtype::component::NetworkPlayer>(), registry.getComponents<rtype::component::GameRoom>())) {
+        for (auto&& [index, networkPlayerOpt, gameRoomOpt, transform] : ecs::containers::IndexedZipper(registry.getComponents<rtype::component::NetworkPlayer>(), registry.getComponents<rtype::component::GameRoom>(), registry.getComponents<rtype::component::Transform>())) {
+            (void)transform;
             auto& networkPlayer = networkPlayerOpt.value();
             auto& playerGameRoom = gameRoomOpt.value();
             if (playerGameRoom.id == gameRoom.id) {
@@ -159,15 +160,9 @@ public:
             }
         }
         std::size_t target = rand() % targets.size();
-        targets.erase(target);
-        while (!registry.getComponents<rtype::component::Transform>()[target].has_value() && targets.size())
-        {
-            target = rand() % targets.size();
-            targets.erase(target);
-        }
         const std::optional<rtype::component::Transform> &targetTransform = registry.getComponents<rtype::component::Transform>()[target];
         const std::optional<rtype::component::Transform> &bulletTransform = registry.getComponents<rtype::component::Transform>()[bullet];
-        if (!targetTransform.has_value() || !bulletTransform.has_value())
+        if (!targets.size() || !targetTransform.has_value() || !bulletTransform.has_value())
             registry.getComponents<rtype::component::Path>()[bullet].value().addPoint(-2000, 0.f, rtype::component::Path::Context::Global, rtype::component::Path::Referential::Entity);
         else
             registry.getComponents<rtype::component::Path>()[bullet].value().addPoint((targetTransform.value().position.x - bulletTransform.value().position.x) * 10.f, (targetTransform.value().position.y - bulletTransform.value().position.y) * 10.f, rtype::component::Path::Context::Global, rtype::component::Path::Referential::Entity).setDestroyAtEnd(true);
