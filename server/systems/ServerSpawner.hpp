@@ -81,8 +81,6 @@ private:
     void onEntitySpawn(rtype::ecs::Registry& registry, rtype::ecs::Entity entity) const
     {
         auto& serverID = registry.getComponents<rtype::component::ServerID>()[entity].value();
-        rtype::component::Transform& entityTransform = registry.getComponents<rtype::component::Transform>()[entity].value();
-        entityTransform.position.y += static_cast<float>(50 - std::rand() % (100));
         boost::uuids::uuid uuid = boost::uuids::random_generator()();
         std::copy_n(uuid.data, 16, serverID.uuid);
     }
