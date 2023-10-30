@@ -11,6 +11,7 @@
 #include "Client.hpp"
 #include "Control.hpp"
 #include "Draw.hpp"
+#include "LastUpdate.hpp"
 #include "NetworkControl.hpp"
 #include "NetworkInboxChecker.hpp"
 #include "NetworkInboxHandler.hpp"
@@ -19,6 +20,7 @@
 #include "Scroll.hpp"
 #include "Selection.hpp"
 #include "SwitchScene.hpp"
+#include "TimeoutKiller.hpp"
 #include "UpdateRoomInformations.hpp"
 #include "VelocityApplicator.hpp"
 #include "loads.hpp"
@@ -56,6 +58,7 @@ int main(int ac, char* av[])
     reg.addSystem<rtype::component::RoomInformations>(rtype::system::UpdateRoomInformations());
     reg.addSystem<rtype::component::Controllable, rtype::component::Velocity>(rtype::system::NetworkControl());
     reg.addSystem<rtype::component::InputShooter>(rtype::system::NetworkInputShoot());
+    reg.addSystem<rtype::component::LastUpdate>(rtype::system::TimeoutKiller());
 
     // add components
     reg.registerComponent<rtype::component::Controllable>();
@@ -77,6 +80,7 @@ int main(int ac, char* av[])
     reg.registerComponent<rtype::component::InputShooter>();
     reg.registerComponent<rtype::component::Animation>();
     reg.registerComponent<rtype::component::Health>();
+    reg.registerComponent<rtype::component::LastUpdate>();
     reg.registerComponent<rtype::tag::Ally>();
     reg.registerComponent<rtype::tag::Enemy>();
 

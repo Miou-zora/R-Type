@@ -20,6 +20,8 @@ public:
 
     void operator()(ecs::Registry& registry) const
     {
+        if (!network::Client::getInstance().getRecvMsgBuffer()->empty())
+            network::Client::getInstance().setLastTick(std::chrono::high_resolution_clock::now());
         while (!network::Client::getInstance().getRecvMsgBuffer()->empty()) {
             try {
                 std::tuple<boost::array<char, rtype::network::message::MAX_PACKET_SIZE>, size_t> message = network::Client::getInstance().getRecvMsgBuffer()->back();

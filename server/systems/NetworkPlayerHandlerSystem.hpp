@@ -100,6 +100,9 @@ private:
         size_t networkPlayerEntity,
         const boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& msg) const
     {
+        if (networkPlayer.connected)
+            return;
+        networkPlayer.connected = true; // TODO: find a REAL fix for this (player reconnection)
         auto& playerServerID = registry.getComponents<rtype::component::ServerID>()[networkPlayerEntity].value();
         auto connectAck = rtype::network::message::createEvent<rtype::network::message::server::ConnectAck>(playerServerID.uuid);
         (*networkPlayer.criticalMessages)[connectAck.header.id] = rtype::network::message::pack(connectAck);

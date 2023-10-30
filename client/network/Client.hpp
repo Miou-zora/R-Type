@@ -9,6 +9,7 @@
 #include <iostream>
 #include <tuple>
 #include <vector>
+#include <set>
 
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
@@ -35,6 +36,9 @@ private:
         m_outbox = std::make_shared<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_MESSAGE_SIZE>, network::message::NetworkMessageHeaderEquality, network::message::NetworkMessageHeaderCompare>>();
         m_inbox = std::make_shared<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_MESSAGE_SIZE>, network::message::NetworkMessageHeaderEquality, network::message::NetworkMessageHeaderCompare>>();
         m_recvMsgBuffer = std::make_shared<std::vector<std::tuple<boost::array<char, network::message::MAX_PACKET_SIZE>, size_t>>>();
+        m_lastTick = std::chrono::high_resolution_clock::now();
+        m_loginSequenceIds = std::make_shared<std::set<u_int64_t>>();
+        m_killedEntities = std::make_shared<std::set<std::array<uint8_t, 16>>>();
     }
 
 public:
@@ -137,6 +141,43 @@ public:
      * @return  uint8_t*
      */
     uint8_t* getClientId() const;
+    /**
+     * @brief   Get the login sequence ids object
+     * @return  std::shared_ptr<std::set<u_int64_t>>
+     */
+    std::shared_ptr<std::set<u_int64_t>> getLoginSequenceIds() const;
+    /**
+     * @brief   Get the last tick time point
+     * @return  std::chrono::high_resolution_clock::time_point
+     */
+    std::chrono::time_point<std::chrono::high_resolution_clock> getLastTick() const;
+    /**
+     * @brief   Set the last tick time point
+     * @param   lastTick
+     */
+    void setLastTick(std::chrono::time_point<std::chrono::high_resolution_clock> lastTick);
+    /**
+     * @brief   Insert an entity id in the killed entities set
+     * @param   id The entity id to insert
+     */
+    void insertKilledEntity(std::array<uint8_t, 16> id);
+    /**
+     * @brief   Insert an entity id in the killed entities set
+     * @param   id The entity id to insert
+     */
+    void insertKilledEntity(uint8_t id[16]);
+    /**
+     * @brief   Checks if a entity got killed
+     * @param   id The entity id to check
+     * @return  true if the entity got killed
+     */
+    bool isEntityKilled(std::array<uint8_t, 16> id) const;
+    /**
+     * @brief   Checks if a entity got killed
+     * @param   id The entity id to check
+     * @return  true if the entity got killed
+     */
+    bool isEntityKilled(uint8_t id[16]) const;
 
 private:
     std::string m_ip;
@@ -150,6 +191,9 @@ private:
     std::shared_ptr<std::vector<std::tuple<boost::array<char, network::message::MAX_PACKET_SIZE>, size_t>>> m_recvMsgBuffer;
     std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_MESSAGE_SIZE>, network::message::NetworkMessageHeaderEquality, network::message::NetworkMessageHeaderCompare>> m_inbox;
     std::shared_ptr<network::message::NetworkMessageQueue<boost::array<char, network::message::MAX_MESSAGE_SIZE>, network::message::NetworkMessageHeaderEquality, network::message::NetworkMessageHeaderCompare>> m_outbox;
+    std::chrono::time_point<std::chrono::high_resolution_clock> m_lastTick;
+    std::shared_ptr<std::set<u_int64_t>> m_loginSequenceIds;
+    std::shared_ptr<std::set<std::array<uint8_t, 16>>> m_killedEntities;
     bool m_connected;
     uint8_t m_clientId[16];
 };

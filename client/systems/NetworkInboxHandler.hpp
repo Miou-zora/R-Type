@@ -119,6 +119,10 @@ private:
     {
         rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
         network::message::server::ConnectAck connectAck = reinterpret_cast<network::message::server::ConnectAck&>(message[0]);
+        if (network::Client::getInstance().getLoginSequenceIds()->find(connectAck.header.id) != network::Client::getInstance().getLoginSequenceIds()->end()) {
+            return;
+        }
+        network::Client::getInstance().getLoginSequenceIds()->insert(connectAck.header.id);
         network::Client& client = network::Client::getInstance();
         client.setConnected(true);
         client.setClientId(connectAck.playerUuid);
@@ -135,6 +139,10 @@ private:
     {
         rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
         network::message::server::RoomInformation roomInformation = reinterpret_cast<network::message::server::RoomInformation&>(message[0]);
+        if (network::Client::getInstance().getLoginSequenceIds()->find(roomInformation.header.id) != network::Client::getInstance().getLoginSequenceIds()->end()) {
+            return;
+        }
+        network::Client::getInstance().getLoginSequenceIds()->insert(roomInformation.header.id);
         sceneManager.setNextScene(rtype::utils::Scene::ROOM);
 
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::RoomInformations>())) {
@@ -155,6 +163,10 @@ private:
     {
         rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
         network::message::server::LevelInformation levelInformation = reinterpret_cast<network::message::server::LevelInformation&>(message[0]);
+        if (network::Client::getInstance().getLoginSequenceIds()->find(levelInformation.header.id) != network::Client::getInstance().getLoginSequenceIds()->end()) {
+            return;
+        }
+        network::Client::getInstance().getLoginSequenceIds()->insert(levelInformation.header.id);
         sceneManager.setNextScene(rtype::utils::Scene::ROOM);
 
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::RoomInformations>())) {
@@ -172,6 +184,10 @@ private:
     {
         rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
         network::message::server::GameStarted gameStarted = reinterpret_cast<network::message::server::GameStarted&>(message[0]);
+        if (network::Client::getInstance().getLoginSequenceIds()->find(gameStarted.header.id) != network::Client::getInstance().getLoginSequenceIds()->end()) {
+            return;
+        }
+        network::Client::getInstance().getLoginSequenceIds()->insert(gameStarted.header.id);
         sceneManager.setNextScene(rtype::utils::Scene::GAME);
     }
 
@@ -186,6 +202,10 @@ private:
         rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
         network::message::server::GameEnded gameEnded = reinterpret_cast<network::message::server::GameEnded&>(message[0]);
 
+        if (network::Client::getInstance().getLoginSequenceIds()->find(gameEnded.header.id) != network::Client::getInstance().getLoginSequenceIds()->end()) {
+            return;
+        }
+        network::Client::getInstance().getLoginSequenceIds()->insert(gameEnded.header.id);
         if (gameEnded.win) {
             sceneManager.setNextScene(rtype::utils::Scene::WIN);
         } else {
@@ -204,6 +224,16 @@ private:
         network::message::server::PlayerSpawn playerSpawn = reinterpret_cast<network::message::server::PlayerSpawn&>(message[0]);
         rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
         int existingPlayers = 0;
+        if (network::Client::getInstance().isEntityKilled(playerSpawn.playerUuid)) {
+            std::cerr << "NetworkInboxHandler: Detected spawn of player that was already killed" << std::endl;
+            return;
+        }
+        for (auto&& [index, serverID, allyNumber] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>(), registry.getComponents<rtype::component::AllyNumber>())) {
+            if (memcmp(serverID->uuid, playerSpawn.playerUuid, sizeof(playerSpawn.playerUuid)) == 0) {
+                std::cerr << "NetworkInboxHandler: Detected spawn of player that already exists" << std::endl;
+                return;
+            }
+        }
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::AllyNumber>())) {
             if (registry.getComponents<rtype::component::AllyNumber>()[index]->id > existingPlayers) {
                 existingPlayers = registry.getComponents<rtype::component::AllyNumber>()[index]->id;
@@ -231,6 +261,7 @@ private:
     void handlePlayerDeath(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
     {
         network::message::server::PlayerDeath playerDeath = reinterpret_cast<network::message::server::PlayerDeath&>(message[0]);
+        network::Client::getInstance().insertKilledEntity(playerDeath.playerUuid);
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
             if (memcmp(registry.getComponents<rtype::component::ServerID>()[index]->uuid, playerDeath.playerUuid, sizeof(playerDeath.playerUuid)) == 0) {
                 registry.killEntity(registry.entityFromIndex(index));
@@ -279,6 +310,16 @@ private:
     {
         rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
         network::message::server::EnemySpawn enemySpawn = reinterpret_cast<network::message::server::EnemySpawn&>(message[0]);
+        if (network::Client::getInstance().isEntityKilled(enemySpawn.enemyUuid)) {
+            std::cerr << "NetworkInboxHandler: Detected spawn of enemy that was already killed" << std::endl;
+            return;
+        }
+        for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
+            if (memcmp(registry.getComponents<rtype::component::ServerID>()[index]->uuid, enemySpawn.enemyUuid, sizeof(enemySpawn.enemyUuid)) == 0) {
+                std::cerr << "NetworkInboxHandler: Detected spawn of enemy that already exists" << std::endl;
+                return;
+            }
+        }
         try {
             rtype::ecs::Entity enemy = prefabManager.instantiate(rtype::utils::PrefabsMapping::prefabsMapping.at(static_cast<rtype::utils::PrefabsMapping::prefabs>(enemySpawn.enemytype)), registry);
             std::copy_n(enemySpawn.enemyUuid, 16, registry.getComponents<rtype::component::ServerID>()[enemy]->uuid);
@@ -300,6 +341,7 @@ private:
     {
         rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
         network::message::server::EnemyDeath enemyDeath = reinterpret_cast<network::message::server::EnemyDeath&>(message[0]);
+        network::Client::getInstance().insertKilledEntity(enemyDeath.enemyUuid);
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
             if (memcmp(registry.getComponents<rtype::component::ServerID>()[index]->uuid, enemyDeath.enemyUuid, sizeof(enemyDeath.enemyUuid)) == 0) {
                 registry.killEntity(registry.entityFromIndex(index));
@@ -324,6 +366,7 @@ private:
             if (memcmp(registry.getComponents<rtype::component::ServerID>()[index]->uuid, enemyMovement.enemyUuid, sizeof(enemyMovement.enemyUuid)) == 0) {
                 registry.getComponents<rtype::component::Transform>()[index]->position.x = enemyMovement.x;
                 registry.getComponents<rtype::component::Transform>()[index]->position.y = enemyMovement.y;
+                registry.getComponents<rtype::component::LastUpdate>()[index]->tick();
                 break;
             }
         }
@@ -339,6 +382,16 @@ private:
     {
         rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
         network::message::server::BulletShoot bulletShoot = reinterpret_cast<network::message::server::BulletShoot&>(message[0]);
+        if (network::Client::getInstance().isEntityKilled(bulletShoot.bulletUuid)) {
+            std::cerr << "NetworkInboxHandler: Detected spawn of bullet that was already killed" << std::endl;
+            return;
+        }
+        for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
+            if (memcmp(registry.getComponents<rtype::component::ServerID>()[index]->uuid, bulletShoot.bulletUuid, sizeof(bulletShoot.bulletUuid)) == 0) {
+                std::cerr << "NetworkInboxHandler: Detected spawn of bullet that already exists" << std::endl;
+                return;
+            }
+        }
         if (bulletShoot.team == 0) {
             rtype::ecs::Entity bullet = prefabManager.instantiate("AllyProjectile", registry);
             std::copy_n(bulletShoot.bulletUuid, 16, registry.getComponents<rtype::component::ServerID>()[bullet]->uuid);
@@ -365,6 +418,7 @@ private:
             if (memcmp(registry.getComponents<rtype::component::ServerID>()[index]->uuid, bulletPosition.bulletUuid, sizeof(bulletPosition.bulletUuid)) == 0) {
                 registry.getComponents<rtype::component::Transform>()[index]->position.x = bulletPosition.x;
                 registry.getComponents<rtype::component::Transform>()[index]->position.y = bulletPosition.y;
+                registry.getComponents<rtype::component::LastUpdate>()[index]->tick();
                 break;
             }
         }
@@ -379,6 +433,7 @@ private:
     void handleBulletHit(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
     {
         network::message::server::BulletHit bulletHit = reinterpret_cast<network::message::server::BulletHit&>(message[0]);
+        network::Client::getInstance().insertKilledEntity(bulletHit.bulletUuid);
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
             if (memcmp(registry.getComponents<rtype::component::ServerID>()[index]->uuid, bulletHit.bulletUuid, sizeof(bulletHit.bulletUuid)) == 0) {
                 registry.killEntity(registry.entityFromIndex(index));
@@ -396,6 +451,7 @@ private:
     void handleBulletDespawn(ecs::Registry& registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& message) const
     {
         network::message::server::BulletDespawn bulletDespawn = reinterpret_cast<network::message::server::BulletDespawn&>(message[0]);
+        network::Client::getInstance().insertKilledEntity(bulletDespawn.bulletUuid);
         for (auto&& [index, name] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>())) {
             if (memcmp(registry.getComponents<rtype::component::ServerID>()[index]->uuid, bulletDespawn.bulletUuid, sizeof(bulletDespawn.bulletUuid)) == 0) {
                 registry.killEntity(registry.entityFromIndex(index));

@@ -47,5 +47,6 @@ struct NetworkPlayer {
         outbox;
     std::shared_ptr<std::map<u_int64_t, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>>> criticalMessages;
     std::shared_ptr<std::map<u_int64_t, std::chrono::time_point<std::chrono::high_resolution_clock>>> criticalMessagesTime;
+    bool connected = false;
 };
 }
