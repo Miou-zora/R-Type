@@ -61,25 +61,6 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     assetsManagerInstance.loadTexture(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TOP_WALL), "assets/textures/Top_wall.png");
     assetsManagerInstance.loadTexture(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::BOTTOM_WALL), "assets/textures/Bot_wall.png");
 
-    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::SIMPLE_BULLET))
-        .addComponent<rtype::component::Transform>()
-        .addComponent<rtype::component::Drawable>("enemyProjectileSheet", 5, rtype::utils::Rectangle(135, 5, 7, 6), 5)
-        .addComponent<rtype::component::ServerID>()
-        .addComponent<rtype::tag::Enemy>()
-        .addComponent<rtype::component::LastUpdate>();
-
-    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TARGET_BULLET))
-        .addComponent<rtype::component::Transform>()
-        .addComponent<rtype::component::Drawable>("enemyProjectileSheet", 5, rtype::utils::Rectangle(135, 5, 7, 6), 5)
-        .addComponent<rtype::component::ServerID>()
-        .addComponent<rtype::tag::Enemy>()
-        .addComponent<rtype::component::LastUpdate>();
-
-    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TRIPLE_BULLET))
-        .addComponent<rtype::component::ServerID>()
-        .addComponent<rtype::tag::Enemy>()
-        .addComponent<rtype::component::LastUpdate>();
-
     rtype::component::Animation enemyAnimation;
     enemyAnimation.currentFrame = 0;
     enemyAnimation.finished = false;
@@ -115,6 +96,49 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     zoydoAnimation.frameTimes.push_back(0.15);
     zoydoAnimation.framesPosition.push_back(rtype::utils::Vector<int>(100, 67));
     zoydoAnimation.frameTimes.push_back(0.15);
+    rtype::component::Animation bulletAnimation;
+    bulletAnimation.currentFrame = 0;
+    bulletAnimation.finished = false;
+    bulletAnimation.loop = true;
+    bulletAnimation.playing = true;
+    bulletAnimation.time = 0;
+    bulletAnimation.framesPosition.push_back(rtype::utils::Vector<int>(136, 6));
+    bulletAnimation.frameTimes.push_back(0.15);
+    bulletAnimation.framesPosition.push_back(rtype::utils::Vector<int>(153, 6));
+    bulletAnimation.frameTimes.push_back(0.15);
+    bulletAnimation.framesPosition.push_back(rtype::utils::Vector<int>(170, 6));
+    bulletAnimation.frameTimes.push_back(0.15);
+    bulletAnimation.framesPosition.push_back(rtype::utils::Vector<int>(188, 6));
+    bulletAnimation.frameTimes.push_back(0.15);
+    bulletAnimation.framesPosition.push_back(rtype::utils::Vector<int>(205, 6));
+    bulletAnimation.frameTimes.push_back(0.15);
+    bulletAnimation.framesPosition.push_back(rtype::utils::Vector<int>(223, 6));
+    bulletAnimation.frameTimes.push_back(0.15);
+    bulletAnimation.framesPosition.push_back(rtype::utils::Vector<int>(240, 6));
+    bulletAnimation.frameTimes.push_back(0.15);
+    bulletAnimation.framesPosition.push_back(rtype::utils::Vector<int>(257, 6));
+    bulletAnimation.frameTimes.push_back(0.15);
+
+    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::SIMPLE_BULLET))
+        .addComponent<rtype::component::Transform>()
+        .addComponent<rtype::component::Drawable>("enemyProjectileSheet", 5, rtype::utils::Rectangle(135, 5, 7, 6), 5)
+        .addComponent<rtype::component::ServerID>()
+        .addComponent<rtype::component::Animation>(bulletAnimation)
+        .addComponent<rtype::tag::Enemy>()
+        .addComponent<rtype::component::LastUpdate>();
+
+    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TARGET_BULLET))
+        .addComponent<rtype::component::Transform>()
+        .addComponent<rtype::component::Drawable>("enemyProjectileSheet", 5, rtype::utils::Rectangle(135, 5, 7, 6), 5)
+        .addComponent<rtype::component::ServerID>()
+        .addComponent<rtype::component::Animation>(bulletAnimation)
+        .addComponent<rtype::tag::Enemy>()
+        .addComponent<rtype::component::LastUpdate>();
+
+    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TRIPLE_BULLET))
+        .addComponent<rtype::component::ServerID>()
+        .addComponent<rtype::tag::Enemy>()
+        .addComponent<rtype::component::LastUpdate>();
 
     prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::PATA_PATA))
         .addComponent<rtype::component::Transform>()
@@ -181,8 +205,8 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ALLY_BULLET))
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("allyProjectileSheet", 4, rtype::utils::Rectangle(248, 88, 17, 6), 5)
+        .addComponent<rtype::component::Animation>(bulletAnimation)
         .addComponent<rtype::component::ServerID>()
-        .addComponent<rtype::tag::Ally>()
         .addComponent<rtype::component::LastUpdate>();
     prefabManagerInstance.createPrefab("Ally1")
         .addComponent<rtype::component::Transform>()
