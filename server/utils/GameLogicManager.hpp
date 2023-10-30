@@ -57,7 +57,7 @@ private:
         addValue<float>("enemyHitboxWidth", 120);
         addValue<float>("enemyHitboxHeight", 144);
         addValue<rtype::utils::Vector<float>>("defaultEnemyPosition", rtype::utils::Vector<float>(500, 500));
-        addValue<float>("enemyShootCooldown", 1);
+        addValue<float>("enemyShootCooldown", 1.5f);
         addValue<float>("bulletSpeed", 1500);
         addValue<float>("bulletHitboxWidth", 80);
         addValue<float>("bulletHitboxHeight", 20);
@@ -318,6 +318,20 @@ public:
             .addComponent<rtype::tag::Ally>()
             .addComponent<rtype::component::ServerID>();
 
+        manager.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::BOSS_BULLET))
+            .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0.f, 50.f))
+            .addComponent<rtype::component::Velocity>()
+            .addComponent<rtype::component::Collider>(14 * 4, 14 * 4)
+            .addComponent<rtype::component::Damage>(getValue<int>("enemyBulletDamage"))
+            .addComponent<rtype::component::Health>(getValue<int>("bulletDamage"))
+            .addComponent<rtype::component::GameRoom>()
+            .addComponent<rtype::component::EntityInformation>(static_cast<int>(rtype::utils::PrefabsMapping::prefabs::BOSS_BULLET))
+            .addComponent<rtype::component::Path>(rtype::component::Path(getValue<float>("enemyBulletSpeed"))
+                .addPoint(rtype::utils::Vector<float>(-getValue<float>("enemyBulletDistance"), 0.f), rtype::component::Path::Context::Global, rtype::component::Path::Referential::Entity)
+                .setDestroyAtEnd(true))
+            .addComponent<rtype::tag::Enemy>()
+            .addComponent<rtype::component::ServerID>();
+
         manager.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::PATA_PATA))
             .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(1600.0f, 1024.0f / 2.0f))
             .addComponent<rtype::component::Velocity>()
@@ -370,7 +384,7 @@ public:
             .addComponent<rtype::component::Speed>(getValue<int>("bossSpeed"))
             .addComponent<rtype::component::Damage>(getValue<int>("bossCollideDamage"))
             .addComponent<rtype::tag::Enemy>()
-            .addComponent<rtype::component::Shooter>(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TRIPLE_BULLET), getValue<float>("bossShootCooldown") / 2.0f)
+            .addComponent<rtype::component::Shooter>(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TRIPLE_BOSS_BULLET), getValue<float>("bossShootCooldown"))
             .addComponent<rtype::component::EntityInformation>(static_cast<int>(rtype::utils::PrefabsMapping::prefabs::ZOYDO))
             .addComponent<rtype::component::Path>(rtype::component::Path(getValue<float>("bossPathSpeed"))
                 .addPoint(-300.0f, 0.f, rtype::component::Path::Context::Global, rtype::component::Path::Referential::Entity))
@@ -445,6 +459,16 @@ public:
                 .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::SIMPLE_BULLET), 0.2f))
             .addComponent<rtype::component::ServerID>();
 
+        manager.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TRIPLE_BOSS_BULLET))
+            .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0.f, 0.f))
+            .addComponent<rtype::component::GameRoom>()
+            .addComponent<rtype::tag::Enemy>()
+            .addComponent<rtype::component::Spawner>(rtype::component::Spawner()
+                .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::BOSS_BULLET), 0.f)
+                .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::BOSS_BULLET), 0.1f)
+                .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::BOSS_BULLET), 0.2f))
+            .addComponent<rtype::component::ServerID>();
+
         manager.createPrefab("enemySpawner")
             .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0.0f, 0.0f))
             .addComponent<rtype::component::Spawner>(rtype::component::Spawner(false)
@@ -452,7 +476,15 @@ public:
                 .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::BOTTOM_WALL), 0.f)
                 .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::PATA_PATA), getValue<float>("enemySpawnCooldown"), rtype::component::Spawner::Context::Local)
                 .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::SCANT), getValue<float>("enemySpawnCooldown"), rtype::component::Spawner::Context::Local)
-                .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ZOYDO), getValue<float>("enemySpawnCooldown") * 3.f, rtype::component::Spawner::Context::Local))
+                .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::PATA_PATA), getValue<float>("enemySpawnCooldown"), rtype::component::Spawner::Context::Local, {0.f, 200.f})
+                .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::PATA_PATA), 0.f, rtype::component::Spawner::Context::Local, {0.f, -200.f})
+                .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::SCANT), getValue<float>("enemySpawnCooldown"), rtype::component::Spawner::Context::Local, {0.f, 200.f})
+                .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::SCANT), 0.f, rtype::component::Spawner::Context::Local, {0.f, -200.f})
+                .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::SCANT), getValue<float>("enemySpawnCooldown") * 2.f, rtype::component::Spawner::Context::Local, {0.f, 100.f})
+                .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::SCANT), 0.f, rtype::component::Spawner::Context::Local, {0.f, -100.f})
+                .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::PATA_PATA), 0.1f, rtype::component::Spawner::Context::Local, {0.f, 200.f})
+                .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::PATA_PATA), 0.f, rtype::component::Spawner::Context::Local, {0.f, -200.f})
+                .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ZOYDO), getValue<float>("enemySpawnCooldown") * 2.f, rtype::component::Spawner::Context::Local))
                 // .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ZOYDO), 0.f, rtype::component::Spawner::Context::Local))
             .addComponent<rtype::component::Velocity>()
             .addComponent<rtype::component::GameRoom>()

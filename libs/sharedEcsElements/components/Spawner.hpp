@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "Vector.hpp"
 
 namespace rtype::component
 {
@@ -23,6 +24,7 @@ namespace rtype::component
         {
             std::string entityName;
             float spawnDelay;
+            rtype::utils::Vector<float> position;
         };
 
     public:
@@ -38,21 +40,21 @@ namespace rtype::component
         Spawner(const Spawner &other) = default;
         Spawner &operator=(const Spawner &other) = default;
 
-        Spawner &addEntityToSpawnList(std::string entityName, float spawnDelay, Context context = Context::Global)
+        Spawner &addEntityToSpawnList(std::string entityName, float spawnDelay, Context context = Context::Global, rtype::utils::Vector<float> position = {0, 0})
         {
             if (context == Context::Global) {
                 if (spawnList.size() == 0)
-                    spawnList.push_back({entityName, spawnDelay});
+                    spawnList.push_back({entityName, spawnDelay, position});
                 else {
-                    insertEntityInSpawnList(entityName, spawnDelay);
+                    insertEntityInSpawnList(entityName, spawnDelay, position);
                 }
             } else
-                spawnList.push_back({entityName, spawnDelay});
+                spawnList.push_back({entityName, spawnDelay, position});
             return (*this);
         }
 
         private:
-            void insertEntityInSpawnList(std::string entityName, float spawnDelay)
+            void insertEntityInSpawnList(std::string entityName, float spawnDelay, rtype::utils::Vector<float> position)
             {
                 float delay = 0;
                 std::size_t index = 0;
@@ -60,13 +62,13 @@ namespace rtype::component
                 for (auto &value : spawnList) {
                     if (delay + value.spawnDelay >= spawnDelay) {
                         value.spawnDelay -= spawnDelay - delay  ;
-                        spawnList.insert(spawnList.begin() + index, {entityName, spawnDelay - delay});
+                        spawnList.insert(spawnList.begin() + index, {entityName, spawnDelay - delay, position});
                         return;
                     }
                     index++;
                     delay += value.spawnDelay;
                 }
-                spawnList.push_back({entityName, spawnDelay - delay});
+                spawnList.push_back({entityName, spawnDelay - delay, position});
             }
         public:
 

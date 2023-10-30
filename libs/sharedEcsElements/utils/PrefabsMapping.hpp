@@ -36,7 +36,9 @@ namespace rtype::utils
             SIMPLE_BULLET,
             TRIPLE_BULLET,
             ALLY_BULLET,
-            TARGET_BULLET
+            TARGET_BULLET,
+            BOSS_BULLET,
+            TRIPLE_BOSS_BULLET
         };
         /**
          * @brief map that contains all the prefabs enum and their corresponding names
@@ -59,7 +61,9 @@ namespace rtype::utils
         {prefabs::SIMPLE_BULLET, "SimpleBullet"},
         {prefabs::TRIPLE_BULLET, "TripleBullet"},
         {prefabs::ALLY_BULLET, "AllyBullet"},
-        {prefabs::TARGET_BULLET, "TargetBullet"}};
+        {prefabs::TARGET_BULLET, "TargetBullet"},
+        {prefabs::BOSS_BULLET, "BossBullet"},
+        {prefabs::TRIPLE_BOSS_BULLET, "TripleBossBullet"}};
     /**
      * @brief instantiation of the map that contains all the prefabs names and their corresponding enum
     */
@@ -72,5 +76,7 @@ namespace rtype::utils
         {PrefabsMapping::prefabsMapping.at(prefabs::SIMPLE_BULLET), prefabs::SIMPLE_BULLET},
         {PrefabsMapping::prefabsMapping.at(prefabs::TRIPLE_BULLET), prefabs::TRIPLE_BULLET},
         {PrefabsMapping::prefabsMapping.at(prefabs::ALLY_BULLET), prefabs::ALLY_BULLET},
-        {PrefabsMapping::prefabsMapping.at(prefabs::TARGET_BULLET), prefabs::TARGET_BULLET}};
+        {PrefabsMapping::prefabsMapping.at(prefabs::TARGET_BULLET), prefabs::TARGET_BULLET},
+        {PrefabsMapping::prefabsMapping.at(prefabs::BOSS_BULLET), prefabs::BOSS_BULLET},
+        {PrefabsMapping::prefabsMapping.at(prefabs::TRIPLE_BOSS_BULLET), prefabs::TRIPLE_BOSS_BULLET}};
 }

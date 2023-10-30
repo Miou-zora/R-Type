@@ -48,6 +48,7 @@ private:
             if (registry.hasComponent<rtype::component::Transform>(entity) && registry.hasComponent<rtype::component::Transform>(registry.entityFromIndex(index))) {
                 rtype::component::Transform& entityTransform = registry.getComponents<rtype::component::Transform>()[entity].value();
                 entityTransform.position += registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value().position;
+                entityTransform.position += spawner.spawnList[0].position;
             }
             if (registry.hasComponent<rtype::component::EntityInformation>(entity)) {
                 onEntitySpawn(registry, entity);
