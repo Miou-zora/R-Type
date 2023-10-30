@@ -123,7 +123,7 @@ private:
         size_t networkPlayerEntity,
         const boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>& msg) const
     {
-        auto component = rtype::component::GameRoom();
+        auto component = rtype::component::GameRoom(rtype::component::GameRoom::g_nextGameRoomId++);
         registry.emplaceComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity), std::move(component));
         std::cout << "handleCreateRoomCallback: info: Player " << networkPlayerEntity << " created a room " << component.id << std::endl;
         auto roomInformation = rtype::network::message::createEvent<rtype::network::message::server::RoomInformation>(component.id, rtype::utils::GameLogicManager::countPlayersInGameRoom(registry, component));

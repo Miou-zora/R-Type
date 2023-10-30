@@ -14,13 +14,15 @@
 #include <queue>
 
 namespace rtype::component {
-    static u_int16_t g_nextGameRoomId = 0;
+    
 
     /**
      * @brief GameRoom component used to store informations about the game room
      */
     struct GameRoom {
-        GameRoom(u_int16_t id = g_nextGameRoomId++)
+        GameRoom()
+            : id(0) {}
+        GameRoom(u_int16_t id)
             : id(id) {}
         ~GameRoom() = default;
 
@@ -31,5 +33,6 @@ namespace rtype::component {
         GameRoom &operator=(GameRoom &&other) = default;
 
         u_int16_t id;
+        inline static u_int16_t g_nextGameRoomId = 1;
     };
 }
