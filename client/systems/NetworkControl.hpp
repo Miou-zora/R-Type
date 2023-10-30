@@ -29,8 +29,8 @@ public:
 
         for (auto&& [controllable, velocity] : ecs::containers::Zipper(controllables, velocities)) {
             noKeysPressed = true;
-            bool keys[4] = { controllable.value().is_key_up_pressed(), controllable.value().is_key_down_pressed(),
-                controllable.value().is_key_left_pressed(), controllable.value().is_key_right_pressed() };
+            bool keys[4] = { controllable.value().isKeyUpPressed(), controllable.value().isKeyDownPressed(),
+                controllable.value().isKeyLeftPressed(), controllable.value().isKeyRightPressed() };
             for (int i = 0; i < 4; i++) {
                 if (keys[i]) {
                     noKeysPressed = false;

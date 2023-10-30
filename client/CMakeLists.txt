@@ -34,6 +34,10 @@ cmrc_add_resource_library(
     assets/textures/layers/parallax-space-ring-planet.png
     assets/textures/ally_bullets.png
     assets/textures/r-typesheet44.png
+    assets/textures/buttons/MinusButton.png
+    assets/textures/buttons/PlusButton.png
+    assets/textures/buttons/OptionButton.png
+    assets/textures/buttons/white_rectangle.png
     assets/textures/r-typesheet14.png
     assets/textures/r-typesheet18.png
     assets/textures/Top_wall.png

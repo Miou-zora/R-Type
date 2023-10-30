@@ -10,6 +10,7 @@
 #include <string>
 #include "Vector.hpp"
 #include "Shooter.hpp"
+#include "OptionManager.hpp"
 #include <functional>
 
 namespace rtype::component
@@ -25,9 +26,8 @@ namespace rtype::component
          * @param projectileName_ name of the projectile prefab
          * @param cooldown_ cooldown between each shot
          * @param timer_ timer used to know when the entity can shoot again
-         * @param keyFunction_ function used to know if the entity can shoot so basically if key is pressed or not
         */
-        InputShooter(std::function<bool(void)> keyFunction_ = [](){ return false; }, const std::string &projectileName_ = "", const float &cooldown_ = 0.5, const float &timer_ = 0) : rtype::component::Shooter(projectileName_, cooldown_, timer_), keyFunction(keyFunction_) {};
+        InputShooter(const std::string &projectileName_ = "", const float &cooldown_ = 0.5, const float &timer_ = 0) : rtype::component::Shooter(projectileName_, cooldown_, timer_) {};
         ~InputShooter() = default;
 
         InputShooter(const InputShooter &other) = default;
@@ -35,9 +35,7 @@ namespace rtype::component
 
         virtual bool canShoot(void) override
         {
-            return (rtype::component::Shooter::canShoot() && keyFunction());
+            return (rtype::component::Shooter::canShoot() && raylib::IsKeyPressed(rtype::utils::OptionManager::getInstance().getKeyShoot()));
         }
-
-        std::function<bool(void)> keyFunction;
     };
 }

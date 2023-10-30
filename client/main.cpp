@@ -24,7 +24,11 @@
 #include "UpdateRoomInformations.hpp"
 #include "VelocityApplicator.hpp"
 #include "loads.hpp"
+#include "KeyInput.hpp"
+#include "Key.hpp"
 #include "systems/TextInput.hpp"
+#include "UpdateKeyInputBox.hpp"
+#include "UpdateInputOptions.hpp"
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 #include <ctime>
@@ -58,6 +62,9 @@ int main(int ac, char* av[])
     reg.addSystem<rtype::component::RoomInformations>(rtype::system::UpdateRoomInformations());
     reg.addSystem<rtype::component::Controllable, rtype::component::Velocity>(rtype::system::NetworkControl());
     reg.addSystem<rtype::component::InputShooter>(rtype::system::NetworkInputShoot());
+    reg.addSystem<rtype::component::Key, rtype::component::Selectable>(rtype::system::KeyInput());
+    reg.addSystem<rtype::component::Key, rtype::component::Text>(rtype::system::UpdateKeyInputBox());
+    reg.addSystem<rtype::component::Nameable, rtype::component::Key>(rtype::system::UpdateInputOptions());
     reg.addSystem<rtype::component::LastUpdate>(rtype::system::TimeoutKiller());
 
     // add components
@@ -80,6 +87,7 @@ int main(int ac, char* av[])
     reg.registerComponent<rtype::component::InputShooter>();
     reg.registerComponent<rtype::component::Animation>();
     reg.registerComponent<rtype::component::Health>();
+    reg.registerComponent<rtype::component::Key>();
     reg.registerComponent<rtype::component::LastUpdate>();
     reg.registerComponent<rtype::tag::Ally>();
     reg.registerComponent<rtype::tag::Enemy>();
@@ -92,6 +100,7 @@ int main(int ac, char* av[])
     initJoin(reg);
     initRoom(reg);
     initGamePrefabs(reg);
+    initOption(reg);
     initEnd(reg);
 
     // remember to load the first scene LOGIN

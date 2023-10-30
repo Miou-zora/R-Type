@@ -69,6 +69,23 @@ void initMenuJoinRoomButton(rtype::ecs::Registry& reg)
         .addComponent<rtype::component::Drawable>("join_room_button", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("join_room_button").width, assetsManager.getTexture("join_room_button").height), 1);
 }
 
+void initMenuOptionButton(rtype::ecs::Registry& reg)
+{
+    rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
+    rtype::utils::AssetsManager& assetsManager = rtype::utils::AssetsManager::getInstance();
+    assetsManager.loadTexture("option_button", "assets/textures/buttons/OptionButton.png");
+
+    prefabManager.createPrefab("option_button")
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(1336, 100))
+        .addComponent<rtype::component::Clickable>(
+            [&]() {
+                rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
+                sceneManager.setNextScene(rtype::utils::Scene::OPTIONS);
+            })
+        .addComponent<rtype::component::Collider>(assetsManager.getTexture("option_button").width, assetsManager.getTexture("option_button").height)
+        .addComponent<rtype::component::Drawable>("option_button", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("option_button").width, assetsManager.getTexture("option_button").height), 1);
+}
+
 void initMenu(rtype::ecs::Registry& reg)
 {
     rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
@@ -76,6 +93,7 @@ void initMenu(rtype::ecs::Registry& reg)
     initMenuSingleButton(reg);
     initMenuCreateRoomButton(reg);
     initMenuJoinRoomButton(reg);
+    initMenuOptionButton(reg);
 
     sceneManager.addPrefabToScene("main_background", rtype::utils::Scene::MENU);
     sceneManager.addPrefabToScene("main_title", rtype::utils::Scene::MENU);
@@ -83,4 +101,5 @@ void initMenu(rtype::ecs::Registry& reg)
     sceneManager.addPrefabToScene("single_button", rtype::utils::Scene::MENU);
     sceneManager.addPrefabToScene("create_room_button", rtype::utils::Scene::MENU);
     sceneManager.addPrefabToScene("join_room_button", rtype::utils::Scene::MENU);
+    sceneManager.addPrefabToScene("option_button", rtype::utils::Scene::MENU);
 }

@@ -7,30 +7,37 @@
 
 #pragma once
 
-#include <functional>
+#include "OptionManager.hpp"
+namespace raylib {
+#include <raylib.h>
+}
 
 namespace rtype::component {
 /**
  * @brief Controllable component used to store informations about the controls of an entity
  */
 struct Controllable {
-    Controllable(
-        std::function<bool(void)> is_key_up_pressed_,
-        std::function<bool(void)> is_key_down_pressed_,
-        std::function<bool(void)> is_key_left_pressed_,
-        std::function<bool(void)> is_key_right_pressed_)
-        : is_key_up_pressed(is_key_up_pressed_)
-        , is_key_down_pressed(is_key_down_pressed_)
-        , is_key_left_pressed(is_key_left_pressed_)
-        , is_key_right_pressed(is_key_right_pressed_) {};
+    Controllable() = default;
     ~Controllable() = default;
 
     Controllable(const Controllable& other) = default;
     Controllable& operator=(const Controllable& other) = default;
 
-    std::function<bool(void)> is_key_up_pressed;
-    std::function<bool(void)> is_key_down_pressed;
-    std::function<bool(void)> is_key_left_pressed;
-    std::function<bool(void)> is_key_right_pressed;
+    bool isKeyUpPressed() const
+    {
+        return raylib::IsKeyDown(rtype::utils::OptionManager::getInstance().getKeyUp());
+    }
+    bool isKeyDownPressed() const
+    {
+        return raylib::IsKeyDown(rtype::utils::OptionManager::getInstance().getKeyDown());
+    }
+    bool isKeyLeftPressed() const
+    {
+        return raylib::IsKeyDown(rtype::utils::OptionManager::getInstance().getKeyLeft());
+    }
+    bool isKeyRightPressed() const
+    {
+        return raylib::IsKeyDown(rtype::utils::OptionManager::getInstance().getKeyRight());
+    }
 };
 };

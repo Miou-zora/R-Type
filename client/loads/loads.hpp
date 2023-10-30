@@ -30,6 +30,9 @@ namespace raylib {
 }
 #include "NetworkMessage.hpp"
 #include "RoomInformations.hpp"
+#include "KeyInput.hpp"
+#include "OptionManager.hpp"
+#include "KeyToString.hpp"
 
 /**
  * @brief Init the Login scene (prefabs)
@@ -56,7 +59,11 @@ void initRoom(rtype::ecs::Registry& reg);
  * @param reg The ECS registry
  */
 void initGamePrefabs(rtype::ecs::Registry& reg);
-
+/**
+ * @brief Init the Option scene (prefabs)
+ * @param reg The ECS registry
+ */
+void initOption(rtype::ecs::Registry& reg);
 /**
  * @brief Init the End scene (prefabs)
  * @param reg The ECS registry

@@ -213,13 +213,8 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("ShipsSheet", 4, rtype::utils::Rectangle(1, 3, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 6)
         .addComponent<rtype::component::ServerID>()
-        .addComponent<rtype::component::Controllable>(
-            []() { return raylib::IsKeyDown(raylib::KEY_UP); },
-            []() { return raylib::IsKeyDown(raylib::KEY_DOWN); },
-            []() { return raylib::IsKeyDown(raylib::KEY_LEFT); },
-            []() { return raylib::IsKeyDown(raylib::KEY_RIGHT); })
+        .addComponent<rtype::component::Controllable>()
         .addComponent<rtype::component::InputShooter>(
-            []() { return raylib::IsKeyDown(raylib::KEY_SPACE); },
             rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ALLY_BULLET),
             0.5,
             0)
