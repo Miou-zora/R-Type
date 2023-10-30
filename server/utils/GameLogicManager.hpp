@@ -283,6 +283,24 @@ public:
     }
 
     /**
+     * @brief Check if the game exists
+     * @param registry ECS registry
+     * @param gameRoom Game room
+     * @return true if the game exists, false otherwise
+     */
+    static bool gameExists(rtype::ecs::Registry& registry, const rtype::component::GameRoom& gameRoom)
+    {
+        for (auto&& [index, networkPlayerOpt, gameRoomOpt] : ecs::containers::IndexedZipper(registry.getComponents<rtype::component::NetworkPlayer>(), registry.getComponents<rtype::component::GameRoom>())) {
+            auto& networkPlayer = networkPlayerOpt.value();
+            auto& playerGameRoom = gameRoomOpt.value();
+            if (playerGameRoom.id == gameRoom.id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * @brief Create all the game prefabs
      */
     void createPrefabs()

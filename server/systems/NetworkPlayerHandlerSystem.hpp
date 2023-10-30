@@ -154,6 +154,10 @@ private:
             std::cerr << "handleChooseRoomCallback: warning: Player " << networkPlayerEntity << " tried to join a game that has already started" << std::endl;
             return;
         }
+        if (!rtype::utils::GameLogicManager::gameExists(registry, component)) {
+            std::cerr << "handleChooseRoomCallback: warning: Player " << networkPlayerEntity << " tried to join a non-existing game" << std::endl;
+            return;
+        }
         registry.emplaceComponent<rtype::component::GameRoom>(registry.entityFromIndex(networkPlayerEntity), std::move(component));
         for (auto&& [gameRoomOpt, networkPlayerOpt] : ecs::containers::Zipper(registry.getComponents<rtype::component::GameRoom>(), registry.getComponents<rtype::component::NetworkPlayer>())) {
             auto& gameRoom = gameRoomOpt.value();
