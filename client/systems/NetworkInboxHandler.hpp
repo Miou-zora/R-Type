@@ -280,6 +280,13 @@ namespace rtype::system
                 if (memcmp(registry.getComponents<rtype::component::ServerID>()[index]->uuid, playerDeath.playerUuid, sizeof(playerDeath.playerUuid)) == 0)
                 {
                     registry.killEntity(registry.entityFromIndex(index));
+                    if (registry.hasComponent<rtype::component::Explosive>(registry.entityFromIndex(index)))
+                    {
+                        rtype::ecs::Entity explosion = rtype::utils::PrefabManager::getInstance().instantiate("Explosion", registry);
+                        std::cout << "Pos: " << registry.getComponents<rtype::component::Transform>()[explosion]->position << std::endl;
+                        registry.getComponents<rtype::component::Transform>()[explosion]->position.x = registry.getComponents<rtype::component::Transform>()[index]->position.x;
+                        registry.getComponents<rtype::component::Transform>()[explosion]->position.y = registry.getComponents<rtype::component::Transform>()[index]->position.y;
+                    }
                     break;
                 }
             }

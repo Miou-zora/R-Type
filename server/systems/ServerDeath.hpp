@@ -49,6 +49,7 @@ public:
                 if (registry.hasComponent<rtype::component::NetworkPlayer>(registry.entityFromIndex(index))) {
                     if (registry.hasComponent<rtype::component::Transform>(registry.entityFromIndex(index)))
                         registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value().position.y = -20000.0f;
+                        rtype::utils::Communication::sendToPlayerInSameRoom<rtype::network::message::server::EntityDeath>(registry, rtype::utils::Communication::CommunicationType::CRITICAL, registry.getComponents<rtype::component::GameRoom>()[registry.entityFromIndex(index)].value().id, registry.getComponents<rtype::component::ServerID>()[registry.entityFromIndex(index)].value().uuid);
                 } else {
                     registry.killEntity(registry.entityFromIndex(index));
                 }
