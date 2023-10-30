@@ -523,73 +523,43 @@ namespace rtype::network {
                 u_int32_t life;
             };
 
-            struct EnemySpawn {
-                EnemySpawn(uint8_t _enemyUuid[16], float _x, float _y, u_int8_t _enemytype)
-                    : x(_x), y(_y), enemytype(_enemytype)
+            struct EntitySpawn {
+                EntitySpawn(uint8_t uuid_[16], float x_, float y_, u_int8_t type_, u_int8_t team_)
+                    : x(x_), y(y_), entityType(type_), team(team_)
                 {
-                    std::copy_n(_enemyUuid, 16, enemyUuid);
+                    std::copy_n(uuid_, 16, uuid);
                 }
 
                 static const u_int16_t type = 0x0020;
                 NetworkMessageHeader header;
-                uint8_t enemyUuid[16];
+                uint8_t uuid[16];
                 float x;
                 float y;
-                u_int8_t enemytype;
+                u_int8_t entityType;
+                u_int8_t team;
             };
 
-            struct EnemyDeath {
-                EnemyDeath(uint8_t _enemyUuid[16])
+            struct EntityDeath {
+                EntityDeath(uint8_t uuid_[16])
                 {
-                    std::copy_n(_enemyUuid, 16, enemyUuid);
+                    std::copy_n(uuid_, 16, uuid);
                 }
 
                 static const u_int16_t type = 0x0021;
                 NetworkMessageHeader header;
-                uint8_t enemyUuid[16];
+                uint8_t uuid[16];
             };
 
-            struct EnemyMovement {
-                EnemyMovement(uint8_t _enemyUuid[16], float _x, float _y)
-                    : x(_x), y(_y)
+            struct EntityMovement {
+                EntityMovement(uint8_t uuid_[16], float x_, float y_)
+                    : x(x_), y(y_)
                 {
-                    std::copy_n(_enemyUuid, 16, enemyUuid);
+                    std::copy_n(uuid_, 16, uuid);
                 }
 
                 static const u_int16_t type = 0x0022;
                 NetworkMessageHeader header;
-                uint8_t enemyUuid[16];
-                float x;
-                float y;
-            };
-
-            struct BulletShoot {
-                BulletShoot(uint8_t _bulletUuid[16], float _x, float _y, float _xVelocity, float _yVelocity, u_int8_t _team)
-                    : x(_x), y(_y), xVelocity(_xVelocity), yVelocity(_yVelocity), team(_team)
-                {
-                    std::copy_n(_bulletUuid, 16, bulletUuid);
-                }
-
-                static const u_int16_t type = 0x0030;
-                NetworkMessageHeader header;
-                uint8_t bulletUuid[16];
-                float x;
-                float y;
-                float xVelocity;
-                float yVelocity;
-                u_int8_t team;
-            };
-
-            struct BulletPosition {
-                BulletPosition(uint8_t _bulletUuid[16], float _x, float _y)
-                    : x(_x), y(_y)
-                {
-                    std::copy_n(_bulletUuid, 16, bulletUuid);
-                }
-
-                static const u_int16_t type = 0x0031;
-                NetworkMessageHeader header;
-                uint8_t bulletUuid[16];
+                uint8_t uuid[16];
                 float x;
                 float y;
             };
@@ -606,17 +576,6 @@ namespace rtype::network {
                 uint8_t bulletUuid[16];
                 uint8_t hitUuid[16];
             };
-
-            struct BulletDespawn {
-                BulletDespawn(uint8_t _bulletUuid[16])
-                {
-                    std::copy_n(_bulletUuid, 16, bulletUuid);
-                }
-
-                static const u_int16_t type = 0x0033;
-                NetworkMessageHeader header;
-                uint8_t bulletUuid[16];
-            };
             #pragma pack(pop)
 
             static constexpr std::size_t g_sizeLookup[][2] = {
@@ -630,13 +589,10 @@ namespace rtype::network {
                 {PlayerMovement::type, sizeof(PlayerMovement)},
                 {PlayerWeaponSwitch::type, sizeof(PlayerWeaponSwitch)},
                 {PlayerLife::type, sizeof(PlayerLife)},
-                {EnemySpawn::type, sizeof(EnemySpawn)},
-                {EnemyDeath::type, sizeof(EnemyDeath)},
-                {EnemyMovement::type, sizeof(EnemyMovement)},
-                {BulletShoot::type, sizeof(BulletShoot)},
-                {BulletPosition::type, sizeof(BulletPosition)},
+                {EntitySpawn::type, sizeof(EntitySpawn)},
+                {EntityDeath::type, sizeof(EntityDeath)},
+                {EntityMovement::type, sizeof(EntityMovement)},
                 {BulletHit::type, sizeof(BulletHit)},
-                {BulletDespawn::type, sizeof(BulletDespawn)},
                 {0xFFFF, 0}
             };
 

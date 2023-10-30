@@ -188,59 +188,35 @@ TEST(NetworkMessage, serverCreateEventPlayerWeaponSwitch)
     ASSERT_EQ(msg.weaponType, 667);
 }
 
-TEST(NetworkMessage, serverCreateEventEnemySpawn)
+TEST(NetworkMessage, serverCreateEventEntitySpawn)
 {
     boost::uuids::uuid uuid = boost::uuids::random_generator()();
-    rtype::network::message::server::EnemySpawn msg = rtype::network::message::createEvent<rtype::network::message::server::EnemySpawn>(uuid.data, 24, 42, 84);
+    rtype::network::message::server::EntitySpawn msg = rtype::network::message::createEvent<rtype::network::message::server::EntitySpawn>(uuid.data, 24, 42, 84, 168);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0020);
-    ASSERT_EQ(std::memcmp(uuid.data, msg.enemyUuid, 16), 0);
+    ASSERT_EQ(std::memcmp(uuid.data, msg.uuid, 16), 0);
     ASSERT_EQ(msg.x, 24);
     ASSERT_EQ(msg.y, 42);
-    ASSERT_EQ(msg.enemytype, 84);
+    ASSERT_EQ(msg.entityType, 84);
+    ASSERT_EQ(msg.team, 168);
 }
 
-TEST(NetworkMessage, serverCreateEventEnemyDeath)
+TEST(NetworkMessage, serverCreateEventEntityDeath)
 {
     boost::uuids::uuid uuid = boost::uuids::random_generator()();
-    rtype::network::message::server::EnemyDeath msg = rtype::network::message::createEvent<rtype::network::message::server::EnemyDeath>(uuid.data);
+    rtype::network::message::server::EntityDeath msg = rtype::network::message::createEvent<rtype::network::message::server::EntityDeath>(uuid.data);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0021);
-    ASSERT_EQ(std::memcmp(uuid.data, msg.enemyUuid, 16), 0);
+    ASSERT_EQ(std::memcmp(uuid.data, msg.uuid, 16), 0);
 }
 
-TEST(NetworkMessage, serverCreateEventEnemyMovement)
+TEST(NetworkMessage, serverCreateEventEntityMovement)
 {
     boost::uuids::uuid uuid = boost::uuids::random_generator()();
-    rtype::network::message::server::EnemyMovement msg = rtype::network::message::createEvent<rtype::network::message::server::EnemyMovement>(uuid.data, 24, 42);
+    rtype::network::message::server::EntityMovement msg = rtype::network::message::createEvent<rtype::network::message::server::EntityMovement>(uuid.data, 24, 42);
     CHECK_MAGICS(msg)
     ASSERT_EQ(msg.header.type, 0x0022);
-    ASSERT_EQ(std::memcmp(uuid.data, msg.enemyUuid, 16), 0);
-    ASSERT_EQ(msg.x, 24);
-    ASSERT_EQ(msg.y, 42);
-}
-
-TEST(NetworkMessage, serverCreateEventBulletShoot)
-{
-    boost::uuids::uuid uuid = boost::uuids::random_generator()();
-    rtype::network::message::server::BulletShoot msg = rtype::network::message::createEvent<rtype::network::message::server::BulletShoot>(uuid.data, 24, 42, 24, 42, 1);
-    CHECK_MAGICS(msg)
-    ASSERT_EQ(msg.header.type, 0x0030);
-    ASSERT_EQ(std::memcmp(uuid.data, msg.bulletUuid, 16), 0);
-    ASSERT_EQ(msg.x, 24);
-    ASSERT_EQ(msg.y, 42);
-    ASSERT_EQ(msg.xVelocity, 24);
-    ASSERT_EQ(msg.yVelocity, 42);
-    ASSERT_EQ(msg.team, 1);
-}
-
-TEST(NetworkMessage, serverCreateEventBulletPosition)
-{
-    boost::uuids::uuid uuid = boost::uuids::random_generator()();
-    rtype::network::message::server::BulletPosition msg = rtype::network::message::createEvent<rtype::network::message::server::BulletPosition>(uuid.data, 24, 42);
-    CHECK_MAGICS(msg)
-    ASSERT_EQ(msg.header.type, 0x0031);
-    ASSERT_EQ(std::memcmp(uuid.data, msg.bulletUuid, 16), 0);
+    ASSERT_EQ(std::memcmp(uuid.data, msg.uuid, 16), 0);
     ASSERT_EQ(msg.x, 24);
     ASSERT_EQ(msg.y, 42);
 }
@@ -255,15 +231,6 @@ TEST(NetworkMessage, serverCreateEventBulletHit)
     ASSERT_EQ(msg.header.type, 0x0032);
     ASSERT_EQ(std::memcmp(uuid.data, msg.bulletUuid, 16), 0);
     ASSERT_EQ(std::memcmp(uuid1.data, msg.hitUuid, 16), 0);
-}
-
-TEST(NetworkMessage, serverCreateEventBulletDespawn)
-{
-    boost::uuids::uuid uuid = boost::uuids::random_generator()();
-    rtype::network::message::server::BulletDespawn msg = rtype::network::message::createEvent<rtype::network::message::server::BulletDespawn>(uuid.data);
-    CHECK_MAGICS(msg)
-    ASSERT_EQ(msg.header.type, 0x0033);
-    ASSERT_EQ(std::memcmp(uuid.data, msg.bulletUuid, 16), 0);
 }
 
 TEST(NetworkMessage, checkMagics)

@@ -11,6 +11,7 @@
 #include "InputShooter.hpp"
 #include "PrefabManager.hpp"
 #include "Transform.hpp"
+#include "PrefabsMapping.hpp"
 
 namespace rtype::system
 {

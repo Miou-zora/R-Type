@@ -5,9 +5,8 @@
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 
-#include "BulletInformation.hpp"
 #include "ECS.hpp"
-#include "EnemyInformation.hpp"
+#include "EntityInformation.hpp"
 #include "GameRoom.hpp"
 #include "NetworkPlayer.hpp"
 #include "NetworkServer.hpp"
@@ -43,8 +42,7 @@ private:
     void sendInformationsToPlayer(size_t i, ecs::Registry& registry, const rtype::component::NetworkPlayer& networkPlayer) const
     {
         sendPlayerPositions(i, registry, networkPlayer);
-        sendBulletPositions(i, registry, networkPlayer);
-        sendEnemyPositions(i, registry, networkPlayer);
+        sendEntityPositions(i, registry, networkPlayer);
     }
 
     /**
@@ -76,60 +74,26 @@ private:
     }
 
     /**
-     * @brief Send all the positions of the game bullets to a player
-     * @param i Index of the player
-     * @param registry Registry of the game
-     * @param networkPlayer NetworkPlayer component of the player
-     */
-    void sendBulletPositions(size_t i, ecs::Registry& registry, const rtype::component::NetworkPlayer& networkPlayer) const
+     * @brief Send all the positions of the game entities to a player
+    */
+    void sendEntityPositions(size_t i, ecs::Registry& registry, const rtype::component::NetworkPlayer& networkPlayer) const
     {
         auto& outbox = networkPlayer.outbox;
         if (!registry.hasComponent<rtype::component::GameRoom>(registry.entityFromIndex(i)))
             return;
         auto& playerRoom = registry.getComponents<rtype::component::GameRoom>()[i].value();
 
-        for (auto&& [j, gameRoomOpt, transformOpt, bulletOpt] :
+        for (auto&& [j, gameRoomOpt, transformOpt, enemyInformations] :
             ecs::containers::IndexedZipper(registry.getComponents<rtype::component::GameRoom>(),
                 registry.getComponents<rtype::component::Transform>(),
-                registry.getComponents<rtype::component::BulletInformation>())) {
-            auto& gameRoom = gameRoomOpt.value();
-            if (gameRoom.id != playerRoom.id) {
-                continue;
-            }
-
-            auto& transform = transformOpt.value();
-            auto& bullet = bulletOpt.value();
-            auto& serverID = registry.getComponents<rtype::component::ServerID>()[j].value();
-            auto msg = rtype::network::message::createEvent<rtype::network::message::server::BulletPosition>(serverID.uuid, transform.position.x, transform.position.y);
-            outbox->push(rtype::network::message::pack(msg));
-        }
-    }
-
-    /**
-     * @brief Send all the positions of the game enemies to a player
-     * @param i Index of the player
-     * @param registry Registry of the game
-     * @param networkPlayer NetworkPlayer component of the player
-     */
-    void sendEnemyPositions(size_t i, ecs::Registry& registry, const rtype::component::NetworkPlayer& networkPlayer) const
-    {
-        auto& outbox = networkPlayer.outbox;
-        if (!registry.hasComponent<rtype::component::GameRoom>(registry.entityFromIndex(i)))
-            return;
-        auto& playerRoom = registry.getComponents<rtype::component::GameRoom>()[i].value();
-
-        for (auto&& [j, gameRoomOpt, transformOpt, enemyOpt, enemyInformations] :
-            ecs::containers::IndexedZipper(registry.getComponents<rtype::component::GameRoom>(),
-                registry.getComponents<rtype::component::Transform>(),
-                registry.getComponents<rtype::tag::Enemy>(),
-                registry.getComponents<rtype::component::EnemyInformation>())) {
+                registry.getComponents<rtype::component::EntityInformation>())) {
             auto& gameRoom = gameRoomOpt.value();
             if (gameRoom.id != playerRoom.id) {
                 continue;
             }
             auto& transform = transformOpt.value();
             auto& serverID = registry.getComponents<rtype::component::ServerID>()[j].value();
-            auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemyMovement>(serverID.uuid, transform.position.x, transform.position.y);
+            auto msg = rtype::network::message::createEvent<rtype::network::message::server::EntityMovement>(serverID.uuid, transform.position.x, transform.position.y);
             outbox->push(rtype::network::message::pack(msg));
         }
     }

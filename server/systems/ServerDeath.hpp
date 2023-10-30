@@ -90,11 +90,11 @@ private:
             return std::nullopt;
         auto& serverID = registry.getComponents<rtype::component::ServerID>()[index].value();
         if (registry.hasComponent<rtype::tag::Enemy>(registry.entityFromIndex(index))
-            && registry.hasComponent<rtype::component::EnemyInformation>(registry.entityFromIndex(index))) {
-            auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemyDeath>(serverID.uuid);
+            && registry.hasComponent<rtype::component::EntityInformation>(registry.entityFromIndex(index))) {
+            auto msg = rtype::network::message::createEvent<rtype::network::message::server::EntityDeath>(serverID.uuid);
             return std::make_optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>>(rtype::network::message::pack(msg));
         }
-        if (registry.hasComponent<rtype::component::BulletInformation>(registry.entityFromIndex(index))) {
+        if (registry.hasComponent<rtype::component::EntityInformation>(registry.entityFromIndex(index))) {
             boost::uuids::uuid id = boost::uuids::nil_uuid();
             auto msg = rtype::network::message::createEvent<rtype::network::message::server::BulletHit>(serverID.uuid, id.data);
             return std::make_optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>>(rtype::network::message::pack(msg));

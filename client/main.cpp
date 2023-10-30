@@ -83,6 +83,7 @@ int main(int ac, char* av[])
     reg.registerComponent<rtype::component::LastUpdate>();
     reg.registerComponent<rtype::tag::Ally>();
     reg.registerComponent<rtype::tag::Enemy>();
+    reg.registerComponent<rtype::component::Explosive>();
 
     rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
 

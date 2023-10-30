@@ -9,7 +9,6 @@
 
 #include <unordered_map>
 
-#include "BulletInformation.hpp"
 #include "ECS.hpp"
 #include "GameRoom.hpp"
 #include "NetworkPlayer.hpp"
@@ -17,6 +16,7 @@
 #include "Transform.hpp"
 #include "components/Spawner.hpp"
 #include "systems/Spawner.hpp"
+#include "PrefabsMapping.hpp"
 
 namespace rtype::system {
 /**
@@ -49,12 +49,12 @@ private:
                 rtype::component::Transform& entityTransform = registry.getComponents<rtype::component::Transform>()[entity].value();
                 entityTransform.position += registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value().position;
             }
-            if (registry.hasComponent<rtype::component::EnemyInformation>(entity)) {
-                onEnemySpawn(registry, entity);
+            if (registry.hasComponent<rtype::component::EntityInformation>(entity)) {
+                onEntitySpawn(registry, entity);
             }
             if (registry.hasComponent<rtype::component::GameRoom>(entity)) {
                 registry.getComponents<rtype::component::GameRoom>()[entity].value().id = spawnerGameRoomId;
-                sendSpawnToNetworkPlayers(registry, entity);
+                sendSpawnToNetworkPlayers(registry, entity, spawner.spawnList[0].entityName);
             }
             if (spawner.looping) {
                 spawner.spawnList.push_back(spawner.spawnList[0]);
@@ -64,10 +64,10 @@ private:
         }
     }
 
-    void sendSpawnToNetworkPlayers(rtype::ecs::Registry& registry, rtype::ecs::Entity entity) const
+    void sendSpawnToNetworkPlayers(rtype::ecs::Registry& registry, rtype::ecs::Entity entity, const std::string &entityPrefabsName) const
     {
         auto& entityGameRoom = registry.getComponents<rtype::component::GameRoom>()[entity].value();
-        auto msg = getSpawnMessage(registry, entity);
+        auto msg = getSpawnMessage(registry, entity, entityPrefabsName);
         if (!msg.has_value())
             return;
         for (auto&& [index, networkPlayer, gameRoom] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::NetworkPlayer>(), registry.getComponents<rtype::component::GameRoom>())) {
@@ -77,7 +77,7 @@ private:
         }
     }
 
-    void onEnemySpawn(rtype::ecs::Registry& registry, rtype::ecs::Entity entity) const
+    void onEntitySpawn(rtype::ecs::Registry& registry, rtype::ecs::Entity entity) const
     {
         auto& serverID = registry.getComponents<rtype::component::ServerID>()[entity].value();
         rtype::component::Transform& entityTransform = registry.getComponents<rtype::component::Transform>()[entity].value();
@@ -86,18 +86,17 @@ private:
         std::copy_n(uuid.data, 16, serverID.uuid);
     }
 
-    std::optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>> getSpawnMessage(rtype::ecs::Registry& registry, std::size_t index) const
+    std::optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>> getSpawnMessage(rtype::ecs::Registry& registry, std::size_t index, const std::string &entityPrefabsName) const
     {
         if (!registry.hasComponent<rtype::component::ServerID>(registry.entityFromIndex(index)))
             return std::nullopt;
         auto& serverID = registry.getComponents<rtype::component::ServerID>()[index].value();
         if (registry.hasComponent<rtype::tag::Enemy>(registry.entityFromIndex(index))) {
             const auto& transform = registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value();
-            if (registry.hasComponent<rtype::component::EnemyInformation>(registry.entityFromIndex(index))) {
-                auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemySpawn>(serverID.uuid, transform.position.x, transform.position.y, registry.getComponents<rtype::component::EnemyInformation>()[registry.entityFromIndex(index)].value().type);
-                return std::make_optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>>(rtype::network::message::pack(msg));
-            } else {
-                auto msg = rtype::network::message::createEvent<rtype::network::message::server::EnemySpawn>(serverID.uuid, transform.position.x, transform.position.y, 0);
+            if (registry.hasComponent<rtype::component::EntityInformation>(registry.entityFromIndex(index))) {
+                auto msg = rtype::network::message::createEvent<rtype::network::message::server::EntitySpawn>(serverID.uuid, transform.position.x, transform.position.y, static_cast<u_int8_t>(rtype::utils::PrefabsMapping::namesMapping.at(entityPrefabsName)), 0);
+                if (registry.hasComponent<rtype::tag::Enemy>(registry.entityFromIndex(index)))
+                    msg.team = 1;
                 return std::make_optional<boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE>>(rtype::network::message::pack(msg));
             }
         }

@@ -27,6 +27,7 @@
 #include "Enemy.hpp"
 #include "PrefabsMapping.hpp"
 #include "Enemy.hpp"
+#include "Explosive.hpp"
 
 void initGamePrefabs(rtype::ecs::Registry& registry)
 {
@@ -60,9 +61,21 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     assetsManagerInstance.loadTexture(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TOP_WALL), "assets/textures/Top_wall.png");
     assetsManagerInstance.loadTexture(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::BOTTOM_WALL), "assets/textures/Bot_wall.png");
 
-    prefabManagerInstance.createPrefab("EnemyProjectile") // Can add animation component
+    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::SIMPLE_BULLET))
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("enemyProjectileSheet", 5, rtype::utils::Rectangle(135, 5, 7, 6), 5)
+        .addComponent<rtype::component::ServerID>()
+        .addComponent<rtype::tag::Enemy>()
+        .addComponent<rtype::component::LastUpdate>();
+
+    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TARGET_BULLET))
+        .addComponent<rtype::component::Transform>()
+        .addComponent<rtype::component::Drawable>("enemyProjectileSheet", 5, rtype::utils::Rectangle(135, 5, 7, 6), 5)
+        .addComponent<rtype::component::ServerID>()
+        .addComponent<rtype::tag::Enemy>()
+        .addComponent<rtype::component::LastUpdate>();
+
+    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TRIPLE_BULLET))
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::tag::Enemy>()
         .addComponent<rtype::component::LastUpdate>();
@@ -108,6 +121,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Drawable>("enemySheet", 4, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("enemySheet").width / 16, assetsManagerInstance.getTexture("enemySheet").height), 5)
         .addComponent<rtype::component::Animation>(enemyAnimation)
         .addComponent<rtype::component::ServerID>()
+        .addComponent<rtype::component::Explosive>()
         .addComponent<rtype::tag::Enemy>()
         .addComponent<rtype::component::LastUpdate>();
 
@@ -115,6 +129,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("enemy2", 3, rtype::utils::Rectangle(138, 52, 60, 47), 5)
         .addComponent<rtype::component::ServerID>()
+        .addComponent<rtype::component::Explosive>()
         .addComponent<rtype::tag::Enemy>()
         .addComponent<rtype::component::LastUpdate>();
 
@@ -122,6 +137,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ZOYDO), 4, rtype::utils::Rectangle(1, 67, 32, 32), 5)
         .addComponent<rtype::component::ServerID>()
+        .addComponent<rtype::component::Explosive>()
         .addComponent<rtype::component::Animation>(zoydoAnimation)
         .addComponent<rtype::tag::Enemy>()
         .addComponent<rtype::component::LastUpdate>();
@@ -144,7 +160,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
 
     prefabManagerInstance.createPrefab("Player")
         .addComponent<rtype::component::Transform>()
-        .addComponent<rtype::component::Drawable>("ShipsSheet", 4, rtype::utils::Rectangle(1, 3, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 5)
+        .addComponent<rtype::component::Drawable>("ShipsSheet", 4, rtype::utils::Rectangle(1, 3, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 6)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::Controllable>(
             []() { return raylib::IsKeyDown(raylib::KEY_UP); },
@@ -153,7 +169,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
             []() { return raylib::IsKeyDown(raylib::KEY_RIGHT); })
         .addComponent<rtype::component::InputShooter>(
             []() { return raylib::IsKeyDown(raylib::KEY_SPACE); },
-            "AllyProjectile",
+            rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ALLY_BULLET),
             0.5,
             0)
         .addComponent<rtype::component::Speed>(200)
@@ -161,7 +177,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Velocity>()
         .addComponent<rtype::component::AllyNumber>(0)
         .addComponent<rtype::tag::Ally>();
-    prefabManagerInstance.createPrefab("AllyProjectile")
+    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ALLY_BULLET))
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("allyProjectileSheet", 4, rtype::utils::Rectangle(248, 88, 17, 6), 5)
         .addComponent<rtype::component::ServerID>()
@@ -169,19 +185,19 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::LastUpdate>();
     prefabManagerInstance.createPrefab("Ally1")
         .addComponent<rtype::component::Transform>()
-        .addComponent<rtype::component::Drawable>("ShipsSheet", 4, rtype::utils::Rectangle(1, 20, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 5)
+        .addComponent<rtype::component::Drawable>("ShipsSheet", 4, rtype::utils::Rectangle(1, 20, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 6)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::AllyNumber>(1)
         .addComponent<rtype::tag::Ally>();
     prefabManagerInstance.createPrefab("Ally2")
         .addComponent<rtype::component::Transform>()
-        .addComponent<rtype::component::Drawable>("ShipsSheet", 4, rtype::utils::Rectangle(1, 37, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 5)
+        .addComponent<rtype::component::Drawable>("ShipsSheet", 4, rtype::utils::Rectangle(1, 37, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 6)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::AllyNumber>(2)
         .addComponent<rtype::tag::Ally>();
     prefabManagerInstance.createPrefab("Ally3")
         .addComponent<rtype::component::Transform>()
-        .addComponent<rtype::component::Drawable>("ShipsSheet", 4, rtype::utils::Rectangle(1, 54, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 5)
+        .addComponent<rtype::component::Drawable>("ShipsSheet", 4, rtype::utils::Rectangle(1, 54, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 6)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::AllyNumber>(3)
         .addComponent<rtype::tag::Ally>();
@@ -205,7 +221,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0, 0))
         .addComponent<rtype::component::Drawable>("farPlanets", 7, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("farPlanets").width, assetsManagerInstance.getTexture("farPlanets").height), 1)
         .addComponent<rtype::component::Scrollable>(rtype::utils::Vector<float>(1, 0), 10);
-    prefabManagerInstance.createPrefab("EnemyExplosion")
+    prefabManagerInstance.createPrefab("Explosion")
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("enemyExplosion", 5, rtype::utils::Rectangle(129, 1, 32, 32), 5)
         .addComponent<rtype::component::Animation>(enemyExplosionAnimation)

@@ -17,15 +17,16 @@
 #include "Transform.hpp"
 #include "Vector.hpp"
 #include "components/Path.hpp"
+#include "PrefabsMapping.hpp"
 
 namespace rtype::system {
 /**
- * @brief EnemyShootControl system used to shoot bullets
+ * @brief EntityShootControl system used to shoot bullets
  */
-class EnemyShootControl {
+class EntityShootControl {
 public:
-    EnemyShootControl() = default;
-    ~EnemyShootControl() = default;
+    EntityShootControl() = default;
+    ~EntityShootControl() = default;
 
     void operator()(ecs::Registry& registry,
         ecs::SparseArray<rtype::component::Shooter>& shooters) const
@@ -35,18 +36,18 @@ public:
                 continue;
             shooter.value().update(registry.getDeltaTime());
             if (shooter.value().canShoot()) {
-                std::size_t bulletI = rtype::utils::GameLogicManager::getInstance().createEnemyShootedBullet(registry, index);
+                std::size_t bulletI = rtype::utils::GameLogicManager::getInstance().createEntityFrom(registry, index, shooter.value().projectileName);
                 shooter.value().reset();
-                sendShootToPlayers(registry, bulletI);
+                sendShootToPlayers(registry, bulletI, shooter.value().projectileName);
             }
         }
     }
 
 private:
-    void sendShootToPlayers(rtype::ecs::Registry& registry, std::size_t index) const
+    void sendShootToPlayers(rtype::ecs::Registry& registry, std::size_t index, const std::string &projectileName) const
     {
         auto& entityGameRoom = registry.getComponents<rtype::component::GameRoom>()[index].value();
-        auto msg = getShootMessage(registry, index);
+        auto msg = getShootMessage(registry, index, projectileName);
         for (auto&& [index, networkPlayer, gameRoom] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::NetworkPlayer>(), registry.getComponents<rtype::component::GameRoom>())) {
             if (gameRoom.value().id == entityGameRoom.id) {
                 addToCriticalMessages(networkPlayer.value(), msg);
@@ -54,11 +55,11 @@ private:
         }
     }
 
-    boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> getShootMessage(rtype::ecs::Registry& registry, std::size_t index) const
+    boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> getShootMessage(rtype::ecs::Registry& registry, std::size_t index, const std::string &projectileName) const
     {
         const auto& transform = registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value();
         auto& bulletServerID = registry.getComponents<rtype::component::ServerID>()[index].value();
-        auto msg = rtype::network::message::createEvent<rtype::network::message::server::BulletShoot>(bulletServerID.uuid, transform.position.x, transform.position.y, 0.0f, 0.0f, 0);
+        auto msg = rtype::network::message::createEvent<rtype::network::message::server::EntitySpawn>(bulletServerID.uuid, transform.position.x, transform.position.y, static_cast<u_int8_t>(rtype::utils::PrefabsMapping::namesMapping.at(projectileName)), 0);
         if (registry.hasComponent<rtype::tag::Enemy>(registry.entityFromIndex(index)))
             msg.team = 1;
         return rtype::network::message::pack(msg);

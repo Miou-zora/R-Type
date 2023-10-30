@@ -44,13 +44,10 @@ class Server(Packer):
         0x0012: _HEADER_FOOTER_FORMAT.format(data='Hff'),
         0x0013: _HEADER_FOOTER_FORMAT.format(data='Hh'),
         0x0014: _HEADER_FOOTER_FORMAT.format(data='HH'),
-        0x0020: _HEADER_FOOTER_FORMAT.format(data='Hffc'),
+        0x0020: _HEADER_FOOTER_FORMAT.format(data='Hffcc'),
         0x0021: _HEADER_FOOTER_FORMAT.format(data='H'),
         0x0022: _HEADER_FOOTER_FORMAT.format(data='Hff'),
-        0x0030: _HEADER_FOOTER_FORMAT.format(data='Hffffc'),
-        0x0031: _HEADER_FOOTER_FORMAT.format(data='Hff'),
         0x0032: _HEADER_FOOTER_FORMAT.format(data='HH'),
-        0x0033: _HEADER_FOOTER_FORMAT.format(data='H'),
     }
     ConnectAck: int = 0x0000
     RoomInformation: int = 0x0001
@@ -62,13 +59,10 @@ class Server(Packer):
     PlayerMovement: int = 0x0012
     PlayerWeaponSwitch: int = 0x0013
     PlayerLife: int = 0x0014
-    EnemySpawn: int = 0x0020
-    EnemyDeath: int = 0x0021
-    EnemyMovement: int = 0x0022
-    BulletShoot: int = 0x0030
-    BulletPosition: int = 0x0031
+    EntitySpawn: int = 0x0020
+    EntityDeath: int = 0x0021
+    EntityMovement: int = 0x0022
     BulletHit: int = 0x0032
-    BulletDespawn: int = 0x0033
 
 class Client(Packer):
     FORMATS: Dict[int, str] = {

@@ -25,6 +25,9 @@ TEST(Registry, entity)
 
     // Test entity deletion
     registry.killEntity(entity);
+    registry.addSystem([](rtype::ecs::Registry &registry) {
+        (void)registry;
+    });
     registry.runSystems();
 
     // Test entity reusing

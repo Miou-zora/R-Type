@@ -15,7 +15,7 @@
 #include "Enemy.hpp"
 #include "NetworkPlayer.hpp"
 #include "GameRoom.hpp"
-#include "EnemyInformation.hpp"
+#include "EntityInformation.hpp"
 #include "SingletonWrapper.hpp"
 #include "EventManager.hpp"
 #include "DamageInfliction.hpp"

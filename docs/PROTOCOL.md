@@ -104,13 +104,10 @@ This section describes the messages sent by the server to the client.
 | 0x0012 | `network::message::server::PlayerMovement` | `u_int8_t[16] player_id;` <br> `float x;` <br> `float y;` | Used to indicate that a player moved |
 | 0x0013 | `network::message::server::PlayerWeaponSwitch` | `u_int8_t[16] player_id;` <br> `int16_t weapon_type;` | Used to indicate that a player switched weapon |
 | 0x0014 | `network::message::server::PlayerLife` | `u_int8_t[16] player_id;` <br> `int32_t life;` | Used to indicate that a player's life is updated |
-| 0x0020 | `network::message::server::EnemySpawn` | `u_int8_t[16] enemy_id;` <br> `float x;` <br> `float y;` <br> `u_int8_t enemytype;` | Used to indicate that an enemy spawned |
-| 0x0021 | `network::message::server::EnemyDeath` | `u_int8_t[16] enemy_id;` | Used to indicate that an enemy died |
-| 0x0022 | `network::message::server::EnemyMovement` | `u_int8_t[16] enemy_id;` <br> `float x;` <br> `float y;` | Used to indicate that an enemy moved |
-| 0x0030 | `network::message::server::BulletShoot` | `u_int8_t[16] bullet_id;` <br> `float x;` <br> `float y;` <br> `float x_velocity;` <br> `float y_velocity;` <br> `u_int8_t team` | Used to indicate that a bullet was shot |
-| 0x0031 | `network::message::server::BulletPosition` | `u_int8_t[16] bullet_id;` <br> `float x;` <br> `float y;` | Used to indicate that a bullet moved |
+| 0x0020 | `network::message::server::EntitySpawn` | `u_int8_t[16] entity_id;` <br> `float x;` <br> `float y;` <br> `u_int8_t entity_type;` <br> `u_int8_t entity_team` | Used to indicate that an entity spawned |
+| 0x0021 | `network::message::server::EntityDeath` | `u_int8_t[16] entity_id;` | Used to indicate that an entity died |
+| 0x0022 | `network::message::server::EntityMovement` | `u_int8_t[16] entity_uuid;` <br> `float x;` <br> `float y;` | Used to indicate that an entity moved |
 | 0x0032 | `network::message::server::BulletHit` | `u_int8_t[16] bullet_id;` <br> `u_int16_t hit_id;` | Used to indicate that a bullet hit something (id is the entity that got hit, either player or enemy) |
-| 0x0033 | `network::message::server::BulletDespawn` | `u_int8_t[16] bullet_id;` | Used to indicate that a bullet despawned |
 
 ## 4. Communication diagrams
 
@@ -149,9 +146,6 @@ sequenceDiagram
     C->>S: PlayerMovement <x_velocity, y_velocity, keys_pressed>
     S->>C: PlayerMovement <player_id, x, y>
     C->>S: PlayerShoot
-    S->>C: BulletShoot <bullet_id, x, y, x_velocity, y_velocity>
-    S->>C: BulletPosition <bullet_id, x, y>
-    Note over C,S: (after first tick)
     S->>C: BulletHit <bullet_id, hit_id>
     Note over C,S: (after bullet hit something)
     C->>S: PlayerReload
@@ -160,12 +154,12 @@ sequenceDiagram
     S->>C: PlayerDeath <player_id, crashed>
     S->>C: PlayerLife <player_id, life>
     Note over C,S: (after player died)
-    S->>C: EnemySpawn <enemy_id, x, y, enemytype>
-    Note over C,S: (after enemy spawned)
-    S->>C: EnemyDeath <enemy_id>
-    Note over C,S: (after enemy died)
-    S->>C: EnemyMovement <enemy_id, x, y>
-    Note over C,S: (after enemy moved)
+    S->>C: EntitySpawn <enemy_id, x, y, entityType, entityTeam>
+    Note over C,S: (after entity spawned)
+    S->>C: EntityDeath <enemy_id>
+    Note over C,S: (after entity died)
+    S->>C: EntityMovement <entity_uuid, x, y>
+    Note over C,S: (after entity moved)
     C->>S: Ack <msg_id>
 ```
 
