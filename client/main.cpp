@@ -39,10 +39,12 @@
 namespace raylib {
 #include <raylib.h>
 }
+#include "SoundSystem.hpp"
 
 int main(int ac, char* av[])
 {
     raylib::InitWindow(1536, 1024, "Rtype");
+    raylib::InitAudioDevice();
     rtype::ecs::Registry reg;
 
     // add systems
@@ -62,6 +64,7 @@ int main(int ac, char* av[])
     reg.addSystem<rtype::component::RoomInformations>(rtype::system::UpdateRoomInformations());
     reg.addSystem<rtype::component::Controllable, rtype::component::Velocity>(rtype::system::NetworkControl());
     reg.addSystem<rtype::component::InputShooter>(rtype::system::NetworkInputShoot());
+    reg.addSystem<rtype::component::Sound>(rtype::system::SoundSystem());
     reg.addSystem<rtype::component::Key, rtype::component::Selectable>(rtype::system::KeyInput());
     reg.addSystem<rtype::component::Key, rtype::component::Text>(rtype::system::UpdateKeyInputBox());
     reg.addSystem<rtype::component::Nameable, rtype::component::Key>(rtype::system::UpdateInputOptions());
@@ -91,6 +94,7 @@ int main(int ac, char* av[])
     reg.registerComponent<rtype::component::LastUpdate>();
     reg.registerComponent<rtype::tag::Ally>();
     reg.registerComponent<rtype::tag::Enemy>();
+    reg.registerComponent<rtype::component::Sound>();
     reg.registerComponent<rtype::component::Explosive>();
 
     rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
@@ -105,6 +109,9 @@ int main(int ac, char* av[])
 
     // remember to load the first scene LOGIN
     sceneManager.setNextScene(rtype::utils::Scene::LOGIN);
+
+    rtype::ecs::Entity theme = reg.spawnEntity();
+    reg.emplaceComponent<rtype::component::Sound>(theme, "theme", true, rtype::component::AudioType::MUSIC);
 
     while (!raylib::WindowShouldClose()) {
         reg.runSystems();

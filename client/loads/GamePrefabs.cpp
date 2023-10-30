@@ -28,6 +28,7 @@
 #include "PrefabsMapping.hpp"
 #include "Enemy.hpp"
 #include "Explosive.hpp"
+#include "Sound.hpp"
 
 void initGamePrefabs(rtype::ecs::Registry& registry)
 {
@@ -45,6 +46,12 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     std::string farPlanets = "assets/textures/layers/parallax-space-far-planets.png";
     std::string enemyExplosion = "assets/textures/r-typesheet44.png";
     std::string enemy2 = "assets/textures/r-typesheet14.png";
+
+    std::string blasterSound = "assets/sounds/blaster.mp3";
+    std::string explosionSound = "assets/sounds/explosions.wav";
+    std::string theme = "assets/sounds/theme.mp3";
+    std::string bossShot = "assets/sounds/boss-shot.wav";
+    std::string enemyShot = "assets/sounds/enemy-shot.wav";
 
     assetsManagerInstance.loadTexture("ShipsSheet", ShipsSheet);
     assetsManagerInstance.loadTexture("enemySheet", enemySheet);
@@ -77,11 +84,18 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     bossBulletAnimation.framesPosition.push_back(rtype::utils::Vector<int>(152, 118));
     bossBulletAnimation.frameTimes.push_back(0.15);
 
+    assetsManagerInstance.loadSound("blaster", blasterSound);
+    assetsManagerInstance.loadSound("explosion", explosionSound);
+    assetsManagerInstance.loadSound("theme", theme);
+    assetsManagerInstance.loadSound("bossShot", bossShot);
+    assetsManagerInstance.loadSound("enemyShot", enemyShot);
+
     prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::SIMPLE_BULLET))
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("enemyProjectileSheet", 5, rtype::utils::Rectangle(135, 5, 7, 6), 5)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::tag::Enemy>()
+        .addComponent<rtype::component::Sound>("enemyShot")
         .addComponent<rtype::component::LastUpdate>();
 
     prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TARGET_BULLET))
@@ -89,6 +103,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Drawable>("enemyProjectileSheet", 5, rtype::utils::Rectangle(135, 5, 7, 6), 5)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::tag::Enemy>()
+        .addComponent<rtype::component::Sound>("enemyShot")
         .addComponent<rtype::component::LastUpdate>();
 
     prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::BOSS_BULLET))
@@ -96,6 +111,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Drawable>("allyBullet", 3, rtype::utils::Rectangle(101, 118, 14, 14), 5)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::Animation>(bossBulletAnimation)
+        .addComponent<rtype::component::Sound>("bossShot")
         .addComponent<rtype::tag::Enemy>()
         .addComponent<rtype::component::LastUpdate>();
 
@@ -228,6 +244,8 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("allyProjectileSheet", 4, rtype::utils::Rectangle(248, 88, 17, 6), 5)
         .addComponent<rtype::component::ServerID>()
+        .addComponent<rtype::component::Sound>("blaster")
+        .addComponent<rtype::tag::Ally>()
         .addComponent<rtype::component::LastUpdate>();
     prefabManagerInstance.createPrefab("Ally1")
         .addComponent<rtype::component::Transform>()
@@ -274,6 +292,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("enemyExplosion", 5, rtype::utils::Rectangle(129, 1, 32, 32), 5)
         .addComponent<rtype::component::Animation>(enemyExplosionAnimation)
+        .addComponent<rtype::component::Sound>("explosion")
         .addComponent<rtype::tag::Enemy>();
     prefabManagerInstance.createPrefab("playerLifeText")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(10, 1000))

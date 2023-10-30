@@ -42,6 +42,12 @@ cmrc_add_resource_library(
     assets/textures/r-typesheet18.png
     assets/textures/Top_wall.png
     assets/textures/Bot_wall.png
+
+    assets/sounds/blaster.mp3
+    assets/sounds/explosions.wav
+    assets/sounds/boss-shot.wav
+    assets/sounds/enemy-shot.wav
+    assets/sounds/theme.mp3
 )
 
 set(SRC)

@@ -20,6 +20,7 @@
 #include "Health.hpp"
 #include "PrefabsMapping.hpp"
 #include "Explosive.hpp"
+#include "Sound.hpp"
 
 namespace rtype::system
 {
@@ -355,6 +356,10 @@ namespace rtype::system
                 {
                     registry.getComponents<rtype::component::Transform>()[entity]->position.x = entitySpawn.x;
                     registry.getComponents<rtype::component::Transform>()[entity]->position.y = entitySpawn.y;
+                    if (registry.hasComponent<rtype::component::Sound>(entity))
+                    {
+                        registry.getComponents<rtype::component::Sound>()[entity]->play = true;
+                    }
                 }
             }
             catch (ecs::OutOfRange &error)
@@ -385,6 +390,7 @@ namespace rtype::system
                         rtype::ecs::Entity explosion = prefabManager.instantiate("Explosion", registry);
                         registry.getComponents<rtype::component::Transform>()[explosion]->position.x = registry.getComponents<rtype::component::Transform>()[index]->position.x;
                         registry.getComponents<rtype::component::Transform>()[explosion]->position.y = registry.getComponents<rtype::component::Transform>()[index]->position.y;
+                        registry.getComponents<rtype::component::Sound>()[explosion]->play = true;
                     }
                     break;
                 }

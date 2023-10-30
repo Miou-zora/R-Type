@@ -103,6 +103,7 @@ void initExitButton(rtype::ecs::Registry& reg)
         .addComponent<rtype::component::DebugColliderDisplay>(true)
         .addComponent<rtype::component::Clickable>(
             [&]() {
+                raylib::CloseAudioDevice();
                 raylib::CloseWindow();
             })
         .addComponent<rtype::component::Collider>(assetsManager.getTexture("exit_button").width, assetsManager.getTexture("exit_button").height)
