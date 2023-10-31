@@ -230,11 +230,6 @@ namespace rtype::system
             network::message::server::PlayerSpawn playerSpawn = reinterpret_cast<network::message::server::PlayerSpawn &>(message[0]);
             rtype::utils::PrefabManager &prefabManager = rtype::utils::PrefabManager::getInstance();
             int existingPlayers = 0;
-            if (network::Client::getInstance().isEntityKilled(playerSpawn.playerUuid))
-            {
-                std::cerr << "NetworkInboxHandler: Detected spawn of player that was already killed" << std::endl;
-                return;
-            }
             for (auto &&[index, serverID, allyNumber] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::ServerID>(), registry.getComponents<rtype::component::AllyNumber>()))
             {
                 if (memcmp(serverID->uuid, playerSpawn.playerUuid, sizeof(playerSpawn.playerUuid)) == 0)
