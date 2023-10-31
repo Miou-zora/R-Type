@@ -9,6 +9,7 @@
 
 #include "ECS.hpp"
 #include "SceneManager.hpp"
+#include "loads.hpp"
 
 namespace rtype::system {
 /**
@@ -23,6 +24,11 @@ public:
     {
         rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
         if (sceneManager.getCurrentScene() != sceneManager.getNextScene()) {
+            if (sceneManager.getCurrentScene() == rtype::utils::Scene::OPTIONS) {
+                initKeyBindingButtons(registry);
+                initSoundTextBox(registry);
+                initMusicTextBox(registry);
+            }
             sceneManager.loadScene(sceneManager.getNextScene(), registry);
         }
     }

@@ -60,6 +60,24 @@ void initRoom(rtype::ecs::Registry& reg);
  */
 void initGamePrefabs(rtype::ecs::Registry& reg);
 /**
+ * @brief Init the KeyBinding buttons (prefabs)
+ * @note This function is called in the initOption function
+ * @param reg The ECS registry
+ */
+void initKeyBindingButtons(rtype::ecs::Registry &reg);
+/**
+ * @brief Init the SoundTextBox that display the sound volume (prefabs)
+ * @note This function is called in the initOption function
+ * @param reg The ECS registry
+ */
+void initSoundTextBox(rtype::ecs::Registry &reg);
+/**
+ * @brief Init the MusicTextBox that display the music volume (prefabs)
+ * @note This function is called in the initOption function
+ * @param reg The ECS registry
+ */
+void initMusicTextBox(rtype::ecs::Registry &reg);
+/**
  * @brief Init the Option scene (prefabs)
  * @param reg The ECS registry
  */

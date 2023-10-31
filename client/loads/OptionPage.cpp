@@ -75,11 +75,12 @@ void initMusicTextBox(rtype::ecs::Registry &reg)
 {
     rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
     rtype::utils::AssetsManager& assetsManager = rtype::utils::AssetsManager::getInstance();
+    rtype::utils::OptionManager& optionManager = rtype::utils::OptionManager::getInstance();
 
     prefabManager.createPrefab("music_text_box")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(1100, 400))
         .addComponent<rtype::component::Drawable>("option_text_box", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("option_text_box").width, assetsManager.getTexture("option_text_box").height), 1)
-        .addComponent<rtype::component::Text>("100", rtype::component::Text::DEFAULT_FONT, 75, 3.0f, raylib::BLACK)
+        .addComponent<rtype::component::Text>(std::to_string(optionManager.getMusicVolume()), rtype::component::Text::DEFAULT_FONT, 75, 3.0f, raylib::BLACK)
         .addComponent<rtype::component::Nameable>("MUSIC_VOLUME");
 }
 
@@ -87,11 +88,12 @@ void initSoundTextBox(rtype::ecs::Registry &reg)
 {
     rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
     rtype::utils::AssetsManager& assetsManager = rtype::utils::AssetsManager::getInstance();
+    rtype::utils::OptionManager& optionManager = rtype::utils::OptionManager::getInstance();
 
     prefabManager.createPrefab("sound_text_box")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(1100, 700))
         .addComponent<rtype::component::Drawable>("option_text_box", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("option_text_box").width, assetsManager.getTexture("option_text_box").height), 1)
-        .addComponent<rtype::component::Text>("100", rtype::component::Text::DEFAULT_FONT, 75, 3.0f, raylib::BLACK)
+        .addComponent<rtype::component::Text>(std::to_string(optionManager.getSoundVolume()), rtype::component::Text::DEFAULT_FONT, 75, 3.0f, raylib::BLACK)
         .addComponent<rtype::component::Nameable>("SOUND_VOLUME");
 }
 
@@ -99,47 +101,48 @@ void initKeyBindingButtons(rtype::ecs::Registry &reg)
 {
     rtype::utils::PrefabManager& prefabManager = rtype::utils::PrefabManager::getInstance();
     rtype::utils::AssetsManager& assetsManager = rtype::utils::AssetsManager::getInstance();
+    rtype::utils::OptionManager& optionManager = rtype::utils::OptionManager::getInstance();
 
     prefabManager.createPrefab("up_input_box")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(100, 100))
         .addComponent<rtype::component::Drawable>("option_text_rectangle", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("option_text_rectangle").width, assetsManager.getTexture("option_text_rectangle").height), 1)
         .addComponent<rtype::component::Nameable>("UP_INBOX")
-        .addComponent<rtype::component::Key>(raylib::KEY_UP)
+        .addComponent<rtype::component::Key>(optionManager.getKeyUp())
         .addComponent<rtype::component::Selectable>()
         .addComponent<rtype::component::Collider>(assetsManager.getTexture("option_text_rectangle").width, assetsManager.getTexture("option_text_rectangle").height)
-        .addComponent<rtype::component::Text>(rtype::utils::keyToString(raylib::KEY_UP), rtype::component::Text::DEFAULT_FONT, 20, 3.0f, raylib::BLACK);
+        .addComponent<rtype::component::Text>(rtype::utils::keyToString(static_cast<raylib::KeyboardKey>(optionManager.getKeyUp())), rtype::component::Text::DEFAULT_FONT, 20, 3.0f, raylib::BLACK);
     prefabManager.createPrefab("down_input_box")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(100, 300))
         .addComponent<rtype::component::Drawable>("option_text_rectangle", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("option_text_rectangle").width, assetsManager.getTexture("option_text_rectangle").height), 1)
         .addComponent<rtype::component::Nameable>("DOWN_INBOX")
-        .addComponent<rtype::component::Key>(raylib::KEY_DOWN)
+        .addComponent<rtype::component::Key>(optionManager.getKeyDown())
         .addComponent<rtype::component::Selectable>()
         .addComponent<rtype::component::Collider>(assetsManager.getTexture("option_text_rectangle").width, assetsManager.getTexture("option_text_rectangle").height)
-        .addComponent<rtype::component::Text>(rtype::utils::keyToString(raylib::KEY_DOWN), rtype::component::Text::DEFAULT_FONT, 20, 3.0f, raylib::BLACK);
+        .addComponent<rtype::component::Text>(rtype::utils::keyToString(static_cast<raylib::KeyboardKey>(optionManager.getKeyDown())), rtype::component::Text::DEFAULT_FONT, 20, 3.0f, raylib::BLACK);
     prefabManager.createPrefab("left_input_box")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(100, 500))
         .addComponent<rtype::component::Drawable>("option_text_rectangle", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("option_text_rectangle").width, assetsManager.getTexture("option_text_rectangle").height), 1)
         .addComponent<rtype::component::Nameable>("LEFT_INBOX")
-        .addComponent<rtype::component::Key>(raylib::KEY_LEFT)
+        .addComponent<rtype::component::Key>(optionManager.getKeyLeft())
         .addComponent<rtype::component::Selectable>()
         .addComponent<rtype::component::Collider>(assetsManager.getTexture("option_text_rectangle").width, assetsManager.getTexture("option_text_rectangle").height)
-        .addComponent<rtype::component::Text>(rtype::utils::keyToString(raylib::KEY_LEFT), rtype::component::Text::DEFAULT_FONT, 20, 3.0f, raylib::BLACK);
+        .addComponent<rtype::component::Text>(rtype::utils::keyToString(static_cast<raylib::KeyboardKey>(optionManager.getKeyLeft())), rtype::component::Text::DEFAULT_FONT, 20, 3.0f, raylib::BLACK);
     prefabManager.createPrefab("right_input_box")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(100, 700))
         .addComponent<rtype::component::Drawable>("option_text_rectangle", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("option_text_rectangle").width, assetsManager.getTexture("option_text_rectangle").height), 1)
         .addComponent<rtype::component::Nameable>("RIGHT_INBOX")
-        .addComponent<rtype::component::Key>(raylib::KEY_RIGHT)
+        .addComponent<rtype::component::Key>(optionManager.getKeyRight())
         .addComponent<rtype::component::Selectable>()
         .addComponent<rtype::component::Collider>(assetsManager.getTexture("option_text_rectangle").width, assetsManager.getTexture("option_text_rectangle").height)
-        .addComponent<rtype::component::Text>(rtype::utils::keyToString(raylib::KEY_RIGHT), rtype::component::Text::DEFAULT_FONT, 20, 3.0f, raylib::BLACK);
+        .addComponent<rtype::component::Text>(rtype::utils::keyToString(static_cast<raylib::KeyboardKey>(optionManager.getKeyRight())), rtype::component::Text::DEFAULT_FONT, 20, 3.0f, raylib::BLACK);
     prefabManager.createPrefab("shoot_inbox_box")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(100, 900))
         .addComponent<rtype::component::Drawable>("option_text_rectangle", 1, rtype::utils::Rectangle(0, 0, assetsManager.getTexture("option_text_rectangle").width, assetsManager.getTexture("option_text_rectangle").height), 1)
         .addComponent<rtype::component::Nameable>("SHOOT_INBOX")
-        .addComponent<rtype::component::Key>(raylib::KEY_SPACE)
+        .addComponent<rtype::component::Key>(optionManager.getKeyShoot())
         .addComponent<rtype::component::Selectable>()
         .addComponent<rtype::component::Collider>(assetsManager.getTexture("option_text_rectangle").width, assetsManager.getTexture("option_text_rectangle").height)
-        .addComponent<rtype::component::Text>(rtype::utils::keyToString(raylib::KEY_SPACE), rtype::component::Text::DEFAULT_FONT, 20, 3.0f, raylib::BLACK);
+        .addComponent<rtype::component::Text>(rtype::utils::keyToString(static_cast<raylib::KeyboardKey>(optionManager.getKeyShoot())), rtype::component::Text::DEFAULT_FONT, 20, 3.0f, raylib::BLACK);
 }
 
 void initMusicAndSoundText(rtype::ecs::Registry &reg)
