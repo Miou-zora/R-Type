@@ -319,7 +319,7 @@ public:
         player.addComponent<rtype::component::ServerID>();
 
         manager.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ALLY_BULLET))
-            .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0.f, 25.f))
+            .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(100.f, 25.f))
             .addComponent<rtype::component::Velocity>()
             .addComponent<rtype::component::Collider>(getValue<float>("enemyBulletHitboxWidth"), getValue<float>("enemyBulletHitboxHeight"))
             .addComponent<rtype::component::Damage>(getValue<int>("enemyBulletDamage"))
