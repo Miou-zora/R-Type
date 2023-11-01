@@ -70,6 +70,7 @@ jobs:
   check_program_compilation_windows:
     name: Checks if the program compiles correctly on windows and executables files got created
     runs-on: windows-latest
+    if: false # TODO: remove this line when we get a windows runner
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
