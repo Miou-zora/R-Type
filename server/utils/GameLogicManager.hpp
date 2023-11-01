@@ -75,6 +75,7 @@ private:
         addValue<float>("bossHitboxHeight", 144);
         addValue<float>("bossShootCooldown", 1);
         addValue<float>("bossPathSpeed", 200);
+        addValue<int>("scantHealth", 2);
     }
 
 public:
@@ -364,7 +365,7 @@ public:
         manager.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::SCANT))
             .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(1600.0f, 1024.0f / 2.0f))
             .addComponent<rtype::component::Velocity>()
-            .addComponent<rtype::component::Health>(getValue<int>("enemyHealth"))
+            .addComponent<rtype::component::Health>(getValue<int>("scantHealth"))
             .addComponent<rtype::component::Collider>(getValue<float>("enemyHitboxWidth"), getValue<float>("enemyHitboxHeight"))
             .addComponent<rtype::component::GameRoom>()
             .addComponent<rtype::component::Speed>(getValue<int>("enemySpeed"))
