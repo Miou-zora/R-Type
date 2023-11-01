@@ -43,6 +43,7 @@ void Client::disconnect()
         if (m_thread) {
             m_ioService->stop();
             m_thread->join();
+            m_thread = nullptr;
         }
         m_inbox->clear();
         m_outbox->clear();
@@ -51,6 +52,11 @@ void Client::disconnect()
         m_connected = false;
         m_ip = "";
         m_port = 0;
+        m_resolver.reset();
+        m_socket.reset(); // socket needs to be destroyed before io service
+        m_ioService.reset();
+        m_endpoint.reset();
+        m_thread.reset();
         m_ioService = std::make_shared<boost::asio::io_service>();
         m_resolver = std::make_shared<boost::asio::ip::udp::resolver>(*m_ioService);
         m_socket = std::make_shared<boost::asio::ip::udp::socket>(*m_ioService);
