@@ -45,6 +45,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     std::string planetRing = "assets/textures/layers/parallax-space-ring-planet.png";
     std::string farPlanets = "assets/textures/layers/parallax-space-far-planets.png";
     std::string enemyExplosion = "assets/textures/r-typesheet44.png";
+    std::string allyExplosion = "assets/textures/bullet.png";
     std::string enemy2 = "assets/textures/r-typesheet14.png";
 
     std::string blasterSound = "assets/sounds/blaster.mp3";
@@ -63,6 +64,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     assetsManagerInstance.loadTexture("planetRing", planetRing);
     assetsManagerInstance.loadTexture("farPlanets", farPlanets);
     assetsManagerInstance.loadTexture("enemyExplosion", enemyExplosion);
+    assetsManagerInstance.loadTexture("allyExplosion", allyExplosion);
     assetsManagerInstance.loadTexture("enemy2", enemy2);
     assetsManagerInstance.loadTexture(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ZOYDO), "assets/textures/r-typesheet18.png");
     assetsManagerInstance.loadTexture(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TOP_WALL), "assets/textures/Top_wall.png");
@@ -146,6 +148,19 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         enemyExplosionAnimation.framesPosition.push_back(rtype::utils::Vector<int>(129 + frame * 33, 1));
         enemyExplosionAnimation.frameTimes.push_back(0.1);
     }
+
+    rtype::component::Animation allyExplosionAnimation;
+    allyExplosionAnimation.currentFrame = 0;
+    allyExplosionAnimation.finished = false;
+    allyExplosionAnimation.loop = false;
+    allyExplosionAnimation.playing = true;
+    allyExplosionAnimation.time = 0;
+    allyExplosionAnimation.killWhenFinished = true;
+    for (std::size_t frame = 0; frame < 6; frame++) {
+        allyExplosionAnimation.framesPosition.push_back(rtype::utils::Vector<int>(67 + frame * 33, 343));
+        allyExplosionAnimation.frameTimes.push_back(0.1);
+    }
+
     rtype::component::Animation zoydoAnimation;
     zoydoAnimation.currentFrame = 0;
     zoydoAnimation.finished = false;
@@ -188,7 +203,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Drawable>("enemySheet", 4, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("enemySheet").width / 16, assetsManagerInstance.getTexture("enemySheet").height), 5)
         .addComponent<rtype::component::Animation>(enemyAnimation)
         .addComponent<rtype::component::ServerID>()
-        .addComponent<rtype::component::Explosive>()
+        .addComponent<rtype::component::Explosive>("ExplosionEnemy")
         .addComponent<rtype::tag::Enemy>()
         .addComponent<rtype::component::LastUpdate>();
 
@@ -196,7 +211,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("enemy2", 3, rtype::utils::Rectangle(138, 52, 60, 47), 5)
         .addComponent<rtype::component::ServerID>()
-        .addComponent<rtype::component::Explosive>()
+        .addComponent<rtype::component::Explosive>("ExplosionEnemy")
         .addComponent<rtype::tag::Enemy>()
         .addComponent<rtype::component::LastUpdate>();
 
@@ -204,7 +219,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ZOYDO), 4, rtype::utils::Rectangle(1, 67, 32, 32), 5)
         .addComponent<rtype::component::ServerID>()
-        .addComponent<rtype::component::Explosive>()
+        .addComponent<rtype::component::Explosive>("ExplosionEnemy")
         .addComponent<rtype::component::Animation>(zoydoAnimation)
         .addComponent<rtype::tag::Enemy>()
         .addComponent<rtype::component::LastUpdate>();
@@ -238,7 +253,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Health>(10)
         .addComponent<rtype::component::Velocity>()
         .addComponent<rtype::component::AllyNumber>(0)
-        .addComponent<rtype::component::Explosive>()
+        .addComponent<rtype::component::Explosive>("ExplosionAlly")
         .addComponent<rtype::tag::Ally>();
     prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ALLY_BULLET))
         .addComponent<rtype::component::Transform>()
@@ -252,21 +267,21 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Drawable>("ShipsSheet", 4, rtype::utils::Rectangle(1, 20, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 6)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::AllyNumber>(1)
-        .addComponent<rtype::component::Explosive>()
+        .addComponent<rtype::component::Explosive>("ExplosionAlly")
         .addComponent<rtype::tag::Ally>();
     prefabManagerInstance.createPrefab("Ally2")
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("ShipsSheet", 4, rtype::utils::Rectangle(1, 37, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 6)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::AllyNumber>(2)
-        .addComponent<rtype::component::Explosive>()
+        .addComponent<rtype::component::Explosive>("ExplosionAlly")
         .addComponent<rtype::tag::Ally>();
     prefabManagerInstance.createPrefab("Ally3")
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("ShipsSheet", 4, rtype::utils::Rectangle(1, 54, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 6)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::AllyNumber>(3)
-        .addComponent<rtype::component::Explosive>()
+        .addComponent<rtype::component::Explosive>("ExplosionAlly")
         .addComponent<rtype::tag::Ally>();
     prefabManagerInstance.createPrefab("gameBackground")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0, 0))
@@ -288,12 +303,18 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0, 0))
         .addComponent<rtype::component::Drawable>("farPlanets", 7, rtype::utils::Rectangle(0, 0, assetsManagerInstance.getTexture("farPlanets").width, assetsManagerInstance.getTexture("farPlanets").height), 1)
         .addComponent<rtype::component::Scrollable>(rtype::utils::Vector<float>(1, 0), 10);
-    prefabManagerInstance.createPrefab("Explosion")
+    prefabManagerInstance.createPrefab("ExplosionEnemy")
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("enemyExplosion", 5, rtype::utils::Rectangle(129, 1, 32, 32), 5)
         .addComponent<rtype::component::Animation>(enemyExplosionAnimation)
         .addComponent<rtype::component::Sound>("explosion")
         .addComponent<rtype::tag::Enemy>();
+    prefabManagerInstance.createPrefab("ExplosionAlly")
+        .addComponent<rtype::component::Transform>()
+        .addComponent<rtype::component::Drawable>("allyExplosion", 5, rtype::utils::Rectangle(129, 1, 32, 32), 5)
+        .addComponent<rtype::component::Animation>(allyExplosionAnimation)
+        .addComponent<rtype::component::Sound>("explosion")
+        .addComponent<rtype::tag::Ally>();
     prefabManagerInstance.createPrefab("playerLifeText")
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(10, 1000))
         .addComponent<rtype::component::Text>("Life:", rtype::component::Text::DEFAULT_FONT, 20, 3.f, raylib::WHITE)

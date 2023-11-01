@@ -14,10 +14,12 @@ namespace rtype::component
      */
     struct Explosive
     {
-        Explosive() = default;
+        Explosive(std::string prefabName_): prefabName(prefabName_) {};
         ~Explosive() = default;
 
         Explosive(const Explosive &other) = default;
         Explosive &operator=(const Explosive &other) = default;
+
+        std::string prefabName;
     };
 }

@@ -278,7 +278,7 @@ namespace rtype::system
                     registry.killEntity(registry.entityFromIndex(index));
                     if (registry.hasComponent<rtype::component::Explosive>(registry.entityFromIndex(index)))
                     {
-                        rtype::ecs::Entity explosion = rtype::utils::PrefabManager::getInstance().instantiate("Explosion", registry);
+                        rtype::ecs::Entity explosion = rtype::utils::PrefabManager::getInstance().instantiate("ExplosionAlly", registry);
                         std::cout << "Pos: " << registry.getComponents<rtype::component::Transform>()[explosion]->position << std::endl;
                         registry.getComponents<rtype::component::Transform>()[explosion]->position.x = registry.getComponents<rtype::component::Transform>()[index]->position.x;
                         registry.getComponents<rtype::component::Transform>()[explosion]->position.y = registry.getComponents<rtype::component::Transform>()[index]->position.y;
@@ -382,7 +382,7 @@ namespace rtype::system
                     registry.killEntity(registry.entityFromIndex(index));
                     if (registry.hasComponent<rtype::component::Explosive>(registry.entityFromIndex(index)))
                     {
-                        rtype::ecs::Entity explosion = prefabManager.instantiate("Explosion", registry);
+                        rtype::ecs::Entity explosion = prefabManager.instantiate(registry.getComponents<rtype::component::Explosive>()[registry.entityFromIndex(index)].value().prefabName, registry);
                         registry.getComponents<rtype::component::Transform>()[explosion]->position.x = registry.getComponents<rtype::component::Transform>()[index]->position.x;
                         registry.getComponents<rtype::component::Transform>()[explosion]->position.y = registry.getComponents<rtype::component::Transform>()[index]->position.y;
                         registry.getComponents<rtype::component::Sound>()[explosion]->play = true;
