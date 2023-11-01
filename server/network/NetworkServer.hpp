@@ -60,7 +60,7 @@ public:
     void handleReceive(const boost::system::error_code& error, std::size_t bytes_transferred)
     {
         if (error) {
-            std::cerr << "Network error (handleReceive): " << error.message() << std::endl;
+            // std::cerr << "Network error (handleReceive): " << error.message() << std::endl;
         } else {
             m_recvMsgBuffer->push_back(std::make_tuple(*m_endpoint, m_recvBuffer, bytes_transferred));
             m_recvBuffer.fill(0);
