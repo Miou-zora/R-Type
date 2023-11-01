@@ -11,6 +11,7 @@
 #include "components/Path.hpp"
 #include "Transform.hpp"
 #include "Velocity.hpp"
+#include "Killable.hpp"
 
 namespace rtype::system
 {
@@ -91,7 +92,10 @@ namespace rtype::system
             }
             if (path.listOfPoints.empty() && path.destroyAtEnd)
             {
-                registry.killEntity(registry.entityFromIndex(index));
+                if (registry.hasComponent<rtype::component::Killable>(registry.entityFromIndex(index)))
+                    registry.getComponents<rtype::component::Killable>()[registry.entityFromIndex(index)].value().to_kill = true;
+                else
+                    registry.killEntity(registry.entityFromIndex(index));
             }
         }
     };

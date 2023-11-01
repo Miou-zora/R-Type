@@ -10,7 +10,6 @@
 #include "DamageInflictor.hpp"
 #include "ECS.hpp"
 #include "Enemy.hpp"
-#include "EntityDespawner.hpp"
 #include "EntityInformation.hpp"
 #include "EntityShootControl.hpp"
 #include "GameLevel.hpp"
@@ -42,6 +41,7 @@
 #include "ClearEvents.hpp"
 #include "NetworkEventDamageInfliction.hpp"
 #include "LooseEvent.hpp"
+#include "NetworkKill.hpp"
 
 #include "components/Path.hpp"
 #include "components/Spawner.hpp"
@@ -67,6 +67,7 @@ void registerComponents(rtype::ecs::Registry& reg)
     reg.registerComponent<rtype::component::Path>();
     reg.registerComponent<rtype::component::EntityInformation>();
     reg.registerComponent<rtype::component::ServerID>();
+    reg.registerComponent<rtype::component::Killable>();
 }
 
 void addSystems(rtype::ecs::Registry& reg)
@@ -78,7 +79,6 @@ void addSystems(rtype::ecs::Registry& reg)
     reg.addSystem<rtype::component::Transform, rtype::component::Velocity>(rtype::system::VelocityApplicator());
     reg.addSystem<rtype::component::NetworkPlayerControl, rtype::component::Shooter>(rtype::system::ShootControl());
     reg.addSystem<rtype::component::Shooter>(rtype::system::EntityShootControl());
-    reg.addSystem<rtype::component::EntityInformation, rtype::component::Path>(rtype::system::EntityDespawner());
     reg.addSystem<rtype::component::Collider, rtype::component::Transform>(rtype::system::GameRoomCollision());
     reg.addSystem<rtype::component::Damage, rtype::component::Collider>(rtype::system::DamageInflictor());
     reg.addSystem(rtype::system::NetworkEventDamageInfliction());
@@ -87,7 +87,8 @@ void addSystems(rtype::ecs::Registry& reg)
     reg.addSystem<rtype::component::GameRoom>(rtype::system::RoomCleanup());
     reg.addSystem<rtype::component::NetworkPlayer>(rtype::system::NetworkPlayerCriticalDispatcher());
     reg.addSystem<rtype::component::NetworkPlayer>(rtype::system::NetworkServerTickUpdater());
-    reg.addSystem<rtype::component::Health>(rtype::system::ServerDeath());
+    reg.addSystem<rtype::component::Health, rtype::component::Killable>(rtype::system::ServerDeath());
+    reg.addSystem<rtype::component::Killable>(rtype::system::NetworkKill());
     reg.addSystem<rtype::component::NetworkPlayer, rtype::component::GameRoom>(rtype::system::NetworkPlayerDisconnection(std::chrono::milliseconds(10000)));
     reg.addSystem<rtype::component::GameRoom, rtype::component::NetworkPlayer, rtype::component::Health>(rtype::system::LooseEvent());
     reg.addSystem(rtype::system::ClearEvents());
