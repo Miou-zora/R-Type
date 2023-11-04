@@ -18,6 +18,7 @@
 #include "NetworkPlayer.hpp"
 #include "NetworkPlayerControl.hpp"
 #include "Path.hpp"
+#include "Points.hpp"
 #include "PrefabManager.hpp"
 #include "ServerID.hpp"
 #include "Shooter.hpp"
@@ -76,6 +77,7 @@ private:
         addValue<float>("bossHitboxHeight", 144);
         addValue<float>("bossShootCooldown", 1);
         addValue<float>("bossPathSpeed", 200);
+        addValue<int>("pointsOnEnemyKill", 100);
         addValue<int>("scantHealth", 2);
     }
 
@@ -213,11 +215,17 @@ public:
     {
         auto& playerGameRoom = registry.getComponents<rtype::component::GameRoom>()[playerIndex].value();
         u_int16_t playerGameRoomId = playerGameRoom.id;
-        for (auto&& [index, networkPlayerOpt, gameRoomOpt] : ecs::containers::IndexedZipper(registry.getComponents<rtype::component::NetworkPlayer>(), registry.getComponents<rtype::component::GameRoom>())) {
+        for (auto&& [index, networkPlayerOpt, gameRoomOpt, pointsOpt] : ecs::containers::IndexedZipper(registry.getComponents<rtype::component::NetworkPlayer>(), registry.getComponents<rtype::component::GameRoom>(), registry.getComponents<rtype::component::Points>())) {
             auto& networkPlayer = networkPlayerOpt.value();
             auto& gameRoom = gameRoomOpt.value();
+            auto& points = pointsOpt.value();
             if (gameRoom.id == playerGameRoom.id) {
                 registry.emplaceComponent<rtype::component::Transform>(registry.entityFromIndex(index), getValue<rtype::utils::Vector<float>>("defaultPlayerPosition"));
+                points.value = 0;
+                if (registry.hasComponent<rtype::component::Killable>(registry.entityFromIndex(index))) {
+                    registry.getComponents<rtype::component::Killable>()[registry.entityFromIndex(index)].value().to_kill = false;
+                    registry.getComponents<rtype::component::Killable>()[registry.entityFromIndex(index)].value().killed = false;
+                }
             }
         }
         rtype::component::GameRoom gameRoom = playerGameRoom;
@@ -318,6 +326,8 @@ public:
         player.addComponent<rtype::component::NetworkPlayerControl>();
         player.addComponent<rtype::component::Shooter>(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ALLY_BULLET), getValue<float>("playerShootCooldown"));
         player.addComponent<rtype::component::ServerID>();
+        player.addComponent<rtype::component::Points>();
+        player.addComponent<rtype::component::Killable>();
 
         manager.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ALLY_BULLET))
             .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(100.f, 25.f))
@@ -364,7 +374,8 @@ public:
                 .addPoint(-2000.0f, 0.f, rtype::component::Path::Context::Global, rtype::component::Path::Referential::Entity)
                 .setDestroyAtEnd(true))
             .addComponent<rtype::component::ServerID>()
-            .addComponent<rtype::component::Killable>();
+            .addComponent<rtype::component::Killable>()
+            .addComponent<rtype::component::Points>(100);
 
         manager.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::SCANT))
             .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(1600.0f, 1024.0f / 2.0f))
@@ -392,7 +403,8 @@ public:
                 .addPoint(-200.0f, 200.f, rtype::component::Path::Context::Global, rtype::component::Path::Referential::Entity)
                 .addPoint(-200.0f, -200.f, rtype::component::Path::Context::Global, rtype::component::Path::Referential::Entity)
                 .setDestroyAtEnd(true))
-            .addComponent<rtype::component::ServerID>();
+            .addComponent<rtype::component::ServerID>()
+            .addComponent<rtype::component::Points>(200);
 
         manager.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ZOYDO))
             .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(1600.0f, 1024.0f / 2.0f))
@@ -409,7 +421,8 @@ public:
             .addComponent<rtype::component::Path>(rtype::component::Path(getValue<float>("bossPathSpeed"))
                 .addPoint(-300.0f, 0.f, rtype::component::Path::Context::Global, rtype::component::Path::Referential::Entity))
             .addComponent<rtype::component::ServerID>()
-            .addComponent<rtype::tag::Boss>();
+            .addComponent<rtype::tag::Boss>()
+            .addComponent<rtype::component::Points>(1000);
 
         manager.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TOP_WALL))
             .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0.0f, -2 * 55.0f))

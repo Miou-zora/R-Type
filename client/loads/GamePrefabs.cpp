@@ -13,6 +13,7 @@
 #include "ECS.hpp"
 #include "InputShooter.hpp"
 #include "LastUpdate.hpp"
+#include "Points.hpp"
 #include "PrefabManager.hpp"
 #include "SceneManager.hpp"
 #include "Scrollable.hpp"
@@ -253,6 +254,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Health>(10)
         .addComponent<rtype::component::Velocity>()
         .addComponent<rtype::component::AllyNumber>(0)
+        .addComponent<rtype::component::Points>()
         .addComponent<rtype::component::Explosive>("ExplosionAlly")
         .addComponent<rtype::tag::Ally>();
     prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ALLY_BULLET))
@@ -261,6 +263,7 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::Sound>("blaster")
         .addComponent<rtype::tag::Ally>()
+        .addComponent<rtype::component::Points>()
         .addComponent<rtype::component::LastUpdate>();
     prefabManagerInstance.createPrefab("Ally1")
         .addComponent<rtype::component::Transform>()
@@ -275,12 +278,14 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::AllyNumber>(2)
         .addComponent<rtype::component::Explosive>("ExplosionAlly")
+        .addComponent<rtype::component::Points>()
         .addComponent<rtype::tag::Ally>();
     prefabManagerInstance.createPrefab("Ally3")
         .addComponent<rtype::component::Transform>()
         .addComponent<rtype::component::Drawable>("ShipsSheet", 4, rtype::utils::Rectangle(1, 54, assetsManagerInstance.getTexture("ShipsSheet").width / 5, assetsManagerInstance.getTexture("ShipsSheet").height / 5), 6)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::AllyNumber>(3)
+        .addComponent<rtype::component::Points>()
         .addComponent<rtype::component::Explosive>("ExplosionAlly")
         .addComponent<rtype::tag::Ally>();
     prefabManagerInstance.createPrefab("gameBackground")
@@ -323,6 +328,14 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(60, 1000))
         .addComponent<rtype::component::Text>("10", rtype::component::Text::DEFAULT_FONT, 20, 3.f, raylib::WHITE)
         .addComponent<rtype::component::Nameable>("playerLifeVariable");
+    prefabManagerInstance.createPrefab("playerScoreText")
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(100, 1000))
+        .addComponent<rtype::component::Text>("Score:", rtype::component::Text::DEFAULT_FONT, 20, 3.f, raylib::WHITE)
+        .addComponent<rtype::component::Nameable>("playerScoreText");
+    prefabManagerInstance.createPrefab("playerScoreVariable")
+        .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(175, 1000))
+        .addComponent<rtype::component::Text>("0", rtype::component::Text::DEFAULT_FONT, 20, 3.f, raylib::WHITE)
+        .addComponent<rtype::component::Nameable>("playerScoreVariable");
 
     rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
 
@@ -333,4 +346,6 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     sceneManager.addPrefabToScene("farPlanets", rtype::utils::Scene::GAME);
     sceneManager.addPrefabToScene("playerLifeText", rtype::utils::Scene::GAME);
     sceneManager.addPrefabToScene("playerLifeVariable", rtype::utils::Scene::GAME);
+    sceneManager.addPrefabToScene("playerScoreText", rtype::utils::Scene::GAME);
+    sceneManager.addPrefabToScene("playerScoreVariable", rtype::utils::Scene::GAME);
 }

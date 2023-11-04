@@ -12,6 +12,7 @@
 #include "ECS.hpp"
 #include "Nameable.hpp"
 #include "PrefabManager.hpp"
+#include "Points.hpp"
 #include "RoomInformations.hpp"
 #include "SceneManager.hpp"
 #include "ServerID.hpp"
@@ -94,6 +95,10 @@ namespace rtype::system
                     break;
                 case network::message::server::PlayerLife::type:
                     handlePlayerLife(registry, message);
+                    sendAck(header.id);
+                    break;
+                case network::message::server::PlayerScore::type:
+                    handlePlayerScore(registry, message);
                     sendAck(header.id);
                     break;
                 default:
@@ -453,6 +458,32 @@ namespace rtype::system
                         if (name.value().name == "playerLifeVariable")
                         {
                             text.value().text = std::to_string(std::max(0, health.value().value));
+                        }
+                    }
+                }
+            }
+        }
+
+        /**
+         * @brief Handles the player score message when a player gains points
+         * 
+         * @param registry
+         * @param message the message received from the server
+         */
+        void handlePlayerScore(ecs::Registry &registry, boost::array<char, rtype::network::message::MAX_MESSAGE_SIZE> &message) const
+        {
+            network::message::server::PlayerScore playerScore = reinterpret_cast<network::message::server::PlayerScore &>(message[0]);
+            for (auto &&[index, points, serverId] : rtype::ecs::containers::IndexedZipper(registry.getComponents<rtype::component::Points>(), registry.getComponents<rtype::component::ServerID>()))
+            {
+                if (std::memcmp(serverId.value().uuid, playerScore.playerUuid, 16) == 0)
+                {
+                    points.value().value = playerScore.score;
+                    // This part shouldn't be here, but I don't know how to do it properly for now
+                    for (auto &&[text, name] : rtype::ecs::containers::Zipper(registry.getComponents<rtype::component::Text>(), registry.getComponents<rtype::component::Nameable>()))
+                    {
+                        if (name.value().name == "playerScoreVariable")
+                        {
+                            text.value().text = std::to_string(points.value().value);
                         }
                     }
                 }

@@ -27,6 +27,7 @@
 #include "NetworkServerInboxDispatcher.hpp"
 #include "NetworkServerOutboxDispatcher.hpp"
 #include "NetworkServerTickUpdater.hpp"
+#include "Points.hpp"
 #include "PrefabManager.hpp"
 #include "RoomCleanup.hpp"
 #include "ServerDeath.hpp"
@@ -67,6 +68,7 @@ void registerComponents(rtype::ecs::Registry& reg)
     reg.registerComponent<rtype::component::Path>();
     reg.registerComponent<rtype::component::EntityInformation>();
     reg.registerComponent<rtype::component::ServerID>();
+    reg.registerComponent<rtype::component::Points>();
     reg.registerComponent<rtype::component::Killable>();
 }
 

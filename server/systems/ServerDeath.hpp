@@ -14,6 +14,7 @@
 #include "Health.hpp"
 #include "NetworkPlayer.hpp"
 #include "Communication.hpp"
+#include "Points.hpp"
 
 namespace rtype::system
 {

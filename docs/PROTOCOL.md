@@ -104,6 +104,7 @@ This section describes the messages sent by the server to the client.
 | 0x0012 | `network::message::server::PlayerMovement` | `u_int8_t[16] player_id;` <br> `float x;` <br> `float y;` | Used to indicate that a player moved |
 | 0x0013 | `network::message::server::PlayerWeaponSwitch` | `u_int8_t[16] player_id;` <br> `int16_t weapon_type;` | Used to indicate that a player switched weapon |
 | 0x0014 | `network::message::server::PlayerLife` | `u_int8_t[16] player_id;` <br> `int32_t life;` | Used to indicate that a player's life is updated |
+| 0x0015 | `network::message::server::PlayerScore` | `u_int8_t[16] player_id;` <br> `int32_t score;` | Used to indicate that a player's score is updated |
 | 0x0020 | `network::message::server::EntitySpawn` | `u_int8_t[16] entity_id;` <br> `float x;` <br> `float y;` <br> `u_int8_t entity_type;` <br> `u_int8_t entity_team` | Used to indicate that an entity spawned |
 | 0x0021 | `network::message::server::EntityDeath` | `u_int8_t[16] entity_id;` | Used to indicate that an entity died |
 | 0x0022 | `network::message::server::EntityMovement` | `u_int8_t[16] entity_uuid;` <br> `float x;` <br> `float y;` | Used to indicate that an entity moved |

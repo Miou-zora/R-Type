@@ -523,6 +523,19 @@ namespace rtype::network {
                 u_int32_t life;
             };
 
+            struct PlayerScore {
+                PlayerScore(uint8_t _playerUuid[16], u_int32_t _score)
+                    : score(_score)
+                {
+                    std::copy_n(_playerUuid, 16, playerUuid);
+                }
+
+                static const u_int16_t type = 0x0015;
+                NetworkMessageHeader header;
+                uint8_t playerUuid[16];
+                u_int32_t score;
+            };
+
             struct EntitySpawn {
                 EntitySpawn(uint8_t uuid_[16], float x_, float y_, u_int8_t type_, u_int8_t team_)
                     : x(x_), y(y_), entityType(type_), team(team_)
@@ -589,6 +602,7 @@ namespace rtype::network {
                 {PlayerMovement::type, sizeof(PlayerMovement)},
                 {PlayerWeaponSwitch::type, sizeof(PlayerWeaponSwitch)},
                 {PlayerLife::type, sizeof(PlayerLife)},
+                {PlayerScore::type, sizeof(PlayerScore)},
                 {EntitySpawn::type, sizeof(EntitySpawn)},
                 {EntityDeath::type, sizeof(EntityDeath)},
                 {EntityMovement::type, sizeof(EntityMovement)},

@@ -36,6 +36,7 @@
 #include <string>
 #include "Ally.hpp"
 #include "Enemy.hpp"
+#include "Points.hpp"
 namespace raylib {
 #include <raylib.h>
 }
@@ -96,6 +97,7 @@ int main(int ac, char* av[])
     reg.registerComponent<rtype::tag::Enemy>();
     reg.registerComponent<rtype::component::Sound>();
     reg.registerComponent<rtype::component::Explosive>();
+    reg.registerComponent<rtype::component::Points>();
 
     rtype::utils::SceneManager& sceneManager = rtype::utils::SceneManager::getInstance();
 
