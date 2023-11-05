@@ -367,6 +367,11 @@ namespace rtype::system
                 std::cerr << "handleEntitySpawn::NotImplemented: " << error.what() << std::endl;
                 return;
             }
+            catch (std::exception& error)
+            {
+                std::cerr << "handleEntitySpawn::UnknownError: " << error.what() << std::endl;
+                return;
+            }
         }
 
         /**
