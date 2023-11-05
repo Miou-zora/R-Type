@@ -1,4 +1,4 @@
-/*
+    /*
 ** EPITECH PROJECT, 2023
 ** B-CPP-500-NAN-5-1-rtype-lucas.hauszler [WSL : Ubuntu]
 ** File description:
@@ -33,13 +33,20 @@ namespace rtype::utils
     private:
         static PrefabManager *m_instance;
 
+    private:
+        struct PrefabInfos
+        {
+            std::unique_ptr<ecs::Prefab> prefab;
+            std::function<ecs::Entity(ecs::Registry &, ecs::Entity &)> onInstantiate = [](ecs::Registry &, ecs::Entity &entity) { return (entity); };
+        };
+
     public:
         ~PrefabManager();
 
         ecs::Prefab &createPrefab(const std::string &name)
         {
-            m_prefabs[name] = std::make_unique<ecs::Prefab>();
-            return (*m_prefabs[name]);
+            m_prefabs[name] = {std::make_unique<ecs::Prefab>()};
+            return (*(m_prefabs[name].prefab));
         }
 
         template <class Component, typename... Args>
@@ -47,20 +54,23 @@ namespace rtype::utils
         {
             if (m_prefabs.find(name) == m_prefabs.end())
                 throw ecs::OutOfRange("Prefab not found: " + name);
-            return (m_prefabs.at(name)->addComponent<Component>(args...));
+            return (m_prefabs.at(name).prefab->addComponent<Component>(args...));
         }
 
         ecs::Entity instantiate(const std::string &name, ecs::Registry &registry) const
         {
             if (m_prefabs.find(name) == m_prefabs.end())
                 throw ecs::OutOfRange("Prefab not found: " + name);
-            return (m_prefabs.at(name)->instantiate(registry));
+            ecs::Entity entity = m_prefabs.at(name).prefab->instantiate(registry);
+            return (m_prefabs.at(name).onInstantiate(registry, entity));
         }
+
+
 
         friend std::ostream &operator<<(std::ostream &os, const PrefabManager &manager);
 
     private:
-        std::map<std::string, std::unique_ptr<ecs::Prefab>> m_prefabs;
+        std::map<std::string, PrefabInfos> m_prefabs;
     };
 
     inline std::ostream &operator<<(std::ostream &os, const PrefabManager &manager)
@@ -69,7 +79,7 @@ namespace rtype::utils
         for (auto &&[name, prefab] : manager.m_prefabs)
         {
             os << name;
-            if (prefab != manager.m_prefabs.rbegin()->second)
+            if (prefab.prefab != manager.m_prefabs.rbegin()->second.prefab)
                 os << ", ";
         }
         os << ")";

@@ -40,6 +40,8 @@ cmrc_add_resource_library(
     assets/textures/buttons/white_rectangle.png
     assets/textures/r-typesheet14.png
     assets/textures/r-typesheet18.png
+    assets/textures/r-typesheet37.png
+    assets/textures/r-typesheet3.png
     assets/textures/Top_wall.png
     assets/textures/Bot_wall.png
 

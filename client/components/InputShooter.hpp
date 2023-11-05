@@ -35,7 +35,7 @@ namespace rtype::component
 
         virtual bool canShoot(void) override
         {
-            return (rtype::component::Shooter::canShoot() && raylib::IsKeyDown(rtype::utils::OptionManager::getInstance().getKeyShoot()));
+            return (raylib::IsKeyDown(rtype::utils::OptionManager::getInstance().getKeyShoot()));
         }
     };
 }

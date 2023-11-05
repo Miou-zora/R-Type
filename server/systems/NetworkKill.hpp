@@ -28,24 +28,29 @@ namespace rtype::system
         {
             for (auto &&[index, killable] : ecs::containers::IndexedZipper(killables))
             {
+                ecs::Entity entity = registry.entityFromIndex(index);
                 if (killable.value().to_kill && !killable.value().killed)
                 {
                     killable.value().killed = true;
                     killable.value().to_kill = false;
-                    if (!registry.hasComponent<rtype::component::ServerID>(registry.entityFromIndex(index)))
+                    if (!registry.hasComponent<rtype::component::ServerID>(entity))
                         continue;
-                    if (registry.hasComponent<rtype::component::GameRoom>(registry.entityFromIndex(index)))
-                        rtype::utils::Communication::sendToPlayerInSameRoom<rtype::network::message::server::EntityDeath>(registry, rtype::utils::Communication::CommunicationType::CRITICAL, registry.getComponents<rtype::component::GameRoom>()[registry.entityFromIndex(index)].value().id, registry.getComponents<rtype::component::ServerID>()[registry.entityFromIndex(index)].value().uuid);
-                    bossBehaviour(registry, registry.entityFromIndex(index));
-                    if (registry.hasComponent<rtype::component::NetworkPlayer>(registry.entityFromIndex(index)))
+                    if (registry.hasComponent<rtype::component::GameRoom>(entity))
+                        rtype::utils::Communication::sendToPlayerInSameRoom<rtype::network::message::server::EntityDeath>(registry, rtype::utils::Communication::CommunicationType::CRITICAL, registry.getComponents<rtype::component::GameRoom>()[entity].value().id, registry.getComponents<rtype::component::ServerID>()[entity].value().uuid);
+                    bossBehaviour(registry, entity);
+                    if (registry.hasComponent<rtype::component::Lootable>(entity) && registry.hasComponent<rtype::component::GameRoom>(entity))
                     {
-                        if (registry.hasComponent<rtype::component::Transform>(registry.entityFromIndex(index)))
-                            registry.getComponents<rtype::component::Transform>()[registry.entityFromIndex(index)].value().position.y = -20000.0f;
+                        generateLoot(registry, entity);
+                    }
+                    if (registry.hasComponent<rtype::component::NetworkPlayer>(entity))
+                    {
+                        if (registry.hasComponent<rtype::component::Transform>(entity))
+                            registry.getComponents<rtype::component::Transform>()[entity].value().position.y = -20000.0f;
                     }
                     else
                     {
-                        registry.killEntity(registry.entityFromIndex(index));
-                        updatePoints(registry, registry.entityFromIndex(index));
+                        registry.killEntity(entity);
+                        updatePoints(registry, entity);
                     }
                 }
                 if (killable.value().killed && killable.value().to_kill)
@@ -83,6 +88,54 @@ namespace rtype::system
                     }
                 }
             }
+        }
+
+        void generateLoot(ecs::Registry &registry, const ecs::Entity entity) const
+        {
+            const rtype::component::Lootable &lootables = registry.getComponents<rtype::component::Lootable>()[entity].value();
+            const std::optional<rtype::component::Transform> &transform = registry.getComponents<rtype::component::Transform>()[entity];
+
+            if (lootables.listOfDroppableEntity == nullptr || (*lootables.listOfDroppableEntity).empty())
+                return;
+            for (const auto &[prefabName, chance] : *lootables.listOfDroppableEntity)
+            {
+                if (willSpawn(chance))
+                {
+                    const ecs::Entity loot = rtype::utils::PrefabManager::getInstance().instantiate(prefabName, registry);
+                    if (!registry.hasComponent<rtype::component::ServerID>(loot) || !registry.hasComponent<rtype::component::Transform>(loot) || !registry.hasComponent<rtype::component::GameRoom>(loot))
+                    {
+                        registry.killEntity(loot);
+                        continue;
+                    }
+                    std::copy_n(boost::uuids::random_generator()().data, 16, registry.getComponents<rtype::component::ServerID>()[loot].value().uuid);
+                    registry.getComponents<rtype::component::GameRoom>()[loot].value().id = registry.getComponents<rtype::component::GameRoom>()[entity].value().id;
+                    if (transform.has_value())
+                    {
+                        registry.getComponents<rtype::component::Transform>()[loot].value().position += transform.value().position;
+                    }
+                    rtype::utils::Communication::sendToPlayerInSameRoom<rtype::network::message::server::EntitySpawn>(
+                        registry,
+                        rtype::utils::Communication::CommunicationType::CRITICAL,
+                        registry.getComponents<rtype::component::GameRoom>()[entity].value().id,
+                        registry.getComponents<rtype::component::ServerID>()[loot].value().uuid,
+                        registry.getComponents<rtype::component::Transform>()[loot].value().position.x,
+                        registry.getComponents<rtype::component::Transform>()[loot].value().position.y,
+                        static_cast<u_int8_t>(rtype::utils::PrefabsMapping::namesMapping.at(prefabName)),
+                        getTeam(registry, entity));
+                }
+            }
+        }
+
+        int getTeam(const ecs::Registry &registry, const ecs::Entity entity) const
+        {
+            if (registry.hasComponent<rtype::tag::Ally>(entity))
+                return 0;
+            return 1;
+        }
+
+        bool willSpawn(const int &chance) const
+        {
+            return (std::rand() % 100) < chance;
         }
     };
 }

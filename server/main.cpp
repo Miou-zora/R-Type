@@ -43,6 +43,10 @@
 #include "NetworkEventDamageInfliction.hpp"
 #include "LooseEvent.hpp"
 #include "NetworkKill.hpp"
+#include "Lootable.hpp"
+#include "Loot.hpp"
+#include "TakeLoot.hpp"
+#include "Taker.hpp"
 
 #include "components/Path.hpp"
 #include "components/Spawner.hpp"
@@ -70,6 +74,9 @@ void registerComponents(rtype::ecs::Registry& reg)
     reg.registerComponent<rtype::component::ServerID>();
     reg.registerComponent<rtype::component::Points>();
     reg.registerComponent<rtype::component::Killable>();
+    reg.registerComponent<rtype::component::Lootable>();
+    reg.registerComponent<rtype::component::Loot>();
+    reg.registerComponent<rtype::component::Taker>();
 }
 
 void addSystems(rtype::ecs::Registry& reg)
@@ -82,6 +89,7 @@ void addSystems(rtype::ecs::Registry& reg)
     reg.addSystem<rtype::component::NetworkPlayerControl, rtype::component::Shooter>(rtype::system::ShootControl());
     reg.addSystem<rtype::component::Shooter>(rtype::system::EntityShootControl());
     reg.addSystem<rtype::component::Collider, rtype::component::Transform>(rtype::system::GameRoomCollision());
+    reg.addSystem<rtype::component::Collider, rtype::component::Loot>(rtype::system::TakeLoot());
     reg.addSystem<rtype::component::Damage, rtype::component::Collider>(rtype::system::DamageInflictor());
     reg.addSystem(rtype::system::NetworkEventDamageInfliction());
     reg.addSystem<rtype::component::Transform, rtype::component::Velocity, rtype::component::Path>(rtype::system::Path());

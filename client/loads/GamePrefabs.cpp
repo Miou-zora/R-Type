@@ -48,6 +48,8 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     std::string enemyExplosion = "assets/textures/r-typesheet44.png";
     std::string allyExplosion = "assets/textures/bullet.png";
     std::string enemy2 = "assets/textures/r-typesheet14.png";
+    std::string loot = "assets/textures/r-typesheet3.png";
+    std::string ultraBullet = "assets/textures/r-typesheet37.png";
 
     std::string blasterSound = "assets/sounds/blaster.mp3";
     std::string explosionSound = "assets/sounds/explosions.wav";
@@ -71,6 +73,8 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     assetsManagerInstance.loadTexture(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TOP_WALL), "assets/textures/Top_wall.png");
     assetsManagerInstance.loadTexture(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::BOTTOM_WALL), "assets/textures/Bot_wall.png");
     assetsManagerInstance.loadTexture("allyBullet", "assets/textures/ally_bullets.png");
+    assetsManagerInstance.loadTexture(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::DEFAULT_WEAPON_LOOT), loot);
+    assetsManagerInstance.loadTexture(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ULTRA_ALLY_BULLET), ultraBullet);
 
     rtype::component::Animation bossBulletAnimation;
     bossBulletAnimation.currentFrame = 0;
@@ -92,41 +96,6 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     assetsManagerInstance.loadSound("theme", theme);
     assetsManagerInstance.loadSound("bossShot", bossShot);
     assetsManagerInstance.loadSound("enemyShot", enemyShot);
-
-    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::SIMPLE_BULLET))
-        .addComponent<rtype::component::Transform>()
-        .addComponent<rtype::component::Drawable>("enemyProjectileSheet", 5, rtype::utils::Rectangle(135, 5, 7, 6), 5)
-        .addComponent<rtype::component::ServerID>()
-        .addComponent<rtype::tag::Enemy>()
-        .addComponent<rtype::component::Sound>("enemyShot")
-        .addComponent<rtype::component::LastUpdate>();
-
-    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TARGET_BULLET))
-        .addComponent<rtype::component::Transform>()
-        .addComponent<rtype::component::Drawable>("enemyProjectileSheet", 5, rtype::utils::Rectangle(135, 5, 7, 6), 5)
-        .addComponent<rtype::component::ServerID>()
-        .addComponent<rtype::tag::Enemy>()
-        .addComponent<rtype::component::Sound>("enemyShot")
-        .addComponent<rtype::component::LastUpdate>();
-
-    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::BOSS_BULLET))
-        .addComponent<rtype::component::Transform>()
-        .addComponent<rtype::component::Drawable>("allyBullet", 3, rtype::utils::Rectangle(101, 118, 14, 14), 5)
-        .addComponent<rtype::component::ServerID>()
-        .addComponent<rtype::component::Animation>(bossBulletAnimation)
-        .addComponent<rtype::component::Sound>("bossShot")
-        .addComponent<rtype::tag::Enemy>()
-        .addComponent<rtype::component::LastUpdate>();
-
-    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TRIPLE_BULLET))
-        .addComponent<rtype::component::ServerID>()
-        .addComponent<rtype::tag::Enemy>()
-        .addComponent<rtype::component::LastUpdate>();
-
-    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TRIPLE_BOSS_BULLET))
-        .addComponent<rtype::component::ServerID>()
-        .addComponent<rtype::tag::Enemy>()
-        .addComponent<rtype::component::LastUpdate>();
 
     rtype::component::Animation enemyAnimation;
     enemyAnimation.currentFrame = 0;
@@ -198,6 +167,75 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
     bulletAnimation.frameTimes.push_back(0.15);
     bulletAnimation.framesPosition.push_back(rtype::utils::Vector<int>(257, 6));
     bulletAnimation.frameTimes.push_back(0.15);
+    rtype::component::Animation lootAnimation;
+    lootAnimation.currentFrame = 0;
+    lootAnimation.finished = false;
+    lootAnimation.loop = true;
+    lootAnimation.playing = true;
+    lootAnimation.time = 0;
+    for (std::size_t frame = 0; frame < 12; frame++) {
+        lootAnimation.framesPosition.push_back(rtype::utils::Vector<int>(1 + frame * 17, 1));
+        lootAnimation.frameTimes.push_back(0.15);
+    }
+    rtype::component::Animation ultraAllyBulletAnimation;
+    ultraAllyBulletAnimation.currentFrame = 0;
+    ultraAllyBulletAnimation.finished = false;
+    ultraAllyBulletAnimation.loop = true;
+    ultraAllyBulletAnimation.playing = true;
+    ultraAllyBulletAnimation.time = 0;
+    ultraAllyBulletAnimation.framesPosition.push_back(rtype::utils::Vector<int>(270, 1224));
+    ultraAllyBulletAnimation.frameTimes.push_back(0.15);
+    ultraAllyBulletAnimation.framesPosition.push_back(rtype::utils::Vector<int>(284, 1224));
+    ultraAllyBulletAnimation.frameTimes.push_back(0.15);
+    ultraAllyBulletAnimation.framesPosition.push_back(rtype::utils::Vector<int>(298, 1224));
+    ultraAllyBulletAnimation.frameTimes.push_back(0.15);
+    ultraAllyBulletAnimation.framesPosition.push_back(rtype::utils::Vector<int>(312, 1224));
+    ultraAllyBulletAnimation.frameTimes.push_back(0.15);
+
+
+    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::SIMPLE_BULLET))
+        .addComponent<rtype::component::Transform>()
+        .addComponent<rtype::component::Drawable>("enemyProjectileSheet", 5, rtype::utils::Rectangle(135, 5, 7, 6), 5)
+        .addComponent<rtype::component::ServerID>()
+        .addComponent<rtype::tag::Enemy>()
+        .addComponent<rtype::component::Animation>(bulletAnimation)
+        .addComponent<rtype::component::Sound>("enemyShot")
+        .addComponent<rtype::component::LastUpdate>();
+
+    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TARGET_BULLET))
+        .addComponent<rtype::component::Transform>()
+        .addComponent<rtype::component::Drawable>("enemyProjectileSheet", 5, rtype::utils::Rectangle(135, 5, 7, 6), 5)
+        .addComponent<rtype::component::ServerID>()
+        .addComponent<rtype::tag::Enemy>()
+        .addComponent<rtype::component::Animation>(bulletAnimation)
+        .addComponent<rtype::component::Sound>("enemyShot")
+        .addComponent<rtype::component::LastUpdate>();
+
+    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::BOSS_BULLET))
+        .addComponent<rtype::component::Transform>()
+        .addComponent<rtype::component::Drawable>("allyBullet", 3, rtype::utils::Rectangle(101, 118, 14, 14), 5)
+        .addComponent<rtype::component::ServerID>()
+        .addComponent<rtype::component::Animation>(bossBulletAnimation)
+        .addComponent<rtype::component::Sound>("bossShot")
+        .addComponent<rtype::tag::Enemy>()
+        .addComponent<rtype::component::LastUpdate>();
+
+    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TRIPLE_BULLET))
+        .addComponent<rtype::component::ServerID>()
+        .addComponent<rtype::tag::Enemy>()
+        .addComponent<rtype::component::LastUpdate>();
+
+    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TRIPLE_BOSS_BULLET))
+        .addComponent<rtype::component::ServerID>()
+        .addComponent<rtype::tag::Enemy>()
+        .addComponent<rtype::component::LastUpdate>();
+
+    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::DEFAULT_WEAPON_LOOT))
+        .addComponent<rtype::component::Transform>()
+        .addComponent<rtype::component::Drawable>(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::DEFAULT_WEAPON_LOOT), 4, rtype::utils::Rectangle(1, 1, 16, 16), 4)
+        .addComponent<rtype::component::Animation>(lootAnimation)
+        .addComponent<rtype::component::ServerID>()
+        .addComponent<rtype::component::LastUpdate>();
 
     prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::PATA_PATA))
         .addComponent<rtype::component::Transform>()
@@ -222,7 +260,6 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::Explosive>("ExplosionEnemy")
         .addComponent<rtype::component::Animation>(zoydoAnimation)
-        .addComponent<rtype::tag::Enemy>()
         .addComponent<rtype::component::LastUpdate>();
 
     prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TOP_WALL))
@@ -230,7 +267,6 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::Drawable>(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TOP_WALL), 4, rtype::utils::Rectangle(0, 0, 1536, rtype::utils::AssetsManager::getInstance().getTexture(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::TOP_WALL)).height), 5)
         .addComponent<rtype::component::Scrollable>(rtype::utils::Vector<float>(1, 0), 75)
-        .addComponent<rtype::tag::Enemy>()
         .addComponent<rtype::component::LastUpdate>();
 
     prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::BOTTOM_WALL))
@@ -238,7 +274,6 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::Drawable>(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::BOTTOM_WALL), 4, rtype::utils::Rectangle(0, 0, 1536, rtype::utils::AssetsManager::getInstance().getTexture(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::BOTTOM_WALL)).height), 5)
         .addComponent<rtype::component::Scrollable>(rtype::utils::Vector<float>(1, 0), 75)
-        .addComponent<rtype::tag::Enemy>()
         .addComponent<rtype::component::LastUpdate>();
 
     prefabManagerInstance.createPrefab("Player")
@@ -263,6 +298,15 @@ void initGamePrefabs(rtype::ecs::Registry& registry)
         .addComponent<rtype::component::ServerID>()
         .addComponent<rtype::component::Sound>("blaster")
         .addComponent<rtype::tag::Ally>()
+        .addComponent<rtype::component::Points>()
+        .addComponent<rtype::component::LastUpdate>();
+    prefabManagerInstance.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ULTRA_ALLY_BULLET))
+        .addComponent<rtype::component::Transform>()
+        .addComponent<rtype::component::Drawable>(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ULTRA_ALLY_BULLET), 4, rtype::utils::Rectangle(270, 1224, 12, 10), 5)
+        .addComponent<rtype::component::ServerID>()
+        .addComponent<rtype::component::Sound>("blaster")
+        .addComponent<rtype::tag::Ally>()
+        .addComponent<rtype::component::Animation>(ultraAllyBulletAnimation)
         .addComponent<rtype::component::Points>()
         .addComponent<rtype::component::LastUpdate>();
     prefabManagerInstance.createPrefab("Ally1")

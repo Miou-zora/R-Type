@@ -7,14 +7,9 @@
 
 #pragma once
 
-#include "Ally.hpp"
 #include "ECS.hpp"
-#include "Enemy.hpp"
-#include "GameRoom.hpp"
 #include "Health.hpp"
-#include "NetworkPlayer.hpp"
-#include "Communication.hpp"
-#include "Points.hpp"
+#include "Killable.hpp"
 
 namespace rtype::system
 {

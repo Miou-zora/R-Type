@@ -43,6 +43,18 @@ namespace rtype::ecs
         }
 
         /**
+         * @brief Add a component to the prefab
+        */
+        template <class Component>
+        Prefab &addComponent(const Component &&component)
+        {
+            const Component copy = component;
+            m_components[std::type_index(typeid(Component))] = ([copy](ecs::Registry &reg, const Entity &entity) -> void
+                                                               { reg.addComponent<Component>(entity, Component(copy)); });
+            return (*this);
+        }
+
+        /**
          * @brief Instantiate an entity with the components of the prefab
         */
         Entity instantiate(ecs::Registry &reg)

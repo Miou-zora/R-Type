@@ -29,6 +29,9 @@
 #include "PrefabsMapping.hpp"
 #include "Boss.hpp"
 #include "Killable.hpp"
+#include "Lootable.hpp"
+#include "Loot.hpp"
+#include "Taker.hpp"
 #include <set>
 
 namespace rtype::utils {
@@ -208,6 +211,9 @@ public:
             auto& points = pointsOpt.value();
             if (gameRoom.id == playerGameRoom.id) {
                 registry.emplaceComponent<rtype::component::Transform>(registry.entityFromIndex(index), pos);
+                if (registry.hasComponent<rtype::component::Shooter>(registry.entityFromIndex(index))) {
+                    registry.getComponents<rtype::component::Shooter>()[registry.entityFromIndex(index)].value().projectileName = rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ALLY_BULLET);
+                }
                 pos += getValue<rtype::utils::Vector<float>>("playerPositionOffset");
                 points.value = 0;
                 if (registry.hasComponent<rtype::component::Killable>(registry.entityFromIndex(index))) {
@@ -316,6 +322,7 @@ public:
         player.addComponent<rtype::component::ServerID>();
         player.addComponent<rtype::component::Points>();
         player.addComponent<rtype::component::Killable>();
+        player.addComponent<rtype::component::Taker>();
 
         manager.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ALLY_BULLET))
             .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(100.f, 25.f))
@@ -328,6 +335,29 @@ public:
             .addComponent<rtype::component::Path>(rtype::component::Path(getValue<float>("enemyBulletSpeed"))
                 .addPoint(rtype::utils::Vector<float>(getValue<float>("enemyBulletDistance"), 0.f), rtype::component::Path::Context::Global, rtype::component::Path::Referential::Entity)
                 .setDestroyAtEnd(true))
+            .addComponent<rtype::tag::Ally>()
+            .addComponent<rtype::component::Killable>()
+            .addComponent<rtype::component::ServerID>();
+
+        std::vector<rtype::utils::Vector<float>> ultraAllyBulletPointsPath;
+        for (float i = 0; i < 1000; i++) {
+            ultraAllyBulletPointsPath.push_back(rtype::utils::Vector<float>(1.f, cos(i * 0.1)) * 10.f);
+        }
+        rtype::component::Path ultraAllyBulletPath(getValue<float>("enemyBulletSpeed"));
+        for (auto& point : ultraAllyBulletPointsPath) {
+            ultraAllyBulletPath.addPoint(point, rtype::component::Path::Context::Global, rtype::component::Path::Referential::Entity);
+        }
+        ultraAllyBulletPath.setDestroyAtEnd(true);
+        ultraAllyBulletPath.setType(rtype::component::Path::Type::OneShot);
+        manager.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ULTRA_ALLY_BULLET))
+            .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(100.f, 25.f))
+            .addComponent<rtype::component::Velocity>()
+            .addComponent<rtype::component::Collider>(getValue<float>("enemyBulletHitboxWidth"), getValue<float>("enemyBulletHitboxHeight"))
+            .addComponent<rtype::component::Damage>(getValue<int>("enemyBulletDamage"))
+            .addComponent<rtype::component::Health>(getValue<int>("bulletDamage"))
+            .addComponent<rtype::component::GameRoom>()
+            .addComponent<rtype::component::EntityInformation>(static_cast<int>(rtype::utils::PrefabsMapping::prefabs::ULTRA_ALLY_BULLET))
+            .addComponent<rtype::component::Path>(ultraAllyBulletPath)
             .addComponent<rtype::tag::Ally>()
             .addComponent<rtype::component::Killable>()
             .addComponent<rtype::component::ServerID>();
@@ -361,9 +391,26 @@ public:
             .addComponent<rtype::component::Path>(rtype::component::Path(getValue<float>("patapataMovementSpeed"))
                 .addPoint(-2000.0f, 0.f, rtype::component::Path::Context::Global, rtype::component::Path::Referential::Entity)
                 .setDestroyAtEnd(true))
-            .addComponent<rtype::component::ServerID>()
             .addComponent<rtype::component::Killable>()
+            .addComponent<rtype::component::Lootable>(rtype::component::Lootable()
+                .addDroppableEntity(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::DEFAULT_WEAPON_LOOT), 20))
+            .addComponent<rtype::component::ServerID>()
             .addComponent<rtype::component::Points>(100);
+
+        manager.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::DEFAULT_WEAPON_LOOT))
+            .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0.f, 0.f))
+            .addComponent<rtype::component::Velocity>()
+            .addComponent<rtype::component::Collider>(10.f, 10.f)
+            .addComponent<rtype::component::Speed>(1)
+            .addComponent<rtype::component::Path>(rtype::component::Path(100)
+                .addPoint(0.f, 1000.f, rtype::component::Path::Context::Global, rtype::component::Path::Referential::Entity)
+                .setDestroyAtEnd(true))
+            .addComponent<rtype::component::GameRoom>()
+            .addComponent<rtype::tag::Ally>()
+            .addComponent<rtype::component::EntityInformation>(static_cast<int>(rtype::utils::PrefabsMapping::prefabs::DEFAULT_WEAPON_LOOT))
+            .addComponent<rtype::component::Loot>({rtype::component::Loot::Type::WEAPON, {rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ULTRA_ALLY_BULLET), 0.5}})
+            .addComponent<rtype::component::Killable>()
+            .addComponent<rtype::component::ServerID>();
 
         manager.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::SCANT))
             .addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(1600.0f, 1024.0f / 2.0f))
@@ -431,19 +478,6 @@ public:
             .addComponent<rtype::tag::Enemy>()
             .addComponent<rtype::component::Killable>()
             .addComponent<rtype::component::ServerID>();
-
-        // rtype::ecs::Prefab& bullet = manager.createPrefab("bullet");
-        // bullet.addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0.0f, 0.0f));
-        // bullet.addComponent<rtype::component::Velocity>();
-        // bullet.addComponent<rtype::component::Collider>(getValue<float>("bulletHitboxWidth"), getValue<float>("bulletHitboxHeight"));
-        // bullet.addComponent<rtype::component::Damage>(getValue<int>("bulletDamage"));
-        // bullet.addComponent<rtype::component::Health>(getValue<int>("bulletDamage"));
-        // bullet.addComponent<rtype::component::GameRoom>();
-        // bullet.addComponent<rtype::component::EntityInformation>();
-        // bullet.addComponent<rtype::component::Path>(rtype::component::Path(getValue<float>("bulletSpeed")));
-        // bullet.addComponent<rtype::tag::Ally>()
-        //     .addComponent<rtype::component::Killable>();
-        // bullet.addComponent<rtype::component::ServerID>();
 
         rtype::ecs::Prefab& enemyBullet = manager.createPrefab(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::SIMPLE_BULLET));
         enemyBullet.addComponent<rtype::component::Transform>(rtype::utils::Vector<float>(0.f, 50.f));
@@ -521,7 +555,6 @@ public:
                 .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::PATA_PATA), 0.1f, rtype::component::Spawner::Context::Local, {0.f, 200.f + static_cast<float>(50 - std::rand() % (100))})
                 .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::PATA_PATA), 0.f, rtype::component::Spawner::Context::Local, {0.f, -200.f + static_cast<float>(50 - std::rand() % (100))})
                 .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ZOYDO), getValue<float>("enemySpawnCooldown") * 2.f, rtype::component::Spawner::Context::Local))
-                // .addEntityToSpawnList(rtype::utils::PrefabsMapping::prefabsMapping.at(rtype::utils::PrefabsMapping::prefabs::ZOYDO), 0.f, rtype::component::Spawner::Context::Local))
             .addComponent<rtype::component::Velocity>()
             .addComponent<rtype::component::GameRoom>()
             .addComponent<rtype::component::ServerID>();

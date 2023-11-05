@@ -22,6 +22,8 @@
 #include "PrefabsMapping.hpp"
 #include "Explosive.hpp"
 #include "Sound.hpp"
+#include "Enemy.hpp"
+#include "Ally.hpp"
 
 namespace rtype::system
 {
@@ -284,7 +286,6 @@ namespace rtype::system
                     if (registry.hasComponent<rtype::component::Explosive>(registry.entityFromIndex(index)))
                     {
                         rtype::ecs::Entity explosion = rtype::utils::PrefabManager::getInstance().instantiate("ExplosionAlly", registry);
-                        std::cout << "Pos: " << registry.getComponents<rtype::component::Transform>()[explosion]->position << std::endl;
                         registry.getComponents<rtype::component::Transform>()[explosion]->position.x = registry.getComponents<rtype::component::Transform>()[index]->position.x;
                         registry.getComponents<rtype::component::Transform>()[explosion]->position.y = registry.getComponents<rtype::component::Transform>()[index]->position.y;
                     }
@@ -360,6 +361,11 @@ namespace rtype::system
                     {
                         registry.getComponents<rtype::component::Sound>()[entity]->play = true;
                     }
+                }
+                if (entitySpawn.team == 1) {
+                    registry.addComponent<rtype::tag::Enemy>(entity, rtype::tag::Enemy());
+                } else { // Implicitly team == 0 so ally
+                    registry.addComponent<rtype::tag::Ally>(entity, rtype::tag::Ally());
                 }
             }
             catch (ecs::OutOfRange &error)
