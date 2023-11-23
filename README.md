@@ -1,8 +1,8 @@
 # R-Type
-![image](https://github.com/EpitechPromo2026/B-CPP-500-NAN-5-1-rtype-lucas.hauszler/assets/91665380/5cbffad1-884d-4164-9742-152b58a0c3e9)
+![272206977-5cbffad1-884d-4164-9742-152b58a0c3e9](https://github.com/Miou-zora/R-Type/assets/91665686/bebc54cd-92d3-4f7d-aa4d-1e9d2adc9f26)
 
 [R-Type](https://fr.wikipedia.org/wiki/R-Type_(jeu_vid%C3%A9o)) is a classic side-scrolling shoot 'em up video game with a cooperative multiplayer feature. In this game, players can team up with a friend to control small spacecraft as they navigate through a series of challenging levels filled with various enemy spacecraft and obstacles. The objective is to defeat the waves of enemies and powerful bosses while avoiding their attacks, and this cooperative multiplayer mode allows players to work together to overcome the game's challenges, making it even more enjoyable as a team.
-This is an [Epitech](https://www.epitech.eu/) project involving the development of a network game with an [ECS (Entity Component System)](https://github.com/EpitechPromo2026/B-CPP-500-NAN-5-1-rtype-lucas.hauszler/wiki/Librairies#1-entity-component-system).
+This is an [Epitech](https://www.epitech.eu/) project involving the development of a network game with an [ECS (Entity Component System)](https://github.com/Miou-zora/R-Type/wiki/Librairies).
 
 ## How to build ?
 
@@ -67,7 +67,7 @@ The game ends once all players are dead, or you've beaten the final boss.\
 
 ## More informations ?
 
-Go to [this wiki](https://github.com/EpitechPromo2026/B-CPP-500-NAN-5-1-rtype-lucas.hauszler/wiki), the project will be detailed more technically, enjoy!
+Go to [this wiki](https://github.com/Miou-zora/R-Type/wiki), the project will be detailed more technically, enjoy!
 
 ## Contributors
 
