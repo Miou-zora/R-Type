@@ -1,8 +1,11 @@
-# R-Type
-![272206977-5cbffad1-884d-4164-9742-152b58a0c3e9](https://github.com/Miou-zora/R-Type/assets/91665686/bebc54cd-92d3-4f7d-aa4d-1e9d2adc9f26)
+[![272206977-5cbffad1-884d-4164-9742-152b58a0c3e9](https://github.com/Miou-zora/R-Type/assets/91665686/bebc54cd-92d3-4f7d-aa4d-1e9d2adc9f26)](https://www.youtube.com/watch?v=pStNop_VWYk)
+
+[Click here to see the trailer](https://www.youtube.com/watch?v=pStNop_VWYk)
 
 [R-Type](https://fr.wikipedia.org/wiki/R-Type_(jeu_vid%C3%A9o)) is a classic side-scrolling shoot 'em up video game with a cooperative multiplayer feature. In this game, players can team up with a friend to control small spacecraft as they navigate through a series of challenging levels filled with various enemy spacecraft and obstacles. The objective is to defeat the waves of enemies and powerful bosses while avoiding their attacks, and this cooperative multiplayer mode allows players to work together to overcome the game's challenges, making it even more enjoyable as a team.
 This is an [Epitech](https://www.epitech.eu/) project involving the development of a network game with an [ECS (Entity Component System)](https://github.com/Miou-zora/R-Type/wiki/Librairies).
+
+
 
 ## How to build ?
 
